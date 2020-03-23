@@ -1,4 +1,4 @@
 #import <Flutter/Flutter.h>
 
-@interface HypertrackPlugin : NSObject<FlutterPlugin>
+@interface HyperTrackPlugin : NSObject<FlutterPlugin>
 @end

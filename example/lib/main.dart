@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:hypertrack/hypertrack.dart';
+import 'package:hypertrack_plugin/hypertrack.dart';
 
 void main() => runApp(MyApp());
 

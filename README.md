@@ -1,4 +1,4 @@
-# hypertrack
+# hypertrack_plugin
 
 A new flutter plugin project.
 
