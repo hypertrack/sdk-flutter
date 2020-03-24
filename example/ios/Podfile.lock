@@ -1,0 +1,38 @@
+PODS:
+  - Flutter (1.0.0)
+  - GRDB.swift (4.4.0):
+    - GRDB.swift/standard (= 4.4.0)
+  - GRDB.swift/standard (4.4.0)
+  - HyperTrack/Objective-C (4.0.1):
+    - GRDB.swift (= 4.4.0)
+    - HyperTrack/Swift
+  - HyperTrack/Swift (4.0.1):
+    - GRDB.swift (= 4.4.0)
+  - hypertrack_plugin (0.0.1):
+    - Flutter
+    - HyperTrack/Objective-C (= 4.0.1)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - hypertrack_plugin (from `.symlinks/plugins/hypertrack_plugin/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - GRDB.swift
+    - HyperTrack
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  hypertrack_plugin:
+    :path: ".symlinks/plugins/hypertrack_plugin/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  GRDB.swift: 4f9b6e7efc9470426f6a6de10ec1fee798ff7e43
+  HyperTrack: 55d6c6eeb29dae6e989b42931c8db6c567922c4e
+  hypertrack_plugin: bff45152f2ed338c0545f6fab52ca5d8e865fe3f
+
+PODFILE CHECKSUM: 2483184fa6ced42fb6d9c3dc6118ae52368099c0
+
+COCOAPODS: 1.6.1
