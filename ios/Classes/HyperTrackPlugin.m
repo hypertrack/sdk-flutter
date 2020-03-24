@@ -36,26 +36,33 @@
 //    result(FlutterMethodNotImplemented);
 //  }
 }
+
 - (void)onSdkError:(NSNotification*)notification {
     NSLog(@"%s notification %@", __PRETTY_FUNCTION__, notification);
-//    NSError* error = [notification hyperTrackTrackingError];
-//
-//    NSLog(@"Got error %@", error);
-//    switch ([error code]) {
-//            case HTRestorableErrorLocationPermissionsDenied:
-//            case HTRestorableErrorLocationServicesDisabled:
-//            case HTRestorableErrorMotionActivityServicesDisabled:
-//            case HTUnrestorableErrorMotionActivityPermissionsDenied:
-//            case HTFatalErrorProductionMotionActivityPermissionsDenied:
-//              result(@"permission_denied");
-//              break;
-//            case HTRestorableErrorTrialEnded:
-//            case HTRestorableErrorPaymentDefault:
-//              return [NSNumber numberWithInteger:authorizationError];
-//              break;
-//            case HTUnrestorableErrorInvalidPublishableKey:
-//            case HTFatalErrorDevelopmentPublishableKeyIsEmpty:
-//    };
+    NSError* error = [notification hyperTrackTrackingError];
+    if (error == nil) return;
+
+    NSLog(@"Got error %@", error);
+    switch ([error code]) {
+            case HTRestorableErrorLocationPermissionsDenied:
+            case HTRestorableErrorLocationServicesDisabled:
+            case HTRestorableErrorMotionActivityServicesDisabled:
+            case HTUnrestorableErrorMotionActivityPermissionsDenied:
+            case HTFatalErrorProductionMotionActivityPermissionsDenied:
+              _eventSink(@"permission_denied");
+              break;
+            case HTRestorableErrorTrialEnded:
+            case HTRestorableErrorPaymentDefault:
+               _eventSink(@"auth_error");
+               break;
+            case HTUnrestorableErrorInvalidPublishableKey:
+            case HTFatalErrorDevelopmentPublishableKeyIsEmpty:
+                _eventSink(@"publishable_key_error");
+                break;
+            default:
+                _eventSink(@"unknown error");
+            
+    };
     
 }
 
