@@ -1,4 +1,5 @@
 #import "HyperTrackPlugin.h"
+@import HyperTrack;
 
 @interface HyperTrackPlugin() <FlutterStreamHandler>
 @end
