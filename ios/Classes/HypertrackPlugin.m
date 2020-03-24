@@ -36,15 +36,28 @@
 //  }
 }
 - (void)onSdkError:(NSNotification*)notification {
-  NSLog(@"%s", __PRETTY_FUNCTION__);
-    NSError* error = [notification hyperTrackTrackingError];
-    
-    NSLog(@"Got error code %d", [error code]);
-    
-    
-    
+    NSLog(@"%s notification %@", __PRETTY_FUNCTION__, notification);
+//    NSError* error = [notification hyperTrackTrackingError];
+//
+//    NSLog(@"Got error %@", error);
+//    switch ([error code]) {
+//            case HTRestorableErrorLocationPermissionsDenied:
+//            case HTRestorableErrorLocationServicesDisabled:
+//            case HTRestorableErrorMotionActivityServicesDisabled:
+//            case HTUnrestorableErrorMotionActivityPermissionsDenied:
+//            case HTFatalErrorProductionMotionActivityPermissionsDenied:
+//              result(@"permission_denied");
+//              break;
+//            case HTRestorableErrorTrialEnded:
+//            case HTRestorableErrorPaymentDefault:
+//              return [NSNumber numberWithInteger:authorizationError];
+//              break;
+//            case HTUnrestorableErrorInvalidPublishableKey:
+//            case HTFatalErrorDevelopmentPublishableKeyIsEmpty:
+//    };
     
 }
+
 - (void)onSdkStopped {
   NSLog(@"%s", __PRETTY_FUNCTION__);
     _eventSink(@"stop");
