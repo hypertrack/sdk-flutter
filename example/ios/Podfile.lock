@@ -3,14 +3,14 @@ PODS:
   - GRDB.swift (4.4.0):
     - GRDB.swift/standard (= 4.4.0)
   - GRDB.swift/standard (4.4.0)
-  - HyperTrack (4.0.1):
+  - HyperTrack/Objective-C (4.0.1):
     - GRDB.swift (= 4.4.0)
-    - HyperTrack/Swift (= 4.0.1)
+    - HyperTrack/Swift
   - HyperTrack/Swift (4.0.1):
     - GRDB.swift (= 4.4.0)
   - hypertrack_plugin (0.0.1):
     - Flutter
-    - HyperTrack (= 4.0.1)
+    - HyperTrack/Objective-C (= 4.0.1)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -31,7 +31,7 @@ SPEC CHECKSUMS:
   Flutter: 446b87ace8a3747a167979213b4aef59a0b5e5fa
   GRDB.swift: 4f9b6e7efc9470426f6a6de10ec1fee798ff7e43
   HyperTrack: 55d6c6eeb29dae6e989b42931c8db6c567922c4e
-  hypertrack_plugin: 32ae0afcd17cb42216831dcd70555eb65b053bf1
+  hypertrack_plugin: bff45152f2ed338c0545f6fab52ca5d8e865fe3f
 
 PODFILE CHECKSUM: 2483184fa6ced42fb6d9c3dc6118ae52368099c0
 
