@@ -78,7 +78,7 @@
         return;
     }
     
-    if ([@"setTripMarker" isEqualToString:call.method]) {
+    if ([@"addGeotag" isEqualToString:call.method]) {
         HTMetadata *hyperTrackMetadata = [[HTMetadata alloc] initWithDictionary:call.arguments];
         if (hyperTrackMetadata != nil) {
           [self.hyperTrack addTripMarker:hyperTrackMetadata];

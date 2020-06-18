@@ -83,7 +83,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       "isRunning" -> result.success(sdk.isRunning)
       "start" -> start(result, sdk)
       "stop" -> stop(result, sdk)
-      "setTripMarker" -> setTripMarker(call.arguments(), result, sdk)
+      "addGeotag" -> addGeotag(call.arguments(), result, sdk)
       "allowMockLocations" -> allowMockLocations(result, sdk)
       "setDeviceName" -> setDeviceName(call.arguments(), result, sdk)
       "setDeviceMetadata" -> setDeviceMetadata(call.arguments(), result, sdk)
@@ -145,9 +145,9 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     result.success(null)
   }
 
-  private fun setTripMarker(data : Map<String, Any>, result: Result, sdk : HyperTrack) {
-    Log.d(TAG, "setTripMarker called with payload $data")
-    sdk.addTripMarker(data)
+  private fun addGeotag(data : Map<String, Any>, result: Result, sdk : HyperTrack) {
+    Log.d(TAG, "addGeotag called with payload $data")
+    sdk.addGeotag(data)
     result.success(null)
   }
 
