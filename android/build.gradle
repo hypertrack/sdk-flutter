@@ -42,7 +42,7 @@ android {
         disable 'InvalidPackage'
     }
     dependencies {
-        implementation 'com.hypertrack:hypertrack:4.1.2'
+        implementation 'com.hypertrack:hypertrack:4.4.1'
     }
 }
 

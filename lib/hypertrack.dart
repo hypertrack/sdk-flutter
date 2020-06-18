@@ -44,7 +44,7 @@ class HyperTrack {
 
   void stop() =>  _methodChannel.invokeMethod<void>('stop');
 
-  void setTripMarker(Map<String, Object> data) => _methodChannel.invokeMethod('setTripMarker', data);
+  void addGeotag(Map<String, Object> data) => _methodChannel.invokeMethod('addGeotag', data);
 
   void setDeviceName(String name) => _methodChannel.invokeMethod('setDeviceName', name);
 
