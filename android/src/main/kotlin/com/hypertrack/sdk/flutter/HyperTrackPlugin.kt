@@ -102,7 +102,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     if (publishableKey == null) return
 
     try {
-      sdkInstance = HyperTrack.getInstance(applicationContext, publishableKey)
+      sdkInstance = HyperTrack.getInstance(publishableKey)
       result.success(null)
       return
     } catch (e: Exception) {

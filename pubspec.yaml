@@ -1,6 +1,6 @@
 name: hypertrack_plugin
-description: A new flutter plugin project.
-version: 0.1.1
+description: Flutter plugin for HyperTrack SDK
+version: 0.1.2
 homepage: https://www.hypertrack.com/
 
 environment:
