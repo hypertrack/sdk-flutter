@@ -1,3 +1,7 @@
+## [0.1.3] - 2020-11-02
+
+- Android SDK version updated to 4.8.0
+
 ## [0.1.2] - 2020-09-28
 
 - Android SDK version updated to 4.6.0
