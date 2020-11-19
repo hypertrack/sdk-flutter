@@ -16,5 +16,9 @@ dev_dependencies:
 
 flutter:
   plugin:
-    androidPackage: com.hypertrack.sdk.flutter
-    pluginClass: HyperTrackPlugin
+    platforms:
+      android:
+        package: com.hypertrack.sdk.flutter
+        pluginClass: HyperTrackPlugin
+      ios:
+        pluginClass: HyperTrackPlugin
