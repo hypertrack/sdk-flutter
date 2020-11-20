@@ -1,4 +1,4 @@
-## Unreleased
+## [0.1.4] - 2020-11-20
 
 #### Fixed
 - Firebase tokens and messages forwarding.
