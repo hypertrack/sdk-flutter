@@ -1,7 +1,7 @@
 ## Unreleased
 
 #### Fixed
-- Firebase tokens and messages are forwarded to default Firebase plugin.
+- Firebase tokens and messages forwarding.
 
 #### Changed
 - iOS SDK version updated to 4.6.0
