@@ -133,7 +133,7 @@
             case HTRestorableErrorMotionActivityServicesDisabled:
             case HTUnrestorableErrorMotionActivityPermissionsDenied:
             case HTFatalErrorProductionMotionActivityPermissionsDenied:
-                return @"permission_denied";
+                return @"permissions_denied";
             case HTRestorableErrorTrialEnded:
             case HTRestorableErrorPaymentDefault:
                return @"auth_error";
