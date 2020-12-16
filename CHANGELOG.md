@@ -1,3 +1,8 @@
+## [0.1.5] - 2020-12-16
+
+#### Fixed
+- iOS plugin, incorrect `permissions_error` notification.
+
 ## [0.1.4] - 2020-11-20
 
 #### Fixed
