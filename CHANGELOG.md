@@ -1,3 +1,12 @@
+## [0.1.6] - 2020-12-23
+
+#### Fixed
+- iOS plugin runtime error notification.
+
+#### Changed
+- iOS SDK version updated to 4.7.0
+
+
 ## [0.1.5] - 2020-12-16
 
 #### Fixed
