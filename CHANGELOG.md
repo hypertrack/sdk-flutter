@@ -1,4 +1,4 @@
-## Unreleased
+## [0.1.7] - 2020-12-24
 #### Changed
 - Android SDK updated to 4.9.0
 - Firebase conflicts were fixed.
