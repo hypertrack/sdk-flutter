@@ -5,7 +5,7 @@ Plugin for HyperTrack SDK.
 ![GitHub](https://img.shields.io/github/license/hypertrack/sdk-flutter.svg)
 [![Pub Version](https://img.shields.io/pub/v/hypertrack_plugin?color=blueviolet)](https://pub.dev/packages/hypertrack_plugin)
 [![iOS SDK](https://img.shields.io/badge/iOS%20SDK-4.7.0-brightgreen.svg)](https://cocoapods.org/pods/HyperTrack)
-![Android SDK](https://img.shields.io/badge/Android%20SDK-4.8.0-brightgreen.svg)
+![Android SDK](https://img.shields.io/badge/Android%20SDK-4.9.0-brightgreen.svg)
 
 ### Usage
 
