@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:hypertrack_plugin/hypertrack.dart';
 
 void main() => runApp(MyApp());
@@ -19,7 +18,6 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initializeSdk() async {
-
     HyperTrack.enableDebugLogging();
     // Initializer is just a helper class to get the actual sdk instance
     String result = 'failure';
@@ -30,15 +28,16 @@ class _MyAppState extends State<MyApp> {
       sdk.setDeviceMetadata({"source": "flutter sdk"});
       sdk.onTrackingStateChanged.listen((TrackingStateChange event) {
         if (mounted) {
-          setState(() {_result = '$event';});
+          setState(() {
+            _result = '$event';
+          });
         }
       });
     } catch (e) {
       print(e);
     }
 
-
-    final deviceId = (sdk == null)? "unknown" : await sdk.getDeviceId();
+    final deviceId = (sdk == null) ? "unknown" : await sdk.getDeviceId();
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -56,7 +55,6 @@ class _MyAppState extends State<MyApp> {
   void stop() => sdk.stop();
 
   void syncDeviceSettings() => sdk.syncDeviceSettings();
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,29 +74,20 @@ class _MyAppState extends State<MyApp> {
                 'Device id is $_deviceId',
               ),
               ButtonBar(
-                children:[
+                children: [
+                  FlatButton(onPressed: start, child: Text("Start")),
                   FlatButton(
-                      onPressed: start,
-                      child:Text("Start")
-                  ),
+                      onPressed: initializeSdk, child: Text("Initialize")),
+                  FlatButton(onPressed: stop, child: Text("Stop")),
                   FlatButton(
-                      onPressed: initializeSdk,
-                      child:Text("Initialize")
-                  ),
-                  FlatButton(
-                      onPressed: stop,
-                      child:Text("Stop")
-                  ),
-                  FlatButton(
-                      onPressed: syncDeviceSettings,
-                      child:Text("Sync")
-                  ),
+                      onPressed: syncDeviceSettings, child: Text("Sync")),
                 ],
                 alignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
               ),
             ],
-          ),        ),
+          ),
+        ),
       ),
     );
   }

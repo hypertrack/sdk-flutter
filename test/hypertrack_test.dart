@@ -20,6 +20,6 @@ void main() {
   test('getPlatformVersion', () async {
     HyperTrack sdk = await HyperTrack.initialize("publishableKey");
 
-    expect( await sdk.getDeviceId(), '42');
+    expect(await sdk.getDeviceId(), '42');
   });
 }
