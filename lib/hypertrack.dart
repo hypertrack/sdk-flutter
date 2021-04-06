@@ -26,6 +26,38 @@ enum TrackingStateChange {
   unknown_error
 }
 
+enum GeotagResult {
+  /// Geotag was created
+  success,
+
+  /// Expected location is farther then allowed from current location.
+  failure_location_mismatch,
+
+  /// Current device location isn't available.
+  failure_location_not_available,
+
+  /// Feature not supported
+  failure_platform_not_supported
+}
+
+class ExpectedLocation {
+  double longitude;
+  double latitude;
+
+  /// Set this to denote that geotag is not allowed to be created if distance
+  /// from the device to expected location is farther then [deviation].
+  bool isRestricted;
+
+  /// Maximum distance in meters that allowed between device and expected location
+  /// in case if the latter is restricted.
+  ///
+  /// If not set defaults to 100 meters.
+  int deviation;
+
+  ExpectedLocation(this.longitude, this.latitude,
+      [this.isRestricted = false, this.deviation = 100]);
+}
+
 /// Plugin allows you to use your application as a location data source
 /// feeding HyperTrack platform.
 class HyperTrack {
@@ -79,8 +111,9 @@ class HyperTrack {
   ///
   /// Please, bear in mind that this will be serialized as json so passing in
   /// recursive data structure could lead to unpredictable results.
-  void addGeotag(Map<String, Object> data) =>
-      _methodChannel.invokeMethod('addGeotag', data);
+  Future<GeotagResult> addGeotag(Map<String, Object> data,
+          [ExpectedLocation expectedLocation]) =>
+      _methodChannel.invokeMethod<GeotagResult>('addGeotag', data);
 
   /// Sets current device name, that can be used for easier dashboard navigation.
   ///
