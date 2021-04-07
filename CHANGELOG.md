@@ -1,4 +1,4 @@
-## Unreleased
+## [0.1.8] - 2021-04-07
 #### Changed
 - Android SDK updated to 4.11.0
 
