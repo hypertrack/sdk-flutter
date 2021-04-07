@@ -2,6 +2,7 @@ package com.hypertrack.sdk.flutter
 
 
 import android.content.Context
+import android.location.Location
 import android.util.Log
 import androidx.annotation.NonNull
 import com.hypertrack.sdk.HyperTrack
@@ -17,6 +18,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import java.util.*
 
 /** HyperTrackPlugin */
 public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler {
@@ -145,10 +147,42 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     result.success(null)
   }
 
-  private fun addGeotag(data : Map<String, Any>, result: Result, sdk : HyperTrack) {
-    Log.d(TAG, "addGeotag called with payload $data")
-    sdk.addGeotag(data)
-    result.success(null)
+  private fun addGeotag(options : Map<String, Any>, result: Result, sdk : HyperTrack) {
+    Log.d(TAG, "addGeotag called with options $options")
+    val data = options["data"]
+    data?.let {
+      val expectation: Map<String, Any>? = options["expectedLocation"] as Map<String, Any>?
+      if (expectation == null) {
+        sdk.addGeotag(data)
+        result.success("success")
+        return;
+      }
+      try {
+        val lat = expectation["latitude"] as Double
+        val lng = expectation["longitude"] as Double
+        val expectedLocation = Location("any").apply{
+          latitude = lat;
+          longitude = lng;
+        }
+        if (expectation["isRestricted"] == true) {
+          val deviation = expectation["deviation"] as Int
+          sdk.addRestrictedGeotag(data, expectedLocation, deviation) {
+            when (it) {
+              HyperTrack.Result.SUCCESS -> result.success("success")
+              HyperTrack.Result.LOCATION_MISMATCH -> result.success("failure_location_mismatch")
+              HyperTrack.Result.LOCATION_NOT_AVAILABLE -> result.success("failure_location_not_available")
+            }
+          }
+        } else {
+          sdk.addGeotag(data, expectedLocation);
+          result.success("success")
+        }
+      } catch (t: Throwable) {
+        result.error("GEOTAG_ERROR", "Cannot extract expected location", t)
+      }
+      return
+    }
+    result.error("Geotag Error", "No geotag data provided", null);
   }
 
   private fun allowMockLocations(result : Result, sdk : HyperTrack) {
