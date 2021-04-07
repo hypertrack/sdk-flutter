@@ -115,7 +115,15 @@ class HyperTrack {
   /// Look [ExpectedLocation] class options for the details.
   Future<GeotagResult> addGeotag(Map<String, Object> data,
       [ExpectedLocation expectedLocation]) async {
-    final options = {'data': data, 'expectedLocation': expectedLocation};
+    final options = {'data': data};
+    if (expectedLocation != null) {
+      options['expectedLocation'] = {
+        'latitude': expectedLocation.latitude,
+        'longitude': expectedLocation.longitude,
+        'isRestricted': expectedLocation.isRestricted,
+        'deviation': expectedLocation.deviation
+      };
+    }
     final result =
         await _methodChannel.invokeMethod<String>('addGeotag', options);
     return _asGeotagResult(result);

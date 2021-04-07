@@ -148,8 +148,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
   }
 
   private fun addGeotag(options : Map<String, Any>, result: Result, sdk : HyperTrack) {
-    Log.d(TAG, "addGeotag called with options $options")
-    val data = options["data"]
+    val data = options["data"] as Map<String, java.io.Serializable>?
     data?.let {
       val expectation: Map<String, Any>? = options["expectedLocation"] as Map<String, Any>?
       if (expectation == null) {
