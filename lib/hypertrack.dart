@@ -116,7 +116,9 @@ class HyperTrack {
   Future<GeotagResult> addGeotag(Map<String, Object> data,
       [ExpectedLocation expectedLocation]) async {
     final options = {'data': data, 'expectedLocation': expectedLocation};
-    _methodChannel.invokeMethod<GeotagResult>('addGeotag', options);
+    final result =
+        await _methodChannel.invokeMethod<String>('addGeotag', options);
+    return _asGeotagResult(result);
   }
 
   /// Sets current device name, that can be used for easier dashboard navigation.
@@ -184,5 +186,17 @@ class HyperTrack {
         return TrackingStateChange.network_error;
     }
     return TrackingStateChange.unknown_error;
+  }
+
+  GeotagResult _asGeotagResult(String event) {
+    switch (event) {
+      case "success":
+        return GeotagResult.success;
+      case "failure_location_mismatch":
+        return GeotagResult.failure_location_mismatch;
+      case "failure_location_not_available":
+        return GeotagResult.failure_location_not_available;
+    }
+    return GeotagResult.failure_platform_not_supported;
   }
 }
