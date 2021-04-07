@@ -111,9 +111,13 @@ class HyperTrack {
   ///
   /// Please, bear in mind that this will be serialized as json so passing in
   /// recursive data structure could lead to unpredictable results.
+  /// [expectedLocation] is a place, where action is supposed to occur.
+  /// Look [ExpectedLocation] class options for the details.
   Future<GeotagResult> addGeotag(Map<String, Object> data,
-          [ExpectedLocation expectedLocation]) =>
-      _methodChannel.invokeMethod<GeotagResult>('addGeotag', data);
+      [ExpectedLocation expectedLocation]) async {
+    final options = {'data': data, 'expectedLocation': expectedLocation};
+    _methodChannel.invokeMethod<GeotagResult>('addGeotag', options);
+  }
 
   /// Sets current device name, that can be used for easier dashboard navigation.
   ///
