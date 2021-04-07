@@ -1,5 +1,5 @@
 name: hypertrack_plugin
-description: Flutter plugin for HyperTrack SDK
+description: A wrapper around HyperTrack SDK to make it easier to use in Flutter.
 version: 0.1.8
 homepage: https://www.hypertrack.com/
 
