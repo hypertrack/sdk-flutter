@@ -79,10 +79,19 @@
     }
     
     if ([@"addGeotag" isEqualToString:call.method]) {
-        HTMetadata *hyperTrackMetadata = [[HTMetadata alloc] initWithDictionary:call.arguments];
-        if (hyperTrackMetadata != nil) {
-          [self.hyperTrack addTripMarker:hyperTrackMetadata];
-          result(nil);
+        NSDictionary *args = [[NSDictionary alloc] initWithDictionary:call.arguments];
+        if (args != nil) {
+            NSDictionary *expectedLocation = [[NSDictionary alloc] initWithDictionary:args[@"expectedLocation"]];
+            if (expectedLocation != nil) {
+                result(@"failure_platform_not_supported");
+                return;
+            }
+            HTMetadata *hyperTrackMetadata = [[HTMetadata alloc] initWithDictionary:args[@"data"]];
+            if (hyperTrackMetadata != nil) {
+              [self.hyperTrack addTripMarker:hyperTrackMetadata];
+              result(@"success");
+              return;
+            }
         } else {
           result([FlutterError errorWithCode:@"marker_metadata_error" message:@"Marker metadata should be valid key-value pairs with string keys" details:nil]);
         }
