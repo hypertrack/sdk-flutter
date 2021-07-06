@@ -75,11 +75,11 @@ class _MyAppState extends State<MyApp> {
               ),
               ButtonBar(
                 children: [
-                  FlatButton(onPressed: start, child: Text("Start")),
-                  FlatButton(
+                  TextButton(onPressed: start, child: Text("Start")),
+                  TextButton(
                       onPressed: initializeSdk, child: Text("Initialize")),
-                  FlatButton(onPressed: stop, child: Text("Stop")),
-                  FlatButton(
+                  TextButton(onPressed: stop, child: Text("Stop")),
+                  TextButton(
                       onPressed: syncDeviceSettings, child: Text("Sync")),
                 ],
                 alignment: MainAxisAlignment.center,

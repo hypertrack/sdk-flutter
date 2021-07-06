@@ -1,11 +1,10 @@
 name: hypertrack_plugin
 description: Flutter plugin for HyperTrack SDK
-version: 0.1.9
+version: 0.2.0
 homepage: https://www.hypertrack.com/
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
-  flutter: ">=1.10.0 <2.0.0"
 
 dependencies:
   flutter:

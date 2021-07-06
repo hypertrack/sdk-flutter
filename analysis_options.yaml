@@ -1,0 +1,8 @@
+analyzer:
+  #strong-mode:
+  #  implicit-casts: false
+
+linter:
+  rules:
+    - unnecessary_new
+    - unnecessary_const
