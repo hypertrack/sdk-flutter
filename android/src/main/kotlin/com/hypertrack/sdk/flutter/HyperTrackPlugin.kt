@@ -159,15 +159,11 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
           longitude = lng
         }
       }
-      try {
-        when (val geotagResult = sdk.addGeotag(data, expectedLocation)) {
-            is GeotagResult.SuccessWithDeviation -> result.success("""{"result": "success", "distance": "${geotagResult.deviationDistance}"}""")
-            is GeotagResult.Success -> result.success("""{"result": "success"}""")
-            is GeotagResult.Error -> result.error("GEOTAG_ERROR", geotagResult.reason?.toString(), geotagResult.reason)
-          }
-      } catch (t: Throwable) {
-        result.error("GEOTAG_ERROR", "Cannot extract expected location", t)
-      }
+      when (val geotagResult = sdk.addGeotag(data, expectedLocation)) {
+          is GeotagResult.SuccessWithDeviation -> result.success("""{"result": "success", "distance": "${geotagResult.deviationDistance}"}""")
+          is GeotagResult.Success -> result.success("""{"result": "success"}""")
+          is GeotagResult.Error -> result.success("""{"result": "error", "reason": "${geotagResult.reason}"}""")
+        }
     } ?: result.error("GEOTAG_ERROR", "No geotag data provided", null)
   }
 

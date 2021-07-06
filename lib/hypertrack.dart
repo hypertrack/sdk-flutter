@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
@@ -26,36 +27,47 @@ enum TrackingStateChange {
   unknown_error
 }
 
-enum GeotagResult {
-  /// Geotag was created
-  success,
+/// Marker interface for the `addGeotag` Response
+abstract class GeotagResult {}
+/// Geotag created successfully
+class GeotagSuccess implements GeotagResult {}
+/// Geotag with expected location was successfully created
+class GeotagSuccessWithDeviation extends GeotagSuccess {
+  /// Haversine distance between the expected geotag location and
+  /// the actual one, where it was created in meters
+  int deviation;
+  GeotagSuccessWithDeviation(this.deviation);
+}
+/// Incapsulates the reason due to wich geotag wasn't created
+class GeotagError implements GeotagResult {
+  GeotagErrorReason reason;
+  GeotagError(this.reason);
+}
 
-  /// Expected location is farther then allowed from current location.
-  failure_location_mismatch,
-
-  /// Current device location isn't available.
-  failure_location_not_available,
-
-  /// Feature not supported
-  failure_platform_not_supported
+enum GeotagErrorReason {
+  /// User needs to grant the location data access permission
+  MISSING_LOCATION_PERMISSION,
+  /// User needs to grant the activity data access permission
+  MISSING_ACTIVITY_PERMISSION,
+  /// User needs to enable the geolocation feature in device's Settings
+  LOCATION_SERVICE_DISABLED,
+  /// SDK doesn't track (start tracking wasn't called)
+  NOT_TRACKING,
+  /// Tracking has started but the current device location haven't been
+  /// determined yet
+  START_HAS_NOT_FINISHED,
+  /// Geoposition can't be determined due to the absense of GPS signal
+  NO_GPS_SIGNAL,
+  /// Android geolocation service hangs, so app restart is required to move
+  /// it from the dead point
+  RESTART_REQUIRED
 }
 
 class ExpectedLocation {
   double longitude;
   double latitude;
 
-  /// Set this to denote that geotag is not allowed to be created if distance
-  /// from the device to expected location is farther then [deviation].
-  bool isRestricted;
-
-  /// Maximum distance in meters that allowed between device and expected location
-  /// in case if the latter is restricted.
-  ///
-  /// If not set defaults to 100 meters.
-  int deviation;
-
-  ExpectedLocation(this.longitude, this.latitude,
-      [this.isRestricted = false, this.deviation = 100]);
+  ExpectedLocation(this.longitude, this.latitude);
 }
 
 /// Plugin allows you to use your application as a location data source
@@ -120,8 +132,6 @@ class HyperTrack {
       options['expectedLocation'] = {
         'latitude': expectedLocation.latitude,
         'longitude': expectedLocation.longitude,
-        'isRestricted': expectedLocation.isRestricted,
-        'deviation': expectedLocation.deviation
       };
     }
     final result =
@@ -197,6 +207,7 @@ class HyperTrack {
   }
 
   GeotagResult _asGeotagResult(String event) {
+    Map<String, dynamic> result = jsonDecode(event);
     switch (event) {
       case "success":
         return GeotagResult.success;
