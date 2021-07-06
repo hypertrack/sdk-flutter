@@ -5,3 +5,6 @@
 .pub/
 **/*.iml
 build/
+pubspec.lock
+.gradle/
+local.properties
