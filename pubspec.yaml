@@ -1,6 +1,7 @@
 name: hypertrack_plugin
-description: Flutter plugin for HyperTrack SDK
-version: 0.2.0
+description: Flutter plugin for HyperTrack, a cross-platform location tracking solution for Android and iOS
+repository: https://https://github.com/hypertrack/sdk-flutter
+version: 0.2.1
 homepage: https://www.hypertrack.com/
 
 environment:
