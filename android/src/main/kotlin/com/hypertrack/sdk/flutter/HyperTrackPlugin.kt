@@ -160,7 +160,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
         }
       }
       when (val geotagResult = sdk.addGeotag(data, expectedLocation)) {
-          is GeotagResult.SuccessWithDeviation -> result.success("""{"result": "success", "distance": "${geotagResult.deviationDistance}"}""")
+          is GeotagResult.SuccessWithDeviation -> result.success("""{"result": "success", "distance": ${geotagResult.deviationDistance}}""")
           is GeotagResult.Success -> result.success("""{"result": "success"}""")
           is GeotagResult.Error -> result.success("""{"result": "error", "reason": "${geotagResult.reason}"}""")
         }
