@@ -29,8 +29,10 @@ enum TrackingStateChange {
 
 /// Marker interface for the `addGeotag` Response
 abstract class GeotagResult {}
+
 /// Geotag created successfully
 class GeotagSuccess implements GeotagResult {}
+
 /// Geotag with expected location was successfully created
 class GeotagSuccessWithDeviation extends GeotagSuccess {
   /// Haversine distance between the expected geotag location and
@@ -38,6 +40,7 @@ class GeotagSuccessWithDeviation extends GeotagSuccess {
   int deviation;
   GeotagSuccessWithDeviation(this.deviation);
 }
+
 /// Incapsulates the reason due to wich geotag wasn't created
 class GeotagError implements GeotagResult {
   GeotagErrorReason reason;
@@ -47,17 +50,23 @@ class GeotagError implements GeotagResult {
 enum GeotagErrorReason {
   /// User needs to grant the location data access permission
   MISSING_LOCATION_PERMISSION,
+
   /// User needs to grant the activity data access permission
   MISSING_ACTIVITY_PERMISSION,
+
   /// User needs to enable the geolocation feature in device's Settings
   LOCATION_SERVICE_DISABLED,
+
   /// SDK doesn't track (start tracking wasn't called)
   NOT_TRACKING,
+
   /// Tracking has started but the current device location haven't been
   /// determined yet
   START_HAS_NOT_FINISHED,
+
   /// Geoposition can't be determined due to the absense of GPS signal
   NO_GPS_SIGNAL,
+
   /// Android geolocation service hangs, so app restart is required to move
   /// it from the dead point
   RESTART_REQUIRED
@@ -93,13 +102,13 @@ class HyperTrack {
 
   final MethodChannel _methodChannel;
   final EventChannel _eventChannel;
-  Stream<TrackingStateChange> _trackingStateStream;
+  Stream<TrackingStateChange>? _trackingStateStream = null;
 
   HyperTrack(this._methodChannel, this._eventChannel);
 
   /// Returns string that uniquely identifies device in HyperTrack platform.
   Future<String> getDeviceId() async =>
-      await _methodChannel.invokeMethod<String>('getDeviceId');
+      (await _methodChannel.invokeMethod<String>('getDeviceId'))!;
 
   /// Returns `true` if tracking was started.
   ///
@@ -107,7 +116,7 @@ class HyperTrack {
   /// allows you to check the current state of tracking state switch.
   /// For details on whether tracking actually happens or not check [onTrackingStateChanged] events.
   Future<bool> isRunning() async =>
-      await _methodChannel.invokeMethod<bool>('isRunning');
+      (await _methodChannel.invokeMethod<bool>('isRunning'))!;
 
   /// Triggers tracking start.
   ///
@@ -126,7 +135,7 @@ class HyperTrack {
   /// [expectedLocation] is a place, where action is supposed to occur.
   /// Look [ExpectedLocation] class options for the details.
   Future<GeotagResult> addGeotag(Map<String, Object> data,
-      [ExpectedLocation expectedLocation]) async {
+      [ExpectedLocation? expectedLocation]) async {
     final options = {'data': data};
     if (expectedLocation != null) {
       options['expectedLocation'] = {
@@ -134,9 +143,8 @@ class HyperTrack {
         'longitude': expectedLocation.longitude,
       };
     }
-    final result =
-        await _methodChannel.invokeMethod<String>('addGeotag', options);
-    return _asGeotagResult(result);
+    return _asGeotagResult(
+        (await _methodChannel.invokeMethod<String>('addGeotag', options))!);
   }
 
   /// Sets current device name, that can be used for easier dashboard navigation.
@@ -183,7 +191,7 @@ class HyperTrack {
           .receiveBroadcastStream()
           .map((dynamic event) => _parseStreamEvent(event));
     }
-    return _trackingStateStream;
+    return _trackingStateStream!;
   }
 
   TrackingStateChange _parseStreamEvent(String event) {
@@ -207,15 +215,37 @@ class HyperTrack {
   }
 
   GeotagResult _asGeotagResult(String event) {
-    Map<String, dynamic> result = jsonDecode(event);
-    switch (event) {
+    Map<String, dynamic> json = jsonDecode(event);
+    switch (json["result"]) {
       case "success":
-        return GeotagResult.success;
-      case "failure_location_mismatch":
-        return GeotagResult.failure_location_mismatch;
-      case "failure_location_not_available":
-        return GeotagResult.failure_location_not_available;
+        int? distance = json["distance"];
+        if (distance == null) {
+          return GeotagSuccess();
+        }
+        return GeotagSuccessWithDeviation(distance);
+      case "error":
+        return _asGeotagError(json["reason"]!);
     }
-    return GeotagResult.failure_platform_not_supported;
+    throw Exception("Can't convert the result ${event} into the geotag result");
+  }
+
+  GeotagError _asGeotagError(String error) {
+    switch (error) {
+      case "MISSING_LOCATION_PERMISSION":
+        return GeotagError(GeotagErrorReason.MISSING_LOCATION_PERMISSION);
+      case "MISSING_ACTIVITY_PERMISSION":
+        return GeotagError(GeotagErrorReason.MISSING_ACTIVITY_PERMISSION);
+      case "LOCATION_SERVICE_DISABLED":
+        return GeotagError(GeotagErrorReason.LOCATION_SERVICE_DISABLED);
+      case "NO_GPS_SIGNAL":
+        return GeotagError(GeotagErrorReason.NO_GPS_SIGNAL);
+      case "NOT_TRACKING":
+        return GeotagError(GeotagErrorReason.NOT_TRACKING);
+      case "RESTART_REQUIRED":
+        return GeotagError(GeotagErrorReason.RESTART_REQUIRED);
+      case "START_HAS_NOT_FINISHED":
+        return GeotagError(GeotagErrorReason.START_HAS_NOT_FINISHED);
+    }
+    throw Exception("Can't convert the error ${error} into the geotag error");
   }
 }
