@@ -1,3 +1,7 @@
+## [0.2.1] - 2021-07-07
+#### Changed
+- No code changes. Package metadata was updated to improve scoring.
+
 ## [0.2.0] - 2021-07-07
 #### Added
 - Dart nullability support added to comply with Flutter 2 requirements
@@ -48,7 +52,5 @@
 - setTripMarker` replaced with `addGeotag` 
 
 ## [0.1.0] - 2020-03-24
-
-
 #### Added
 - Initial release.
