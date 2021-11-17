@@ -1,3 +1,9 @@
+# Changelog
+
+## [0.3.0] - 2021-11-17
+#### Changed
+- Android SDK updated to v5.4.5
+
 ## [0.2.1] - 2021-07-07
 #### Changed
 - No code changes. Package metadata was updated to improve scoring.
