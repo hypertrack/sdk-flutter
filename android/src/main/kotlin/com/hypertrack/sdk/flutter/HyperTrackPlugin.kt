@@ -60,7 +60,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     fun registerWith(registrar: Registrar) {
       Log.i(TAG, "registerWith")
 
-      val context = registrar.activity().applicationContext
+      val context = registrar.activity()!!.applicationContext
       val messenger = registrar.messenger()
       HyperTrackPlugin().onAttachedToEngine(context, messenger)
     }
@@ -86,10 +86,10 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       "isRunning" -> result.success(sdk.isRunning)
       "start" -> start(result, sdk)
       "stop" -> stop(result, sdk)
-      "addGeotag" -> addGeotag(call.arguments(), result, sdk)
+      "addGeotag" -> addGeotag(call.arguments()!!, result, sdk)
       "allowMockLocations" -> allowMockLocations(result, sdk)
-      "setDeviceName" -> setDeviceName(call.arguments(), result, sdk)
-      "setDeviceMetadata" -> setDeviceMetadata(call.arguments(), result, sdk)
+      "setDeviceName" -> setDeviceName(call.arguments()!!, result, sdk)
+      "setDeviceMetadata" -> setDeviceMetadata(call.arguments()!!, result, sdk)
       "syncDeviceSettings" -> syncDeviceSettings(result, sdk)
       else -> result.notImplemented()
 
