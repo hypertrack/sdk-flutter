@@ -12,7 +12,7 @@ enum TrackingStateChange {
   /// Tracking doesn't happend due to location service being disabled.
   locationDisabled,
 
-  ///  SDK provided with incalid token.
+  ///  SDK provided with invalid token.
   invalidToken,
 
   /// SDK encountered network error

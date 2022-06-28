@@ -90,4 +90,6 @@ class HyperTrack {
   Stream<bool> getRunnigStatus() {
     return _pluginInterface.isRunningStatus;
   }
+
+  Stream<TrackingStateChange> get onTrackingStateChanged => _pluginInterface.onTrackingStateChanged;
 }

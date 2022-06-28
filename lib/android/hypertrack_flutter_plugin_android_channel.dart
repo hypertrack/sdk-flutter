@@ -50,6 +50,10 @@ class AndroidChannelHypertrack extends HypertrackPlatformInterface {
       await _methodChannel.invokeMethod("setDeviceMetadata", data);
 
   @override
+  setDeviceName(data) async =>
+      await _methodChannel.invokeMethod('setDeviceName', data);
+
+  @override
   syncDeviceSettings() async =>
       await _methodChannel.invokeMethod("syncDeviceSettings");
 }

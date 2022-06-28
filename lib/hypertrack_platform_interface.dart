@@ -2,21 +2,20 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:hypertrack_plugin/android/hypertrack_flutter_plugin_android_channel.dart';
 import 'package:hypertrack_plugin/hypertrack.dart';
-import 'package:hypertrack_plugin/ios/ios_platform_interface.dart';
-import 'android/android_platform_interface.dart';
+import 'package:hypertrack_plugin/ios/ios_channel.dart';
 import 'const/constants.dart';
 
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-
 abstract class HypertrackPlatformInterface extends PlatformInterface {
   static const MethodChannel _methodChannel =
-      MethodChannel('hypertrack_flutter_plugin/handle');
+      MethodChannel('sdk.hypertrack.com/handle');
 
   /// The event channel used to interact with the native platform.
   static const EventChannel _eventChannel =
-      EventChannel('hypertrack_flutter_plugin/trackingState');
+      EventChannel('sdk.hypertrack.com/trackingState');
 
   Stream<TrackingStateChange>? _trackingStateStream;
 
@@ -54,7 +53,7 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
 
   Future<HyperTrack> initialize(String publishableKey) async {
     const MethodChannel methodChannel =
-        MethodChannel('hypertrack_flutter_plugin/handle');
+        MethodChannel('sdk.hypertrack.com/handle');
     String? result =
         await methodChannel.invokeMethod<String>("initialize", publishableKey);
     if (result != null) {
@@ -82,10 +81,6 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
   stopTracking() =>
       throw UnimplementedError("Method not found for the current instance");
 
-  /// UnimplementedError for syncDeviceSettings method.
-  syncDeviceSettings() =>
-      throw UnimplementedError("Method not found for the current instance");
-
   /// UnimplementedError for addGeotag method.
   addGeotag(data, expectedLocation) =>
       throw UnimplementedError("Method not found for the current instance");
@@ -97,6 +92,12 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
   /// UnimplementedError for setDeviceMetadata method.
   setDeviceMetadata(data) =>
       throw UnimplementedError("Method not found for the current instance");
+
+  /// This method checks with HyperTrack cloud whether to start or stop tracking.
+  ///
+  /// Tracking starts when Devices or Trips API is used to either to start
+  /// the device tracking or when a trip is created for this device.
+  syncDeviceSettings() => _methodChannel.invokeMethod('syncDeviceSettings');
 
   Stream<bool> get isRunningStatus {
     Stream<bool>? a = _eventChannel

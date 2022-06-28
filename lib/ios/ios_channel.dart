@@ -11,13 +11,13 @@ class iOSChannelHypertrack extends HypertrackPlatformInterface {
   final MethodChannel _methodChannel;
 
   final methodChannel =
-      const MethodChannel('hypertrack_flutter_plugin/method_channel');
+      const MethodChannel('sdk.hypertrack.com/method_channel');
 
   /// The event channel used to interact with the native platform.
   final EventChannel _eventChannel;
 
   final eventChannel =
-      const EventChannel('hypertrack_flutter_plugin/trackingState');
+      const EventChannel('sdk.hypertrack.com/trackingState');
 
   iOSChannelHypertrack(this._methodChannel, this._eventChannel) : super();
 
