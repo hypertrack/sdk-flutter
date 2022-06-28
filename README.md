@@ -32,7 +32,8 @@ For information about how to get started with HyperTrack SDK for Flutter, please
 6. Push
 7. Create a release
     - Release title - version
-9. Publish Flutter package
+8. Publish Flutter package
     1. flutter pub publish --dry-run
         - to test is everything OK with release
     2. flutter pub publish
+9. Happy day
