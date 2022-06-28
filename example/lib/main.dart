@@ -1,94 +1,138 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
+import 'package:hypertrack_plugin/const/constants.dart';
 import 'package:hypertrack_plugin/hypertrack.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  static const key = 'paste_your_key_here';
-  String _result = 'Not initialized';
-  String _deviceId = '';
-  HyperTrack sdk;
+  HyperTrack? _hypertrackFlutterPlugin;
+  late TextEditingController _publishableKey;
+  late TextEditingController _deviceName;
+  late TextEditingController _deviceMetaData;
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initializeSdk() async {
-    HyperTrack.enableDebugLogging();
-    // Initializer is just a helper class to get the actual sdk instance
-    String result = 'failure';
-    try {
-      sdk = await HyperTrack.initialize(key);
-      result = 'initialized';
-      sdk.setDeviceName("Flutter Elvis");
-      sdk.setDeviceMetadata({"source": "flutter sdk"});
-      sdk.onTrackingStateChanged.listen((TrackingStateChange event) {
-        if (mounted) {
-          setState(() {
-            _result = '$event';
-          });
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
+  bool? _isRunning;
 
-    final deviceId = (sdk == null) ? "unknown" : await sdk.getDeviceId();
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _result = result;
-      _deviceId = deviceId;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _publishableKey = TextEditingController(
+        text: "KdoMYSdE4MFWHEjdOO32xGP2jpmeyV0A0BPtRXUEfUiZfhPm5IfA5j"
+            "NmQWJZ7GfQBhUtE8SpdoRbtndPGyGofA");
+    _deviceName = TextEditingController(text: "Lightning");
+    _deviceMetaData = TextEditingController(text: "Metadata");
   }
-
-  void start() => sdk.start();
-
-  void stop() => sdk.stop();
-
-  void syncDeviceSettings() => sdk.syncDeviceSettings();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('HyperTrack Quickstart'),
+          centerTitle: true,
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Initialization result is $_result',
+        body: ListView(
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  labelText: "Device Name",
+                  suffixIcon: TextButton(
+                    onPressed: () => _hypertrackFlutterPlugin
+                        ?.setDeviceName(_deviceName.text),
+                    child: const Text("Update"),
+                  ),
+                ),
+                controller: _deviceName,
               ),
-              Text(
-                'Device id is $_deviceId',
-              ),
-              ButtonBar(
-                children: [
-                  TextButton(onPressed: start, child: Text("Start")),
-                  TextButton(
-                      onPressed: initializeSdk, child: Text("Initialize")),
-                  TextButton(onPressed: stop, child: Text("Stop")),
-                  TextButton(
-                      onPressed: syncDeviceSettings, child: Text("Sync")),
-                ],
-                alignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-              ),
-            ],
+            ),
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => initHyperTrack(),
+                  child: const Text("Initialize SDK"),
+                ),
+                TextButton(
+                  onPressed: () => _hypertrackFlutterPlugin?.startTracking(),
+                  child: const Text("Start Tracking"),
+                ),
+                TextButton(
+                  onPressed: () => _hypertrackFlutterPlugin?.stopTracking(),
+                  child: const Text("Stop Tracking"),
+                ),
+                TextButton(
+                  onPressed: () async =>
+                      _hypertrackFlutterPlugin!.syncDeviceSettings(),
+                  child: const Text("Sync Device Settings"),
+                ),
+              ],
+            ),
+          ],
+        ),
+        bottomNavigationBar: Container(
+          color: Theme.of(context).primaryColor,
+          child: ListTile(
+            title: Text(
+              "Tracking Status:",
+              style: const TextStyle(color: Colors.white),
+            ),
+            trailing: StreamBuilder(
+              builder: (BuildContext context,
+                  AsyncSnapshot<TrackingStateChange> snapshot) {
+                switch (snapshot.data) {
+                  case TrackingStateChange.authError:
+                    return Text("Authentication Failed.");
+                  case TrackingStateChange.start:
+                    return Text("Active");
+
+                  case TrackingStateChange.stop:
+                    return Text("Stopped");
+
+                  case TrackingStateChange.permissionsDenied:
+                    return Text("Permission Denied");
+
+                  case TrackingStateChange.locationDisabled:
+                    return Text("Location service disabled");
+
+                  case TrackingStateChange.invalidToken:
+                    return Text("Invalid Token");
+
+                  case TrackingStateChange.networkError:
+                    return Text("Network Error");
+
+                  case TrackingStateChange.unknownError:
+                    return Text("Unknown Error");
+                  default:
+                    return _hypertrackFlutterPlugin == null ? Text("Not Iniialized") :  Text("Unknown State");
+                }
+              },
+              stream: _hypertrackFlutterPlugin?.onTrackingStateChanged.asBroadcastStream(),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void initHyperTrack() async {
+    _hypertrackFlutterPlugin =
+        await HyperTrack().initialize(_publishableKey.text);
   }
 }
