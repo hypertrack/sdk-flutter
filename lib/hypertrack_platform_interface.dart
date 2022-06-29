@@ -34,9 +34,7 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
     if (Platform.isIOS) {
       return iOSChannelHypertrack(_methodChannel, _eventChannel);
     }
-    throw Exception("The current Platform ${Platform.operatingSystem} is not "
-        "yet "
-        "supported");
+    throw Exception("The current Platform ${Platform.operatingSystem} is not yet supported");
   }
 
   static HypertrackPlatformInterface get instance =>
@@ -49,8 +47,6 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
     PlatformInterface.verifyToken(newInstance, _token);
     instance = newInstance;
   }
-
-  void enableDebugLogging() async => instance.enableDebugLogging();
 
   Future<HyperTrack> initialize(String publishableKey) async {
     const MethodChannel methodChannel =
