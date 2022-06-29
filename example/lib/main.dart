@@ -80,15 +80,6 @@ class _MyAppState extends State<MyApp> {
             ),
           ],
         ),
-        bottomNavigationBar: Container(
-          color: Theme.of(context).primaryColor,
-          child: ListTile(
-            title: Text(
-              "Tracking Status:",
-              style: const TextStyle(color: Colors.white),
-            ),
-           ),
-        ),
       ),
     );
   }
