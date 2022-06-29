@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hypertrack_plugin/const/constants.dart';
 import 'package:hypertrack_plugin/hypertrack.dart';
 
 void main() {
@@ -17,18 +16,13 @@ class _MyAppState extends State<MyApp> {
   HyperTrack _hypertrackFlutterPlugin = HyperTrack();
   late TextEditingController _publishableKey;
   late TextEditingController _deviceName;
-  late TextEditingController _deviceMetaData;
-
-  bool? _isRunning;
 
   @override
   void initState() {
     super.initState();
     _publishableKey = TextEditingController(
-        text: "KdoMYSdE4MFWHEjdOO32xGP2jpmeyV0A0BPtRXUEfUiZfhPm5IfA5j"
-            "NmQWJZ7GfQBhUtE8SpdoRbtndPGyGofA");
+        text: '!!-Place your public key here-!!');
     _deviceName = TextEditingController(text: "Lightning");
-    _deviceMetaData = TextEditingController(text: "Metadata");
   }
 
   @override
@@ -70,22 +64,17 @@ class _MyAppState extends State<MyApp> {
                   child: const Text("Initialize SDK"),
                 ),
                 TextButton(
-                  onPressed: () => _hypertrackFlutterPlugin?.start(),
+                  onPressed: () => _hypertrackFlutterPlugin.start(),
                   child: const Text("Start Tracking"),
                 ),
                 TextButton(
-                  onPressed: () => _hypertrackFlutterPlugin?.stop(),
+                  onPressed: () => _hypertrackFlutterPlugin.stop(),
                   child: const Text("Stop Tracking"),
                 ),
                 TextButton(
                   onPressed: () async =>
-                      _hypertrackFlutterPlugin?.syncDeviceSettings(),
+                      _hypertrackFlutterPlugin.syncDeviceSettings(),
                   child: const Text("Sync Device Settings"),
-                ),
-                TextButton(
-                  onPressed: () async =>
-                      _hypertrackFlutterPlugin?.enableDebugLogging(),
-                  child: const Text("Enable Debugging"),
                 ),
               ],
             ),
