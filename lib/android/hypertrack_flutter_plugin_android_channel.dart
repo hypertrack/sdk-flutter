@@ -56,4 +56,9 @@ class AndroidChannelHypertrack extends HypertrackPlatformInterface {
   @override
   syncDeviceSettings() async =>
       await _methodChannel.invokeMethod("syncDeviceSettings");
+  
+  @override
+  void enableDebugLogging() async {
+    await _methodChannel.invokeMethod("enableDebugLogging");
+  }
 }
