@@ -70,11 +70,11 @@ class _MyAppState extends State<MyApp> {
                   child: const Text("Initialize SDK"),
                 ),
                 TextButton(
-                  onPressed: () => _hypertrackFlutterPlugin?.startTracking(),
+                  onPressed: () => _hypertrackFlutterPlugin?.start(),
                   child: const Text("Start Tracking"),
                 ),
                 TextButton(
-                  onPressed: () => _hypertrackFlutterPlugin?.stopTracking(),
+                  onPressed: () => _hypertrackFlutterPlugin?.stop(),
                   child: const Text("Stop Tracking"),
                 ),
                 TextButton(

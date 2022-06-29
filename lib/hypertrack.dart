@@ -55,6 +55,7 @@ class HyperTrack {
   void setDeviceMetadata(Map<String, Object> data) =>
       _pluginInterface.setDeviceMetadata(data);
 
+
   void enableDebugLogging() async => _pluginInterface.enableDebugLogging();
 
   /// Triggers tracking start.
@@ -62,12 +63,12 @@ class HyperTrack {
   /// This isn't always result in SDK tracking, as missing permissions or disabled
   /// geolocation sensors could lead to a tracking outage. Use [onTrackingStateChanged]
   /// stream to get the actual state details.
-  startTracking() async {
+  start() async {
     await _pluginInterface.startTracking();
   }
 
   /// Stops tracking.
-  stopTracking() async {
+  stop() async {
     await _pluginInterface.stopTracking();
   }
 

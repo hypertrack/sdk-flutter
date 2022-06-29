@@ -10,6 +10,7 @@ import 'const/constants.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 abstract class HypertrackPlatformInterface extends PlatformInterface {
+  static const String _methodUnavailableError = "Method not found for the current platform";
   static const MethodChannel _methodChannel =
       MethodChannel('sdk.hypertrack.com/handle');
 
@@ -67,31 +68,31 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
 
   /// UnimplementedError for setDeviceName method.
   void setDeviceName(String name) =>
-      throw UnimplementedError("Method not found for the current instance");
+      throw UnimplementedError(_methodUnavailableError);
 
   /// UnimplementedError for isRunning method.
   Future<bool> isRunning() =>
-      throw UnimplementedError("Method not found for the current instance");
+      throw UnimplementedError(_methodUnavailableError);
 
   /// UnimplementedError for startTracking method.
   startTracking() =>
-      throw UnimplementedError("Method not found for the current instance");
+      throw UnimplementedError(_methodUnavailableError);
 
   /// UnimplementedError for stopTracking method.
   stopTracking() =>
-      throw UnimplementedError("Method not found for the current instance");
+      throw UnimplementedError(_methodUnavailableError);
 
   /// UnimplementedError for addGeotag method.
   addGeotag(data, expectedLocation) =>
-      throw UnimplementedError("Method not found for the current instance");
+      throw UnimplementedError(_methodUnavailableError);
 
   /// UnimplementedError for allowMockLocations method.
   allowMockLocations(allow) =>
-      throw UnimplementedError("Method not found for the current instance");
+      throw UnimplementedError(_methodUnavailableError);
 
   /// UnimplementedError for setDeviceMetadata method.
   setDeviceMetadata(data) =>
-      throw UnimplementedError("Method not found for the current instance");
+      throw UnimplementedError(_methodUnavailableError);
 
   /// This method checks with HyperTrack cloud whether to start or stop tracking.
   ///
