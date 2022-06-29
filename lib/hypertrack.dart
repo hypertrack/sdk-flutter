@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:hypertrack_plugin/hypertrack_platform_interface.dart';
 
 import 'const/constants.dart';
@@ -55,8 +56,11 @@ class HyperTrack {
   void setDeviceMetadata(Map<String, Object> data) =>
       _pluginInterface.setDeviceMetadata(data);
 
-
-  void enableDebugLogging() async => _pluginInterface.enableDebugLogging();
+  /// Enable debugging.
+  void enableDebugLogging() async {
+    const MethodChannel('sdk.hypertrack.com/handle')
+        .invokeMethod('enableDebugLogging');
+  }
 
   /// Triggers tracking start.
   ///
@@ -92,5 +96,6 @@ class HyperTrack {
     return _pluginInterface.isRunningStatus;
   }
 
-  Stream<TrackingStateChange> get onTrackingStateChanged => _pluginInterface.onTrackingStateChanged;
+  Stream<TrackingStateChange> get onTrackingStateChanged =>
+      _pluginInterface.onTrackingStateChanged;
 }

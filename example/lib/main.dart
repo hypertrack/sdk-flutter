@@ -14,7 +14,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  HyperTrack? _hypertrackFlutterPlugin;
+  HyperTrack _hypertrackFlutterPlugin = HyperTrack();
   late TextEditingController _publishableKey;
   late TextEditingController _deviceName;
   late TextEditingController _deviceMetaData;
@@ -79,8 +79,13 @@ class _MyAppState extends State<MyApp> {
                 ),
                 TextButton(
                   onPressed: () async =>
-                      _hypertrackFlutterPlugin!.syncDeviceSettings(),
+                      _hypertrackFlutterPlugin?.syncDeviceSettings(),
                   child: const Text("Sync Device Settings"),
+                ),
+                TextButton(
+                  onPressed: () async =>
+                      _hypertrackFlutterPlugin?.enableDebugLogging(),
+                  child: const Text("Enable Debugging"),
                 ),
               ],
             ),
@@ -93,39 +98,7 @@ class _MyAppState extends State<MyApp> {
               "Tracking Status:",
               style: const TextStyle(color: Colors.white),
             ),
-            trailing: StreamBuilder(
-              builder: (BuildContext context,
-                  AsyncSnapshot<TrackingStateChange> snapshot) {
-                switch (snapshot.data) {
-                  case TrackingStateChange.authError:
-                    return Text("Authentication Failed.");
-                  case TrackingStateChange.start:
-                    return Text("Active");
-
-                  case TrackingStateChange.stop:
-                    return Text("Stopped");
-
-                  case TrackingStateChange.permissionsDenied:
-                    return Text("Permission Denied");
-
-                  case TrackingStateChange.locationDisabled:
-                    return Text("Location service disabled");
-
-                  case TrackingStateChange.invalidToken:
-                    return Text("Invalid Token");
-
-                  case TrackingStateChange.networkError:
-                    return Text("Network Error");
-
-                  case TrackingStateChange.unknownError:
-                    return Text("Unknown Error");
-                  default:
-                    return _hypertrackFlutterPlugin == null ? Text("Not Iniialized") :  Text("Unknown State");
-                }
-              },
-              stream: _hypertrackFlutterPlugin?.onTrackingStateChanged.asBroadcastStream(),
-            ),
-          ),
+           ),
         ),
       ),
     );
