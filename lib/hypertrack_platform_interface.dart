@@ -49,7 +49,8 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
   }
 
   Future<HyperTrack> initialize(String publishableKey) async {
-    const MethodChannel methodChannel =
+    try {
+      const MethodChannel methodChannel =
         MethodChannel('sdk.hypertrack.com/handle');
     String? result =
         await methodChannel.invokeMethod<String>("initialize", publishableKey);
@@ -57,6 +58,11 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
       throw Exception(result);
     }
     return HyperTrack();
+    }
+    catch (e) {
+      print(e);
+      throw e;
+    }
   }
 
   /// Returns string that uniquely identifies device in HyperTrack platform.

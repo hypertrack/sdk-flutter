@@ -11,7 +11,7 @@ class iOSChannelHypertrack extends HypertrackPlatformInterface {
   final MethodChannel _methodChannel;
 
   final methodChannel =
-      const MethodChannel('sdk.hypertrack.com/method_channel');
+      const MethodChannel('sdk.hypertrack.com/handle');
 
   /// The event channel used to interact with the native platform.
   final EventChannel _eventChannel;
