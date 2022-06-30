@@ -60,7 +60,6 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
     return HyperTrack();
     }
     catch (e) {
-      print(e);
       throw e;
     }
   }

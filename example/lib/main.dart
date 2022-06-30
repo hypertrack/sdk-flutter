@@ -21,7 +21,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _publishableKey = TextEditingController(
-        text: '!!-Place your public key here-!!');
+        text: "KdoMYSdE4MFWHEjdOO32xGP2jpmeyV0A0BPtRXUEfUiZfhPm5IfA5j"
+            "NmQWJZ7GfQBhUtE8SpdoRbtndPGyGofA");
     _deviceName = TextEditingController(text: "Lightning");
   }
 
@@ -49,7 +50,7 @@ class _MyAppState extends State<MyApp> {
                   labelText: "Device Name",
                   suffixIcon: TextButton(
                     onPressed: () => _hypertrackFlutterPlugin
-                        ?.setDeviceName(_deviceName.text),
+                        .setDeviceName(_deviceName.text),
                     child: const Text("Update"),
                   ),
                 ),
