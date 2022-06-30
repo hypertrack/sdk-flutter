@@ -10,14 +10,12 @@ class iOSChannelHypertrack extends HypertrackPlatformInterface {
   /// The method channel used to interact with the native platform.
   final MethodChannel _methodChannel;
 
-  final methodChannel =
-      const MethodChannel('sdk.hypertrack.com/handle');
+  final methodChannel = const MethodChannel('sdk.hypertrack.com/handle');
 
   /// The event channel used to interact with the native platform.
   final EventChannel _eventChannel;
 
-  final eventChannel =
-      const EventChannel('sdk.hypertrack.com/trackingState');
+  final eventChannel = const EventChannel('sdk.hypertrack.com/trackingState');
 
   iOSChannelHypertrack(this._methodChannel, this._eventChannel) : super();
 
@@ -56,5 +54,13 @@ class iOSChannelHypertrack extends HypertrackPlatformInterface {
 
   @override
   setDeviceMetadata(data) async =>
-      await _methodChannel.invokeMethod("setDeviceMetadata");
+      await _methodChannel.invokeMethod("setDeviceMetadata", data);
+
+  @override
+  setDeviceName(data) async =>
+      await _methodChannel.invokeMethod('setDeviceName', data);
+
+  @override
+  syncDeviceSettings() async =>
+      await _methodChannel.invokeMethod("syncDeviceSettings");
 }
