@@ -65,7 +65,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
         HyperTrackPlugin().onAttachedToEngine(context, messenger)
       } ?: run {
         Log.i(TAG, "failedRegister")
-        result.error("FAILED_REGISTER", "Activity was null", null)
+        result.error("FAILED_REGISTER", "Internal Error: registerWith(registrar:) - registrar.activity() is null", null)
       }
     }
   }  
