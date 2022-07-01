@@ -80,7 +80,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
 
     val sdk = sdkInstance
     if (sdk == null) {
-      result.error("NOT_INITIALIZED", "Internal Error: onMethodCall(call:,result:) - sdkInstance is null", null)
+      result.error("NOT_INITIALIZED", "Internal Error: onMethodCall(${call.method}) - sdkInstance is null", null)
       return
     }
 
