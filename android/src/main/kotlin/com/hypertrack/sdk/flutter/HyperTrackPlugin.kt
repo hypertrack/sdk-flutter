@@ -60,12 +60,12 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     fun registerWith(registrar: Registrar) {
       Log.i(TAG, "registerWith")
 
-      val context = registrar.activity()!!.applicationContext
-      val messenger = registrar.messenger()
-      HyperTrackPlugin().onAttachedToEngine(context, messenger)
+      registrar.activity()?.applicationContext?.let { context -> 
+        val messenger = registrar.messenger()
+        HyperTrackPlugin().onAttachedToEngine(context, messenger)
+      }
     }
-  }
-
+  }  
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     if (call.method == "initialize") {
       initialize(call.arguments(), result)
@@ -94,7 +94,6 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       else -> result.notImplemented()
 
     }
-
   }
 
   private var sdkInstance : HyperTrack? = null
