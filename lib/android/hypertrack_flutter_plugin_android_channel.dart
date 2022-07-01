@@ -39,7 +39,7 @@ class AndroidChannelHypertrack extends HypertrackPlatformInterface {
 
   @override
   addGeotag(data, expectedLocation) async =>
-      await _methodChannel.invokeMethod("addGeotag");
+      await _methodChannel.invokeMethod("addGeotag", data);
 
   @override
   allowMockLocations(allow) async =>
