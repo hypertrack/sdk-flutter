@@ -15,8 +15,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   HyperTrack _hypertrackFlutterPlugin = HyperTrack();
-  final String _publishableKey = "KdoMYSdE4MFWHEjdOO32xGP2jpmeyV0A0BPtRXUEfUiZfhPm5IfA5j"
-      "NmQWJZ7GfQBhUtE8SpdoRbtndPGyGofA";
+  final String _publishableKey = "<- Place Public Key Here ->";
   final String _deviceName = 'Lightning';
   String _result = 'Not initialized';
   bool isRunning = false;
@@ -96,6 +95,7 @@ class _MyAppState extends State<MyApp> {
   void updateButtonState() async {
     final temp = await _hypertrackFlutterPlugin.isRunning();
     isRunning = temp;
+    setState(() {});
   }
 }
 
