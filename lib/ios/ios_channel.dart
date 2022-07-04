@@ -48,7 +48,7 @@ class iOSChannelHypertrack extends HypertrackPlatformInterface {
 
   @override
   addGeotag(data, expectedLocation) async =>
-      await _methodChannel.invokeMethod("addGeotag");
+      await _methodChannel.invokeMethod("addGeotag", data);
 
   @override
   allowMockLocations(allow) async =>
@@ -56,5 +56,18 @@ class iOSChannelHypertrack extends HypertrackPlatformInterface {
 
   @override
   setDeviceMetadata(data) async =>
-      await _methodChannel.invokeMethod("setDeviceMetadata");
+      await _methodChannel.invokeMethod("setDeviceMetadata", data);
+
+  @override
+  setDeviceName(data) async =>
+      await _methodChannel.invokeMethod('setDeviceName', data);
+
+  @override
+  syncDeviceSettings() async =>
+      await _methodChannel.invokeMethod("syncDeviceSettings");
+  
+  @override
+  void enableDebugLogging() async {
+    await _methodChannel.invokeMethod("enableDebugLogging");
+  }
 }

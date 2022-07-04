@@ -15,7 +15,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   HyperTrack _hypertrackFlutterPlugin = HyperTrack();
-  final String _publishableKey = "<- Place Public Key Here ->";
+  final String _publishableKey = "<-- Place public key here -->";
   final String _deviceName = 'Lightning';
   String _result = 'Not initialized';
   bool isRunning = false;
