@@ -89,13 +89,12 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       "isRunning" -> result.success(sdk.isRunning)
       "start" -> start(result, sdk)
       "stop" -> stop(result, sdk)
-      "addGeotag" -> call.arguments()?.let { arguments -> addGeotag(call.arguments(), result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
+      "addGeotag" -> call.arguments<Map<String, Any>?>()?.let { arguments -> addGeotag(call.arguments(), result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
       "allowMockLocations" -> allowMockLocations(result, sdk)
-      "setDeviceName" -> call.arguments()?.let { arguments -> setDeviceName(arguments, result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
-      "setDeviceMetadata" -> call.arguments()?.let { arguments -> setDeviceName(arguments, result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
+      "setDeviceName" -> call.arguments<String>()?.let { arguments -> setDeviceName(arguments, result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
+      "setDeviceMetadata" -> call.arguments<Map<String, Any>?>()?.let { arguments -> setDeviceName(arguments, result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
       "syncDeviceSettings" -> syncDeviceSettings(result, sdk)
       else -> result.notImplemented()
-
     }
   }
 
