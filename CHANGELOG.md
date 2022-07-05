@@ -2,6 +2,10 @@
 
 ## [0.3.0] - 2021-11-17
 #### Changed
+- Null type safety fixes on Android
+
+## [0.3.0] - 2021-11-17
+#### Changed
 - Android SDK updated to v5.4.5
 
 ## [0.2.1] - 2021-07-07
