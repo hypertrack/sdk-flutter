@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.1] - 2022-07-5
+#### Fixed
+- Android null type safety plugin fixes
+
 ## [0.3.0] - 2021-11-17
 #### Changed
 - Android SDK updated to v5.4.5
