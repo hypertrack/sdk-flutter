@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hypertrack_plugin/const/constants.dart';
 import 'package:hypertrack_plugin/hypertrack.dart';
 
 void main() {
@@ -14,79 +15,103 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   HyperTrack _hypertrackFlutterPlugin = HyperTrack();
-  late TextEditingController _publishableKey;
-  late TextEditingController _deviceName;
+  final String _publishableKey = "<-- Place public key here -->";
+  final String _deviceName = 'Lightning';
+  String _result = 'Not initialized';
+  bool isRunning = false;
 
   @override
   void initState() {
     super.initState();
-    _publishableKey = TextEditingController(
-        text: "KdoMYSdE4MFWHEjdOO32xGP2jpmeyV0A0BPtRXUEfUiZfhPm5IfA5j"
-            "NmQWJZ7GfQBhUtE8SpdoRbtndPGyGofA");
-    _deviceName = TextEditingController(text: "Lightning");
+    initHyperTrack();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('HyperTrack Quickstart'),
-          centerTitle: true,
-        ),
-        body: ListView(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                  ),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  labelText: "Device Name",
-                  suffixIcon: TextButton(
-                    onPressed: () => _hypertrackFlutterPlugin
-                        .setDeviceName(_deviceName.text),
-                    child: const Text("Update"),
-                  ),
-                ),
-                controller: _deviceName,
-              ),
-            ),
-            ButtonBar(
-              alignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () => initHyperTrack(),
-                  child: const Text("Initialize SDK"),
-                ),
-                TextButton(
-                  onPressed: () => _hypertrackFlutterPlugin.start(),
-                  child: const Text("Start Tracking"),
-                ),
-                TextButton(
-                  onPressed: () => _hypertrackFlutterPlugin.stop(),
-                  child: const Text("Stop Tracking"),
-                ),
-                TextButton(
-                  onPressed: () async =>
-                      _hypertrackFlutterPlugin.syncDeviceSettings(),
-                  child: const Text("Sync Device Settings"),
-                ),
-              ],
-            ),
-          ],
-        ),
+      theme: ThemeData(
+        colorScheme: const ColorScheme.light(primary: Colors.green),
       ),
+      home: Scaffold(
+          appBar: AppBar(
+            title: const Text('HyperTrack Quickstart'),
+            centerTitle: true,
+          ),
+          body: ListView(
+            children: [
+              SizedBox(height: 10),
+              ListTile(
+                leading: const Text("Device name"),
+                trailing: Text(
+                  _deviceName,
+                ),
+              ),
+              ButtonBar(
+                alignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: isRunning ? Colors.red : Colors.green),
+                    onPressed: () {
+                      isRunning
+                          ? _hypertrackFlutterPlugin.stop()
+                          : _hypertrackFlutterPlugin.start();
+                      setState(() {});
+                    },
+                    child:
+                    Text(isRunning ? "Stop Tracking" : "Start Tracking"),
+
+
+                  ),
+                  ElevatedButton(
+                    onPressed: () async =>
+                        _hypertrackFlutterPlugin.syncDeviceSettings(),
+                    child: const Text("Sync Settings"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          bottomNavigationBar: ListTile(
+            leading: Text("Status"),
+            trailing: Text(_result),
+          )),
     );
   }
 
   void initHyperTrack() async {
-    _hypertrackFlutterPlugin =
-        await HyperTrack().initialize(_publishableKey.text);
+    _hypertrackFlutterPlugin = await HyperTrack().initialize(_publishableKey);
+    _hypertrackFlutterPlugin.setDeviceName(_deviceName);
+    _hypertrackFlutterPlugin.setDeviceMetadata({"source": "flutter sdk"});
+    _hypertrackFlutterPlugin.onTrackingStateChanged
+        .listen((TrackingStateChange event) {
+      if (mounted) {
+        updateButtonState();
+        _result = getTrackingStatus(event);
+        setState(() {});
+      }
+    });
   }
+
+  void updateButtonState() async {
+    final temp = await _hypertrackFlutterPlugin.isRunning();
+    isRunning = temp;
+    setState(() {});
+  }
+}
+
+String getTrackingStatus (TrackingStateChange event) {
+  Map<TrackingStateChange, String> statusMap = {
+    TrackingStateChange.start: "Tracking Started",
+    TrackingStateChange.stop: "Tracking Stop",
+    TrackingStateChange.unknownError: "Unknown Error",
+    TrackingStateChange.authError: "Authentication Error",
+    TrackingStateChange.networkError: "Network Error",
+    TrackingStateChange.invalidToken: "Invalid Token",
+    TrackingStateChange.locationDisabled: "Location Disabled",
+    TrackingStateChange.permissionsDenied: "Permissions Denied",
+  };
+  if (statusMap[event] == null) {
+    throw Exception("Unexpected null value in getTrackingStatus");
+  }
+  return statusMap[event]!;
 }
