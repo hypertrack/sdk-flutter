@@ -1,8 +1,13 @@
 # Changelog
 
+## [0.4.1] - 2022-07-19
+#### Changed
+- Android SDK updated to 6.2.0
+- iOS SDK updated to 4.12.3
+
 ## [0.4.0] - 2022-07-07
 #### Changed
-- Android SDK updated to v6.1.4
+- Android SDK updated to 6.1.4
 
 ## [0.3.1] - 2022-07-05
 #### Fixed
@@ -10,7 +15,7 @@
 
 ## [0.3.0] - 2021-11-17
 #### Changed
-- Android SDK updated to v5.4.5
+- Android SDK updated to 5.4.5
 
 ## [0.2.1] - 2021-07-07
 #### Changed
@@ -20,7 +25,7 @@
 #### Added
 - Dart nullability support added to comply with Flutter 2 requirements
 #### Changed
-- Android SDK updated to v5.2.5
+- Android SDK updated to 5.2.5
 
 ## [0.1.9] - 2021-05-07
 #### Changed
