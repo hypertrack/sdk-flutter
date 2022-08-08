@@ -9,3 +9,7 @@ pubspec.lock
 .gradle/
 local.properties
 example/pubspec.lock
+
+# ignoring generated docs, you need to copy them in docs/ folder
+# use `just docs` command
+doc

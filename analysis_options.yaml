@@ -1,6 +1,7 @@
 analyzer:
-  #strong-mode:
-  #  implicit-casts: false
+  language:
+    strict-inference: true
+    strict-raw-types: true
 
 linter:
   rules:
