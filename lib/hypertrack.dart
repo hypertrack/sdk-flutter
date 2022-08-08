@@ -1,101 +1,187 @@
+import 'dart:ffi';
+
 import 'package:flutter/services.dart';
-import 'package:hypertrack_plugin/hypertrack_platform_interface.dart';
+import 'package:hypertrack_plugin/data_types/json.dart';
+import 'package:hypertrack_plugin/data_types/location_error.dart';
+import 'package:hypertrack_plugin/data_types/result.dart';
+import 'package:hypertrack_plugin/src/sdk_method.dart';
+import 'package:hypertrack_plugin/src/serialization/availability.dart';
+import 'package:hypertrack_plugin/src/serialization/device_id.dart';
+import 'package:hypertrack_plugin/src/serialization/device_name.dart';
+import 'package:hypertrack_plugin/src/serialization/geotag.dart';
+import 'package:hypertrack_plugin/src/serialization/hypertrack_error.dart';
+import 'package:hypertrack_plugin/src/serialization/location_result.dart';
+import 'package:hypertrack_plugin/src/serialization/metadata.dart';
+import 'package:hypertrack_plugin/src/serialization/tracking_state.dart';
 
-import 'const/constants.dart';
+import 'data_types/hypertrack_error.dart';
+import 'data_types/location.dart';
 
-/// Plugin allows you to use your application as a location data source
-/// feeding HyperTrack platform.
+/// This plugin allows you to use Hypertrack SDK for Flutter apps to get realtime device location
 class HyperTrack {
-  final HypertrackPlatformInterface _pluginInterface =
-      HypertrackPlatformInterface.instance;
+  HyperTrack._();
 
-  /// Use this method to get the SDK instance.
-  ///
-  /// SDK will connect to the account identified by [publishableKey].
-  Future<HyperTrack> initialize(String publishableKey) =>
-      _pluginInterface.initialize(publishableKey);
-
-  /// Returns string that uniquely identifies device in HyperTrack platform.
-  Future<String> getDeviceId() async =>
-      HypertrackPlatformInterface.instance.getDeviceId();
-
-  /// Sets current device name, that can be used for easier dashboard navigation.
-  ///
-  /// This setter is intended to be used for static data, that doesn't change
-  /// during tracking sessions, as no SLA regarding this data propagation
-  /// provided. In case of frequent changes, it is possible, that intermediate
-  /// states could be lost, so if more real-time responsiveness is required
-  /// it is recommended to use [addGeotag] for passing that data.
-  void setDeviceName(String deviceName) async =>
-      _pluginInterface.setDeviceName(deviceName);
-
-  /// Returns `true` if tracking was started.
-  ///
-  /// This doesn't actually means that SDK collecting location data, but only
-  /// allows you to check the current state of tracking state switch.
-  /// For details on whether tracking actually happens or not check [onTrackingStateChanged] events.
-  Future<bool> isRunning() async {
-    return await _pluginInterface.isRunning();
+  /// Creates an SDK instance
+  static Future<HyperTrack> initialize(
+    String publishableKey, {
+    bool? requireBackgroundTrackingPermission,
+    bool? loggingEnabled,
+    bool? allowMockLocations,
+  }) {
+    return _invokeSdkVoidMethod(SdkMethod.initialize, {
+      _keyPublishableKey: publishableKey,
+      _keyRequireBackgroundTrackingPermission:
+          requireBackgroundTrackingPermission ??= false,
+      _keyLoggingEnabled: loggingEnabled ??= false,
+      _keyAllowMockLocations: allowMockLocations ??= false
+    }).then((value) => HyperTrack._());
   }
 
-  /// This method checks with HyperTrack cloud whether to start or stop tracking.
-  ///
-  /// Tracking starts when Devices or Trips API is used to either to start
-  /// the device tracking or when a trip is created for this device.
-  void syncDeviceSettings() => _pluginInterface.syncDeviceSettings();
-
-  /// Sets current device data.
-  ///
-  /// The data can be used for easier dashboard navigation or grouping of
-  /// location data in tag groups style.
-  /// This setter is intended to be used for static data, that doesn't change
-  /// during tracking sessions, as no SLA regarding this data propagation provided.
-  /// In case of frequent changes, it is possible, that intermediate states
-  /// could be lost, so if more real-time responsiveness is required it is
-  /// recommended to use [addGeotag] for passing that data.
-  void setDeviceMetadata(Map<String, Object> data) =>
-      _pluginInterface.setDeviceMetadata(data);
-
-  /// Enable debugging.
-  void enableDebugLogging() async {
-    const MethodChannel('sdk.hypertrack.com/handle')
-        .invokeMethod('enableDebugLogging');
+  /// Returns a string that is used to uniquely identify the device
+  Future<String> get deviceId async {
+    return _invokeSdkMethod(SdkMethod.getDeviceID).then((value) {
+      return deserializeDeviceId(value);
+    });
   }
 
-  /// Triggers tracking start.
-  ///
-  /// This isn't always result in SDK tracking, as missing permissions or disabled
-  /// geolocation sensors could lead to a tracking outage. Use [onTrackingStateChanged]
-  /// stream to get the actual state details.
-  start() async {
-    await _pluginInterface.startTracking();
+  /// Reflects the tracking intent for the device
+  Future<bool> get isTracking async {
+    return _invokeSdkMethod(SdkMethod.isTracking).then((value) {
+      return deserializeIsTracking(value);
+    });
   }
 
-  /// Stops tracking.
-  stop() async {
-    await _pluginInterface.stopTracking();
+  /// Reflects availability of the device for the Nearby search
+  Future<bool> get isAvailable async {
+    return _invokeSdkMethod(SdkMethod.isAvailable).then((value) {
+      return deserializeAvailability(value);
+    });
   }
 
-  /// Allows you to use location mocking software (e.g. for development).
-  ///
-  /// Mock locations are ignored by HyperTrack SDK by default.
-  allowMockLocations([bool allow = false]) =>
-      _pluginInterface.allowMockLocations(allow);
+  /// Expresses an intent to start location tracking for the device
+  void startTracking() => _invokeSdkVoidMethod(SdkMethod.startTracking);
 
-  /// Adds geotag with configurable payload.
-  ///
-  /// Please, bear in mind that this will be serialized as json so passing in
-  /// recursive data structure could lead to unpredictable results.
-  /// [expectedLocation] is a place, where action is supposed to occur.
-  /// Look [ExpectedLocation] class options for the details.
-  Future addGeotag(Map<String, Object> data,
-          [Location? expectedLocation]) async =>
-      _pluginInterface.addGeotag(data, expectedLocation);
+  /// Stops location tracking immediately
+  void stopTracking() => _invokeSdkVoidMethod(SdkMethod.stopTracking);
 
-  Stream<bool> getRunnigStatus() {
-    return _pluginInterface.isRunningStatus;
+  /// Sets the availability of the device for the Nearby search
+  void setAvailability(bool available) {
+    _invokeSdkVoidMethod(
+        SdkMethod.setAvailability, serializeAvailability(available));
   }
 
-  Stream<TrackingStateChange> get onTrackingStateChanged =>
-      _pluginInterface.onTrackingStateChanged;
+  
+  /// Sets the name for the device
+  void setName(String name) {
+    _invokeSdkVoidMethod(SdkMethod.setName, serializeDeviceName(name));
+  }
+  
+  /// Sets the metadata for the device
+  void setMetadata(JSONObject data) {
+    _invokeSdkVoidMethod(SdkMethod.setMetadata, serializeMetadata(data));
+  }
+
+  /// Syncs device state with HyperTrack servers
+  void sync() {
+    _invokeSdkVoidMethod(SdkMethod.sync);
+  }
+
+  /// Adds a new geotag
+  Future<Result<Location, LocationError>> addGeotag(JSONObject data) {
+    return _invokeSdkMethod(SdkMethod.addGeotag, serializeGeotag(data))
+        .then((value) {
+      return deserializeLocationResult(value);
+    });
+  }
+
+  /// Reflects the current location of the user or an outage reason
+  Future<Result<Location, LocationError>> get location async {
+    return _invokeSdkMethod(SdkMethod.getLocation).then((value) {
+      return deserializeLocationResult(value);
+    });
+  }  
+
+  /// Subscribe to tracking intent changes
+  Stream<bool> get onTrackingChanged {
+    return _trackingStateEventChannel.receiveBroadcastStream().map((event) {
+      return deserializeIsTracking(event);
+    });
+  }
+
+  /// Subscribe to availability changes
+  Stream<bool> get onAvailabilityChanged {
+    return _availabilityEventChannel.receiveBroadcastStream().map((event) {
+      return deserializeAvailability(event);
+    });
+  }
+
+  /// Subscribe to tracking errors
+  Stream<Set<HyperTrackError>> get onError {
+    return _errorEventChannel.receiveBroadcastStream().map((event) {
+      return deserializeTrackingErrors(event);
+    });
+  }
+
+  /// @nodoc
+  @override
+  String toString() {
+    return super.toString();
+  }
+
+  /// @nodoc
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    return super.noSuchMethod(invocation);
+  }
+
+  /// @nodoc
+  @override
+  bool operator ==(Object other) {
+    return super == other;
+  }
+
+  /// @nodoc
+  @override
+  int get hashCode {
+    return super.hashCode;
+  }
+
+  /// @nodoc
+  @override
+  Type get runtimeType {
+    return super.runtimeType;
+  }
+}
+
+const _channelPrefix = 'sdk.hypertrack.com';
+const _keyPublishableKey = 'publishableKey';
+const _keyRequireBackgroundTrackingPermission =
+    'requireBackgroundTrackingPermission';
+const _keyLoggingEnabled = 'loggingEnabled';
+const _keyAllowMockLocations = 'allowMockLocations';
+
+// channel for invoking SDK methods
+const _methodChannel = MethodChannel('$_channelPrefix/methods');
+
+// channels for receiving events from the SDK
+const EventChannel _trackingStateEventChannel =
+    EventChannel('$_channelPrefix/tracking');
+const EventChannel _availabilityEventChannel =
+    EventChannel('$_channelPrefix/availability');
+const EventChannel _errorEventChannel =
+    EventChannel('$_channelPrefix/errors');
+
+Future<T> _invokeSdkMethod<T>(SdkMethod method, [dynamic arguments]) {
+  return _methodChannel.invokeMethod(method.name, arguments).then((value) {
+    if (value == null) {
+      throw Exception("Unexpected null response for ${method.toString()}");
+    } else {
+      return value;
+    }
+  });
+}
+
+// we omit nullability check as void is encoded as null on the native side
+Future<void> _invokeSdkVoidMethod(SdkMethod method, [dynamic arguments]) {
+  return _methodChannel.invokeMethod(method.name, arguments);
 }
