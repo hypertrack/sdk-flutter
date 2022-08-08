@@ -5,10 +5,7 @@ import android.content.Context
 import android.location.Location
 import android.util.Log
 import androidx.annotation.NonNull
-import com.hypertrack.sdk.GeotagResult
-import com.hypertrack.sdk.HyperTrack
-import com.hypertrack.sdk.TrackingError
-import com.hypertrack.sdk.TrackingStateObserver
+import com.hypertrack.sdk.*
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
@@ -19,6 +16,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import java.io.Serializable
 import java.util.*
 
 /** HyperTrackPlugin */
@@ -27,6 +25,8 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
   private var applicationContext : Context? = null
   private var methodChannel : MethodChannel? = null
   private var eventChannel : EventChannel? = null
+  private var availabilityStream : EventChannel? = null
+
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     Log.i(TAG, "onAttachedToEngine")
@@ -41,6 +41,9 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     methodChannel?.setMethodCallHandler(this)
     eventChannel = EventChannel(messenger, HYPERTRACK_SDK_STATE_CHANNEL)
     eventChannel?.setStreamHandler(this)
+    availabilityStream = EventChannel(messenger, HYPERTRACK_SDK_AVAILABILTY_STREAM)
+    availabilityStream?.setStreamHandler(this)
+
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -49,12 +52,15 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     methodChannel = null
     eventChannel?.setStreamHandler(null)
     eventChannel = null
+    availabilityStream?.setStreamHandler(null)
+    availabilityStream = null
   }
 
   companion object {
     private const val TAG = "SdkPlugin"
     private const val HYPERTRACK_SDK_METHOD_CHANNEL = "sdk.hypertrack.com/handle"
     private const val HYPERTRACK_SDK_STATE_CHANNEL = "sdk.hypertrack.com/trackingState"
+    private const val HYPERTRACK_SDK_AVAILABILTY_STREAM = "sdk.hypertrack.com/availabilitySubscription"
 
     @JvmStatic
     fun registerWith(registrar: Registrar) {
@@ -82,10 +88,13 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       result.error("NOT_INITIALIZED", "Internal Error: onMethodCall(${call.method}) - sdkInstance is null", null)
       return
     }
-
+    
     when (call.method) {
       "getDeviceId" -> result.success(sdk.deviceID)
       "isRunning" -> result.success(sdk.isRunning)
+      "isTracking" -> result.success(sdk.isTracking)
+      "getAvailability" -> result.success(sdk.availability.toString())
+      "getLatestLocation" -> result.success(sdk.latestLocation)
       "start" -> start(result, sdk)
       "stop" -> stop(result, sdk)
       "addGeotag" -> call.arguments<Map<String, Any>>()?.let { arguments -> addGeotag(arguments, result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
@@ -99,7 +108,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
 
   private var sdkInstance : HyperTrack? = null
   private var stateListener : TrackingStateObserver.OnTrackingStateChangeListener? = null
-
+  private var availabilityListener: AvailabilityStateObserver.OnAvailabilityStateChangeListener? = null;
   private fun initialize(publishableKey : String?, result: Result) {
     Log.d(TAG, "getInstance for key $publishableKey")
     if (publishableKey == null) return
@@ -149,7 +158,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
   }
 
   private fun addGeotag(options : Map<String, Any>, result: Result, sdk : HyperTrack) {
-    val data = options["data"] as Map<String, java.io.Serializable>?
+    val data = options["data"] as Map<String, Serializable>?
     data?.let {
       val expectedLocation: Location? = (options["expectedLocation"] as Map<String, Any>?)?.let { params ->
         val lat = params["latitude"] as Double
@@ -223,7 +232,23 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       }
     }
 
+    availabilityListener = object : AvailabilityStateObserver.OnAvailabilityStateChangeListener {
+      override fun onError(p0: AvailabilityError?) {
+        events?.error("AVAILABILITY_ERROR", p0?.name, null)
+      }
+
+      override fun onAvailable() {
+        events?.success(true)
+      }
+
+      override fun onUnavailable() {
+        events?.success(true)
+      }
+
+    }
+
     sdk.addTrackingListener(stateListener)
+    sdk.addAvailabilityListener(availabilityListener)
 
   }
 

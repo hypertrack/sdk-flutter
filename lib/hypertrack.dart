@@ -38,6 +38,24 @@ class HyperTrack {
     return await _pluginInterface.isRunning();
   }
 
+  Future<bool> isTracking() async {
+    return await _pluginInterface.isTracking();
+  }
+
+  Future<Availability> getAvailability() async {
+    return await _pluginInterface.availability();
+  }
+
+  void setAvailability(Availability availability) async =>
+      _pluginInterface.setAvailability(availability);
+
+  getLatestLocation() async {
+    dynamic location = await _pluginInterface.getLatestLocation();
+    return location;
+
+    // Returning this -> Location[hypertrack-sdk 26.91****,75.75**** hAcc=20.0 et=0] in String
+  }
+
   /// This method checks with HyperTrack cloud whether to start or stop tracking.
   ///
   /// Tracking starts when Devices or Trips API is used to either to start
@@ -92,10 +110,19 @@ class HyperTrack {
           [Location? expectedLocation]) async =>
       _pluginInterface.addGeotag(data, expectedLocation);
 
-  Stream<bool> getRunnigStatus() {
-    return _pluginInterface.isRunningStatus;
-  }
-
   Stream<TrackingStateChange> get onTrackingStateChanged =>
       _pluginInterface.onTrackingStateChanged;
+
+  /// Availability Subscription
+  Stream<bool> get subscribeToAvailability => _pluginInterface.isAvailable;
+
+  /// Tracking Subscription
+  Stream<bool> subscribeToTracking(bool tracking) {
+    return HypertrackPlatformInterface.instance.subscribeToTracking(tracking);
+  }
+
+  /// Errors Subscription
+  static subscribeToErrors() {
+    return HypertrackPlatformInterface.instance.getBlockers();
+  }
 }
