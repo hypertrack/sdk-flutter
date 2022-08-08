@@ -52,6 +52,8 @@ enum GeotagErrorReason {
   restartRequired
 }
 
+enum Availability { Available, Unavailable }
+
 /// Location object
 class Location {
   double longitude;
