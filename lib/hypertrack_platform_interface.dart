@@ -182,7 +182,7 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
     throw UnimplementedError(_methodUnavailableError);
   }
 
-  void setAvailability(Availability availability) {
+  void setAvailability(bool availability) {
     _methodChannel.invokeMethod('setAvailability', availability);
   }
 

@@ -14,7 +14,6 @@ import io.flutter.plugin.common.EventChannel.StreamHandler
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.Serializable
 import java.util.*
@@ -94,7 +93,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       "isRunning" -> result.success(sdk.isRunning)
       "isTracking" -> result.success(sdk.isTracking)
       "getAvailability" -> result.success(sdk.availability.toString())
-      "setAvailability" -> call.arguments<Boolean>()?.let { setAvailability (it, result) } ?:result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
+      "setAvailability" -> setAvailability(result,sdk,call.arguments)
       "getLatestLocation" -> result.success(sdk.latestLocation)
       "start" -> start(result, sdk)
       "stop" -> stop(result, sdk)
@@ -191,6 +190,16 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     result.success(null)
   }
 
+  private fun setAvailability(result: Result, sdk: HyperTrack, arguments: Boolean) {
+    Log.d(TAG, "setAvailability called")
+  if (arguments == true) {
+    sdk.setAvailability(Availability.AVAILABLE)
+  }
+    sdk.setAvailability(Availability.UNAVAILABLE)
+    result.success(null)
+  }
+
+
   private fun setDeviceMetadata(data : Map<String, Any>, result: Result, sdk : HyperTrack) {
     Log.d(TAG, "setDeviceMetadata called with data $data")
 
@@ -204,6 +213,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     sdk.syncDeviceSettings()
     result.success(null)
   }
+
 
   override fun onListen(arguments: Any?, events: EventSink?) {
     val sdk = sdkInstance

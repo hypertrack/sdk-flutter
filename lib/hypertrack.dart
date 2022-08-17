@@ -46,7 +46,7 @@ class HyperTrack {
     return await _pluginInterface.availability();
   }
 
-  void setAvailability(Availability availability) async =>
+  void setAvailability(bool availability) async =>
       _pluginInterface.setAvailability(availability);
 
   getLatestLocation() async {
