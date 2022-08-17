@@ -26,7 +26,6 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
   private var methodChannel : MethodChannel? = null
   private var eventChannel : EventChannel? = null
   private var availabilityStream : EventChannel? = null
-  private var blockerStream : EventChannel? = null
 
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -44,8 +43,6 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     eventChannel?.setStreamHandler(this)
     availabilityStream = EventChannel(messenger, HYPERTRACK_SDK_AVAILABILTY_STREAM)
     availabilityStream?.setStreamHandler(this)
-    blockerStream = EventChannel(messenger, HYPERTRACK_SDK_BLOCKER_STREAM)
-    blockerStream?.setStreamHandler(this)
 
   }
 
@@ -57,8 +54,6 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     eventChannel = null
     availabilityStream?.setStreamHandler(null)
     availabilityStream = null
-    blockerStream?.setStreamHandler(null)
-    blockerStream = null
   }
 
   companion object {
@@ -66,7 +61,6 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     private const val HYPERTRACK_SDK_METHOD_CHANNEL = "sdk.hypertrack.com/handle"
     private const val HYPERTRACK_SDK_STATE_CHANNEL = "sdk.hypertrack.com/trackingState"
     private const val HYPERTRACK_SDK_AVAILABILTY_STREAM = "sdk.hypertrack.com/availabilitySubscription"
-    private const val HYPERTRACK_SDK_BLOCKER_STREAM = "sdk.hypertrack.com/blockerSubscription"
 
     @JvmStatic
     fun registerWith(registrar: Registrar) {
@@ -109,7 +103,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       "setDeviceName" -> call.arguments<String>()?.let { arguments -> setDeviceName(arguments, result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
       "setDeviceMetadata" -> call.arguments<Map<String, Any>?>()?.let { arguments -> setDeviceMetadata(arguments, result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
       "syncDeviceSettings" -> syncDeviceSettings(result, sdk)
-      "getBlockers" -> result.success(sdk.getBlockers())
+      "getBlockers" -> result.success(HyperTrack.getBlockers().toSring())
       else -> result.notImplemented()
     }
   }

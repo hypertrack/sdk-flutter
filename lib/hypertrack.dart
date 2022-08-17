@@ -122,7 +122,7 @@ class HyperTrack {
   }
 
   /// Errors Subscription
-  static subscribeToErrors() {
-    return HypertrackPlatformInterface.instance.getBlockers();
+  Future subscribeToErrors() async {
+    return await _pluginInterface.getBlockers();
   }
 }
