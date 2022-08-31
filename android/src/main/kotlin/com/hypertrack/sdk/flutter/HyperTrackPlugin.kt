@@ -103,7 +103,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       "setDeviceName" -> call.arguments<String>()?.let { arguments -> setDeviceName(arguments, result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
       "setDeviceMetadata" -> call.arguments<Map<String, Any>?>()?.let { arguments -> setDeviceMetadata(arguments, result, sdk) } ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
       "syncDeviceSettings" -> syncDeviceSettings(result, sdk)
-      "getBlockers" -> result.success(HyperTrack.getBlockers().toSring())
+      "getBlockers" -> result.success(HyperTrack.getBlockers().toString())
       else -> result.notImplemented()
     }
   }

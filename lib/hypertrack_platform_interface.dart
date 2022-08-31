@@ -102,9 +102,10 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
   /// UnimplementedError for isRunning method.
   Future<bool> isRunning() => throw UnimplementedError(_methodUnavailableError);
 
-  Future<bool> isTracking() =>
-      throw UnimplementedError(_methodUnavailableError);
-
+  Future<bool> isTracking() async {
+      return await _methodChannel.invokeMethod('isTracking');
+  }
+     
   /// UnimplementedError for startTracking method.
   startTracking() => throw UnimplementedError(_methodUnavailableError);
 
@@ -187,6 +188,6 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
   }
 
   getBlockers() {
-    _methodChannel.invokeMethod('getBlockers');
+    return _methodChannel.invokeMethod('getBlockers');
   }
 }
