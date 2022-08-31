@@ -3,8 +3,8 @@
 
 ![GitHub](https://img.shields.io/github/license/hypertrack/sdk-flutter.svg)
 [![Pub Version](https://img.shields.io/pub/v/hypertrack_plugin?color=blueviolet)](https://pub.dev/packages/hypertrack_plugin)
-[![iOS SDK](https://img.shields.io/badge/iOS%20SDK-4.12.3-brightgreen.svg)](https://cocoapods.org/pods/HyperTrack)
-![Android SDK](https://img.shields.io/badge/Android%20SDK-6.2.0-brightgreen.svg)
+[![iOS SDK](https://img.shields.io/badge/iOS%20SDK-4.8.0-brightgreen.svg)](https://cocoapods.org/pods/HyperTrack)
+![Android SDK](https://img.shields.io/badge/Android%20SDK-6.2.2-brightgreen.svg)
 
 [HyperTrack](https://www.hypertrack.com) lets you add live location tracking to your mobile app in a reliable and battery efficient way.
 
