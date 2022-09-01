@@ -143,6 +143,12 @@
         result(nil);
         return;
     }
+
+    if([@"getAvailability" isEqualToString:call.method]) {
+        [self.hyperTrack getAvailability];
+        result(nil);
+        return;
+    }
     
     result(FlutterMethodNotImplemented);
 }

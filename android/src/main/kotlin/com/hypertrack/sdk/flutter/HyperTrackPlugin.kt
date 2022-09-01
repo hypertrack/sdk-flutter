@@ -94,7 +94,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       "isRunning" -> result.success(sdk.isRunning)
       "isTracking" -> result.success(sdk.isTracking)
       "getAvailability" -> result.success(sdk.availability.toString())
-      "setAvailability" -> call.arguments<Boolean>()?.let {arguments -> setAvailability(result,sdk,call.arguments<Boolean>())} ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
+      "setAvailability" -> call.arguments<Boolean>()?.let {arguments -> setAvailability(result,sdk,arguments)} ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
       "getLatestLocation" -> result.success(sdk.latestLocation)
       "start" -> start(result, sdk)
       "stop" -> stop(result, sdk)
