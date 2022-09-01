@@ -121,6 +121,29 @@
         return;
     }
 
+    if ([@"isTracking" isEqualToString:call.method]) {
+        result([NSNumber numberWithBool:[self.hyperTrack isTracking]]);
+        return;
+    }
+
+    if([@"getLatestLocation" isEqualToString:call.method]) {
+        [self.hyperTrack getLatestLocation];
+        result(nil);
+        return;
+    }
+
+    if([@"getBlockers" isEqualToString:call.method]) {
+        [self.hyperTrack getBlockers];
+        result(nil);
+        return;   
+    }
+
+
+    if([@"setAvailability" isEqualToString:call.method]) {
+        [self.hyperTrack setAvailability];
+        result(nil);
+        return;
+    }
     
     result(FlutterMethodNotImplemented);
 }
