@@ -138,7 +138,6 @@
         return;   
     }
 
-
     if([@"setAvailability" isEqualToString:call.method]) {
         [self.hyperTrack setAvailability];
         result(nil);

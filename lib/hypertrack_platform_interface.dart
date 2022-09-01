@@ -67,8 +67,7 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
     if (Platform.isIOS) {
       return iOSChannelHypertrack(_methodChannel, _eventChannel);
     }
-    throw Exception(
-        "The current Platform ${Platform.operatingSystem} is not yet supported");
+    throw Exception("The current Platform ${Platform.operatingSystem} is not yet supported");
   }
 
   static HypertrackPlatformInterface get instance =>

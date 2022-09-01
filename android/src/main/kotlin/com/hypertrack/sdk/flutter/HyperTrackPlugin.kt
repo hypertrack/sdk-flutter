@@ -94,7 +94,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       "isRunning" -> result.success(sdk.isRunning)
       "isTracking" -> result.success(sdk.isTracking)
       "getAvailability" -> result.success(sdk.availability.toString())
-      "setAvailability" -> setAvailability(result,sdk,call.arguments<Boolean>()?:false)
+      "setAvailability" -> call.arguments<Boolean>()?.let {arguments -> setAvailability(result,sdk,call.arguments<Boolean>())} ?: result.error("INVALID_ARGS", "Internal Error: onMethodCall(${call.method}) - arguments is null", null)
       "getLatestLocation" -> result.success(sdk.latestLocation)
       "start" -> start(result, sdk)
       "stop" -> stop(result, sdk)
@@ -107,10 +107,6 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       else -> result.notImplemented()
     }
   }
-
-  // private fun getBlockers(sdk: HyperTrack): MutableSet<Blocker> {
-
-  // }
 
   private var sdkInstance : HyperTrack? = null
   private var stateListener : TrackingStateObserver.OnTrackingStateChangeListener? = null
@@ -198,17 +194,15 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
 
   private fun setAvailability(result: MethodChannel.Result, sdk: HyperTrack, arguments: Boolean) {
     Log.d(TAG, "setAvailability called")
-  if (arguments == true) {
-    sdk.setAvailability(Availability.AVAILABLE)
-     }
-  else if (arguments == false) {
-    sdk.setAvailability(Availability.UNAVAILABLE)
-    result.success(null)
-     }
+    if (arguments == true) {
+      sdk.setAvailability(Availability.AVAILABLE)
+    }
+    else if (arguments == false) {
+      sdk.setAvailability(Availability.UNAVAILABLE)
+      result.success(null)
+    }
   }
   
-
-
   private fun setDeviceMetadata(data : Map<String, Any>, result: MethodChannel.Result, sdk : HyperTrack) {
     Log.d(TAG, "setDeviceMetadata called with data $data")
 
@@ -222,7 +216,6 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     sdk.syncDeviceSettings()
     result.success(null)
   }
-
 
   override fun onListen(arguments: Any?, events: EventSink?) {
     val sdk = sdkInstance
@@ -264,13 +257,10 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       override fun onUnavailable() {
         events?.success(true)
       }
-
     }
-
 
     sdk.addTrackingListener(stateListener)
     sdk.addAvailabilityListener(availabilityListener)
-
   }
 
   override fun onCancel(arguments: Any?) {
