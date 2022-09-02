@@ -40,7 +40,7 @@ Head over to [Quickstart Flutter](https://github.com/hypertrack/quickstart-flutt
 
 ## How to update HyperTrack SDK version?
 
-1. Update SDK constant
+1. Update SDK version
 
     - android
         - android/build.gradle
@@ -63,3 +63,18 @@ Head over to [Quickstart Flutter](https://github.com/hypertrack/quickstart-flutt
     1. flutter pub publish --dry-run
         - to test is everything OK with release
     2. flutter pub publish
+
+## How to change build config
+1. compileSdkVersion
+  - change it in android/build.gradle
+  - android {
+    compileSdkVersion 
+
+2. minSdkVersion
+  - defaultConfig {
+        minSdkVersion 
+
+3. platform version (flutter)
+  - In pubspec.yaml file
+  - environment:
+  sdk: 
