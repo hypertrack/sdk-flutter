@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.3] - 2022-09-16
+#### Changed
+- Android SDK updated to 6.3.0
+
 ## [0.4.2] - 2022-08-30
 #### Changed
 - Android SDK updated to 6.2.2
