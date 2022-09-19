@@ -255,7 +255,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       }
 
       override fun onUnavailable() {
-        events?.success(true)
+        events?.success(false)
       }
     }
 

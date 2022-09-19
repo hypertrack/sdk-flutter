@@ -131,7 +131,6 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
   Stream<bool> get isAvailable {
     return _availabilitySubscription
         .receiveBroadcastStream()
-        .where((event) => event is bool)
         .map((dynamic event) => event);
   }
 
@@ -172,9 +171,12 @@ abstract class HypertrackPlatformInterface extends PlatformInterface {
   }
 
   subscribeToAvailability() {
-    _isAvailableStream ??= _availabilitySubscription
+    _isAvailableStream ??= _eventChannel
         .receiveBroadcastStream()
-        .map((event) => event == true);
+        .map((event) {
+          print(["Available", event]);
+          return event;
+    });
     return _isAvailableStream;
   }
 
