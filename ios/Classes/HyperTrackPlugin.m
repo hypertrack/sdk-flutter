@@ -127,26 +127,18 @@
     }
 
     if([@"getLatestLocation" isEqualToString:call.method]) {
-        [self.hyperTrack getLatestLocation];
-        result(nil);
+        result([self.hyperTrack location]);
         return;
     }
 
-    if([@"getBlockers" isEqualToString:call.method]) {
-        [self.hyperTrack getBlockers];
-        result(nil);
-        return;   
-    }
-
     if([@"setAvailability" isEqualToString:call.method]) {
-        [self.hyperTrack setAvailability];
+        [self.hyperTrack setAvailability:(call.arguments ? HTAvailabilityAvailable : HTAvailabilityUnavailable)];
         result(nil);
         return;
     }
 
     if([@"getAvailability" isEqualToString:call.method]) {
-        [self.hyperTrack getAvailability];
-        result(nil);
+        result([NSNumber numberWithBool:[self.hyperTrack availability]]);
         return;
     }
     
