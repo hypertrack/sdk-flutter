@@ -1,0 +1,4 @@
+enum Availability {
+  available,
+  unavailable
+}
