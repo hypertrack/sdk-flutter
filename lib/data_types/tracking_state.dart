@@ -12,7 +12,7 @@ enum TrackingStateChange {
   locationDisabled,
 
   ///  SDK provided with invalid token.
-  invalidToken,
+  invalidPublishableKey,
 
   /// SDK encountered network error
   networkError,

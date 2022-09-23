@@ -7,7 +7,7 @@ TrackingStateChange deserializeTrackingState(String event) {
     case "stop":
       return TrackingStateChange.stop;
     case "publishable_key_error":
-      return TrackingStateChange.invalidToken;
+      return TrackingStateChange.invalidPublishableKey;
     case "permissions_denied":
       return TrackingStateChange.permissionsDenied;
     case "auth_error":

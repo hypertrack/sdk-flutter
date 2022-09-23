@@ -19,11 +19,9 @@ const String _notImplementedError =
 const _methodChannel = MethodChannel('$_channelPrefix/handle');
 
 // channels for receiving events from the SDK
-const EventChannel _eventChannel =
+const EventChannel _trackingStateEventChannel =
     EventChannel('$_channelPrefix/trackingState');
-const EventChannel _trackingSubscription =
-    EventChannel('$_channelPrefix/trackingSubscription');
-const EventChannel _availabilitySubscription =
+const EventChannel _availabilityEventChannel =
     EventChannel('$_channelPrefix/availabilitySubscription');
 
 abstract class HypertrackSdkWrapper {
@@ -41,9 +39,8 @@ abstract class HypertrackSdkWrapper {
     }
   }
 
-  Future<HyperTrack> initialize(String publishableKey) {
-    return invokeSdkMethod(SdkMethod.initialize, publishableKey)
-        .then((value) => HyperTrack());
+  Future<void> initialize(String publishableKey) {
+    return invokeSdkVoidMethod(SdkMethod.initialize, publishableKey);
   }
 
   Future<String> getDeviceId() {
@@ -56,11 +53,11 @@ abstract class HypertrackSdkWrapper {
   }
 
   Future<void> setDeviceName(String name) async {
-    await invokeSdkMethod(SdkMethod.setDeviceName, name);
+    await invokeSdkVoidMethod(SdkMethod.setDeviceName, name);
   }
 
   Future<void> setDeviceMetadata(data) async {
-    await invokeSdkMethod(SdkMethod.setDeviceMetadata, data);
+    await invokeSdkVoidMethod(SdkMethod.setDeviceMetadata, data);
   }
 
   Future<bool> isRunning() {
@@ -72,15 +69,15 @@ abstract class HypertrackSdkWrapper {
   }
 
   Future<void> startTracking() async {
-    await invokeSdkMethod(SdkMethod.start);
+    await invokeSdkVoidMethod(SdkMethod.start);
   }
 
   Future<void> stopTracking() async {
-    await invokeSdkMethod(SdkMethod.stop);
+    await invokeSdkVoidMethod(SdkMethod.stop);
   }
 
   Future<void> setAvailability(Availability availability) async {
-    invokeSdkMethod(SdkMethod.setAvailability, serializeAvailability(availability));
+    invokeSdkVoidMethod(SdkMethod.setAvailability, serializeAvailability(availability));
   }
 
   // implemented in the platform-specific wrappers
@@ -89,25 +86,28 @@ abstract class HypertrackSdkWrapper {
   }
 
   Future<void> syncDeviceSettings() async {
-    return invokeSdkMethod(SdkMethod.syncDeviceSettings);
+    return invokeSdkVoidMethod(SdkMethod.syncDeviceSettings);
   }
 
   Future<void> allowMockLocations() {
-    return invokeSdkMethod(SdkMethod.allowMockLocations, true);
+    return invokeSdkVoidMethod(SdkMethod.allowMockLocations, true);
   }
 
   Future<void> enableDebugLogging() {
-    return invokeSdkMethod(SdkMethod.enableDebugLogging, true);
+    return invokeSdkVoidMethod(SdkMethod.enableDebugLogging, true);
   }
 
   Stream<Availability> get onAvailabilityChanged {
-    return _availabilitySubscription
+    return _availabilityEventChannel
         .receiveBroadcastStream()
-        .map((event) => deserializeBooleanAvailability(event));
+        .map((event) {
+          print(event);
+          return deserializeBooleanAvailability(event);
+        });
   }
 
   Stream<TrackingStateChange> get onTrackingStateChanged {
-    return _eventChannel
+    return _trackingStateEventChannel
         .receiveBroadcastStream()
         .map((event) => deserializeTrackingState(event));
   }
@@ -115,7 +115,7 @@ abstract class HypertrackSdkWrapper {
   @protected
   Future<T> invokeSdkMethod<T>(SdkMethod method, [dynamic arguments]) {
     return _methodChannel
-        .invokeMethod(method.toString(), arguments)
+        .invokeMethod(method.name, arguments)
         .then((value) {
       if (value == null) {
         throw Exception("Unexpected null response for ${method.toString()}");
@@ -123,6 +123,12 @@ abstract class HypertrackSdkWrapper {
         return value;
       }
     });
+  }
+
+  @protected
+  Future<void> invokeSdkVoidMethod(SdkMethod method, [dynamic arguments]) {
+    return _methodChannel
+        .invokeMethod(method.name, arguments);
   }
 
 }

@@ -7,13 +7,15 @@ import 'data_types/tracking_state.dart';
 
 /// This plugin allows you to use Hypertrack SDK for Flutter apps to get realtime device location
 class HyperTrack {
+  HyperTrack._();
   static final HypertrackSdkWrapper _sdkWrapper = HypertrackSdkWrapper.instance;
 
   /// Use this method to get the SDK instance.
   ///
   /// SDK will use the account identified by [publishableKey].
   static Future<HyperTrack> initialize(String publishableKey) =>
-      _sdkWrapper.initialize(publishableKey);
+      _sdkWrapper.initialize(publishableKey)
+          .then((value) => HyperTrack._());
 
   /// Returns string that uniquely identifies device in HyperTrack platform.
   Future<String> getDeviceId() async =>
