@@ -43,7 +43,6 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     eventChannel?.setStreamHandler(this)
     availabilityStream = EventChannel(messenger, HYPERTRACK_SDK_AVAILABILTY_STREAM)
     availabilityStream?.setStreamHandler(this)
-
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -66,14 +65,14 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
     fun registerWith(registrar: Registrar) {
       Log.i(TAG, "registerWith")
 
-      registrar.activity()?.applicationContext?.let { context -> 
+      registrar.activity()?.applicationContext?.let { context ->
         val messenger = registrar.messenger()
         HyperTrackPlugin().onAttachedToEngine(context, messenger)
       } ?: run {
         Log.i(TAG, "failedRegister")
       }
     }
-  }  
+  }
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: MethodChannel.Result) {
     if (call.method == "initialize") {
       initialize(call.arguments(), result)
@@ -88,7 +87,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       result.error("NOT_INITIALIZED", "Internal Error: onMethodCall(${call.method}) - sdkInstance is null", null)
       return
     }
-    
+
     when (call.method) {
       "getDeviceId" -> result.success(sdk.deviceID)
       "isRunning" -> result.success(sdk.isRunning)
@@ -111,6 +110,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
   private var sdkInstance : HyperTrack? = null
   private var stateListener : TrackingStateObserver.OnTrackingStateChangeListener? = null
   private var availabilityListener: AvailabilityStateObserver.OnAvailabilityStateChangeListener? = null;
+
   private fun initialize(publishableKey : String?, result : MethodChannel.Result) {
     Log.d(TAG, "getInstance for key $publishableKey")
     if (publishableKey == null) return
@@ -202,7 +202,7 @@ public class HyperTrackPlugin(): FlutterPlugin, MethodCallHandler, StreamHandler
       result.success(null)
     }
   }
-  
+
   private fun setDeviceMetadata(data : Map<String, Any>, result: MethodChannel.Result, sdk : HyperTrack) {
     Log.d(TAG, "setDeviceMetadata called with data $data")
 
