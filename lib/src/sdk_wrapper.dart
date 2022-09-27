@@ -101,15 +101,16 @@ abstract class HypertrackSdkWrapper {
     return _availabilityEventChannel
         .receiveBroadcastStream()
         .map((event) {
-          print(event);
-          return deserializeBooleanAvailability(event);
+          return deserializeAvailability(event);
         });
   }
 
   Stream<TrackingStateChange> get onTrackingStateChanged {
     return _trackingStateEventChannel
         .receiveBroadcastStream()
-        .map((event) => deserializeTrackingState(event));
+        .map((event) {
+          return deserializeTrackingState(event);
+        });
   }
 
   @protected

@@ -17,14 +17,6 @@ Availability deserializeAvailability(String response) {
   }
 }
 
-Availability deserializeBooleanAvailability(bool available) {
-  if(available) {
-    return Availability.available;
-  } else {
-    return Availability.unavailable;
-  }
-}
-
 bool serializeAvailability(Availability availability) {
   switch(availability) {
     case Availability.available:
@@ -34,5 +26,5 @@ bool serializeAvailability(Availability availability) {
   }
 }
 
-const _available = "AVAILABLE";
-const _unavailable = "UNAVAILABLE";
+const _available = "available";
+const _unavailable = "unavailable";

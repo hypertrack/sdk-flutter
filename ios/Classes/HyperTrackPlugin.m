@@ -1,58 +1,66 @@
 #import "HyperTrackPlugin.h"
+#import "TrackingStateStreamHandler.h"
+#import "AvailabilityStreamHandler.h"
 @import HyperTrack;
 
-@interface HyperTrackPlugin() <FlutterStreamHandler>
-   @property(nonatomic) HTSDK *hyperTrack;
+@interface HyperTrackPlugin()
+@property(nonatomic) HTSDK *hyperTrack;
 @end
 
-@implementation HyperTrackPlugin {
-    FlutterEventSink _eventSink;
-}
+@implementation HyperTrackPlugin
 
-+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
++(void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+    HyperTrackPlugin* instance = [[HyperTrackPlugin alloc] init];
+    TrackingStateStreamHandler* trackingStateStreamHandler = [[TrackingStateStreamHandler alloc] init];
+    AvailabilityStreamHandler* availabilityStreamHandler = [[AvailabilityStreamHandler alloc] init];
     
-
-  HyperTrackPlugin* instance = [[HyperTrackPlugin alloc] init];
-    
-  FlutterMethodChannel* channel =
-      [FlutterMethodChannel methodChannelWithName:@"sdk.hypertrack.com/handle"
-                                  binaryMessenger:[registrar messenger]];
-  [registrar addMethodCallDelegate:instance channel:channel];
-    
-  FlutterEventChannel* stateChannel =
-      [FlutterEventChannel eventChannelWithName:@"sdk.hypertrack.com/trackingState"
+    FlutterMethodChannel* channel =
+    [FlutterMethodChannel methodChannelWithName:@"sdk.hypertrack.com/handle"
                                 binaryMessenger:[registrar messenger]];
-  [stateChannel setStreamHandler:instance];
+    [registrar addMethodCallDelegate:instance channel:channel];
+
+    FlutterEventChannel* trackingStateEventChannel =
+    [FlutterEventChannel eventChannelWithName:@"sdk.hypertrack.com/trackingState"
+                              binaryMessenger:[registrar messenger]];
+    [trackingStateEventChannel setStreamHandler:trackingStateStreamHandler];
     
+    FlutterEventChannel* availabilityEventChannel =
+    [FlutterEventChannel eventChannelWithName:@"sdk.hypertrack.com/availabilitySubscription"
+                              binaryMessenger:[registrar messenger]];
+    [availabilityEventChannel setStreamHandler:availabilityStreamHandler];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-    NSLog(@"%s for method %@ with arguments %@", __PRETTY_FUNCTION__, call.method, call.arguments);
+    // NSLog(@"%s for method %@ with arguments %@", __PRETTY_FUNCTION__, call.method, call.arguments);
     
     if ([@"initialize" isEqualToString:call.method]) {
-        
-        NSLog(@"Initialize SDK with publishableKey %@", call.arguments);
+//        NSLog(@"Initialize SDK with publishableKey %@", call.arguments);
         HTResult *initResult = [HTSDK makeSDKWithPublishableKey: call.arguments];
         if (initResult.hyperTrack != nil) {
             self.hyperTrack = initResult.hyperTrack;
             result(nil);
         } else if (initResult.error != nil) {
-            result([FlutterError errorWithCode:[self convertErrorToMessage:initResult.error]
+            result([FlutterError errorWithCode:[HyperTrackPlugin convertErrorToMessage:initResult.error]
                                        message:initResult.error.localizedDescription
                                        details:nil]);
         }
         return;
     }
     
-    if ([@"enableDebugLogging" isEqualToString:call.method] || [@"allowMockLocations" isEqualToString:call.method]) {
-        // NOOP
+    if([@"enableDebugLogging" isEqualToString:call.method]) {
+        HTSDK.isLoggingEnabled = [NSNumber numberWithBool:call.arguments];
         result(nil);
         return;
     }
     
-    // sdk instance methods below
     if (self.hyperTrack == nil) {
         result([FlutterError errorWithCode:@"Sdk wasn't initialized" message:@"You must initialize SDK before using it" details:nil]);
+        return;
+    }
+    
+    if([@"allowMockLocations" isEqualToString:call.method]) {
+        self.hyperTrack.mockLocationsAllowed = [NSNumber numberWithBool:call.arguments];
+        result(nil);
         return;
     }
     
@@ -71,7 +79,7 @@
         result(nil);
         return;
     }
-
+    
     if ([@"stop" isEqualToString:call.method]) {
         [self.hyperTrack stop];
         result(nil);
@@ -88,12 +96,12 @@
             }
             HTMetadata *hyperTrackMetadata = [[HTMetadata alloc] initWithDictionary:args[@"data"]];
             if (hyperTrackMetadata != nil) {
-              [self.hyperTrack addTripMarker:hyperTrackMetadata];
-              result(@"success");
-              return;
+                [self.hyperTrack addGeotag:hyperTrackMetadata];
+                result(@"success");
+                return;
             }
         } else {
-          result([FlutterError errorWithCode:@"marker_metadata_error" message:@"Marker metadata should be valid key-value pairs with string keys" details:nil]);
+            result([FlutterError errorWithCode:@"marker_metadata_error" message:@"Marker metadata should be valid key-value pairs with string keys" details:nil]);
         }
         return;
     }
@@ -107,10 +115,10 @@
     if ([@"setDeviceMetadata" isEqualToString:call.method]) {
         HTMetadata *hyperTrackMetadata = [[HTMetadata alloc] initWithDictionary:call.arguments];
         if (hyperTrackMetadata != nil) {
-          [self.hyperTrack setDeviceMetadata:hyperTrackMetadata];
-          result(nil);
+            [self.hyperTrack setDeviceMetadata:hyperTrackMetadata];
+            result(nil);
         } else {
-          result([FlutterError errorWithCode:@"device_metadata_error" message:@"Device metadata should be valid key-value pairs with string keys" details:nil]);
+            result([FlutterError errorWithCode:@"device_metadata_error" message:@"Device metadata should be valid key-value pairs with string keys" details:nil]);
         }
         return;
     }
@@ -120,98 +128,54 @@
         result(nil);
         return;
     }
-
+    
     if ([@"isTracking" isEqualToString:call.method]) {
         result([NSNumber numberWithBool:[self.hyperTrack isTracking]]);
         return;
     }
-
+    
     if([@"getLatestLocation" isEqualToString:call.method]) {
         result([self.hyperTrack location]);
         return;
     }
-
+    
     if([@"setAvailability" isEqualToString:call.method]) {
-        [self.hyperTrack setAvailability:(call.arguments ? HTAvailabilityAvailable : HTAvailabilityUnavailable)];
+        NSNumber *available = call.arguments;
+        [self.hyperTrack setAvailability:(available.boolValue ? HTAvailabilityAvailable : HTAvailabilityUnavailable)];
         result(nil);
         return;
     }
-
+    
     if([@"getAvailability" isEqualToString:call.method]) {
-        result([NSNumber numberWithBool:[self.hyperTrack availability]]);
+        if([self.hyperTrack availability] == HTAvailabilityAvailable) {
+            result(@"available");
+        } else {
+            result(@"unavailable");
+        }
+        
         return;
     }
     
     result(FlutterMethodNotImplemented);
 }
 
-- (void)onSdkError:(NSNotification*)notification {
-    NSLog(@"%s notification %@", __PRETTY_FUNCTION__, notification);
-    NSError* error = [notification hyperTrackTrackingError];
-    if (error == nil) return;
-
-    NSLog(@"Got error %@", error);
-    _eventSink([self convertErrorToMessage:error]);
-    
-}
-
-- (NSString *)convertErrorToMessage:(NSError *)error {
++ (NSString *)convertErrorToMessage:(NSError *)error {
     switch ([error code]) {
-            case HTRestorableErrorLocationPermissionsDenied:
-            case HTRestorableErrorLocationServicesDisabled:
-            case HTRestorableErrorMotionActivityServicesDisabled:
-            case HTUnrestorableErrorMotionActivityPermissionsDenied:
-            case HTFatalErrorProductionMotionActivityPermissionsDenied:
-                return @"permissions_denied";
-            case HTRestorableErrorTrialEnded:
-            case HTRestorableErrorPaymentDefault:
-               return @"auth_error";
-            case HTUnrestorableErrorInvalidPublishableKey:
-            case HTFatalErrorDevelopmentPublishableKeyIsEmpty:
-                return @"publishable_key_error";
+        case HTRestorableErrorLocationPermissionsDenied:
+        case HTRestorableErrorLocationServicesDisabled:
+        case HTRestorableErrorMotionActivityServicesDisabled:
+        case HTUnrestorableErrorMotionActivityPermissionsDenied:
+        case HTFatalErrorProductionMotionActivityPermissionsDenied:
+            return @"permissions_denied";
+        case HTRestorableErrorTrialEnded:
+        case HTRestorableErrorPaymentDefault:
+            return @"auth_error";
+        case HTUnrestorableErrorInvalidPublishableKey:
+        case HTFatalErrorDevelopmentPublishableKeyIsEmpty:
+            return @"publishable_key_error";
             
     };
     return @"unknown error";
-}
-
-- (void)onSdkStopped {
-  NSLog(@"%s", __PRETTY_FUNCTION__);
-    _eventSink(@"stop");
-}
-- (void)onSdkStarted {
-  NSLog(@"%s", __PRETTY_FUNCTION__);
-    _eventSink(@"start");
-}
-#pragma mark FlutterStreamHandler impl
-
-- (FlutterError*)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)eventSink {
-  _eventSink = eventSink;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onSdkError:)
-                                                 name:HTSDK.didEncounterRestorableErrorNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onSdkError:)
-                                                 name:HTSDK.didEncounterUnrestorableErrorNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onSdkStarted)
-                                                 name:HTSDK.startedTrackingNotification
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onSdkStopped)
-                                                 name:HTSDK.stoppedTrackingNotification
-                                               object:nil];
-    
-  return nil;
-}
-
-- (FlutterError*)onCancelWithArguments:(id)arguments {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
-  _eventSink = nil;
-  return nil;
 }
 
 @end

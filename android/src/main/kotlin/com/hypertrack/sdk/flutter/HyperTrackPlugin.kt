@@ -74,6 +74,8 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                 }
             }
             "enableDebugLogging" -> {
+                // boolean param for this method is ignored because of
+                // Hypertrack SDK Android API discrepancies
                 HyperTrack.enableDebugLogging()
             }
             "getDeviceId" -> {
@@ -93,7 +95,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
             }
             "getAvailability" -> {
                 withSdkInstance(call, result) { sdk ->
-                    result.success(sdk.availability.toString())
+                    result.success(sdk.availability.toString().lowercase())
                 }
             }
             "setAvailability" -> {
@@ -140,6 +142,8 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
             }
             "allowMockLocations" -> {
                 withSdkInstance(call, result) { sdk ->
+                    // boolean param for this method is ignored because of
+                    // Hypertrack SDK Android API discrepancies
                     sdk.allowMockLocations()
                     result.success(null)
                 }
@@ -306,11 +310,11 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                             }
 
                             override fun onAvailable() {
-                                events.success(true)
+                                events.success("available")
                             }
 
                             override fun onUnavailable() {
-                                events.success(false)
+                                events.success("unavailable")
                             }
                         }
                     sdk.addAvailabilityListener(availabilityListener)
