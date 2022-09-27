@@ -85,16 +85,6 @@ class HyperTrack {
   Future<void> enableDebugLogging() =>
       _sdkWrapper.enableDebugLogging();
 
-  /// Adds geotag with configurable payload.
-  ///
-  /// Please, bear in mind that this will be serialized as json so passing in
-  /// recursive data structure could lead to unpredictable results.
-  /// [expectedLocation] is a place, where action is supposed to occur.
-  /// Look [ExpectedLocation] class options for the details.
-  Future addGeotag(Map<String, Object> data,
-          [Location? expectedLocation]) async =>
-      _sdkWrapper.addGeotag(data, expectedLocation);
-
   Stream<TrackingStateChange> get onTrackingStateChanged =>
       _sdkWrapper.onTrackingStateChanged;
 
