@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0] - 2022-09-27
+#### Added
+- get/setAvailability SDK method
+
+#### Changed
+- iOS SDK updated to 4.13.0
+
+#### Fixed
+- Various iOS Plugin issues 
+
+#### Removed
+- getLatestLocation SDK method.
+- addGeotag SDK method
+
 ## [0.4.3] - 2022-09-16
 #### Changed
 - Android SDK updated to 6.3.0
