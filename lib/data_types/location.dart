@@ -4,3 +4,7 @@ class Location {
 
   Location(this.longitude, this.latitude);
 }
+
+class LocationResponse {
+
+}

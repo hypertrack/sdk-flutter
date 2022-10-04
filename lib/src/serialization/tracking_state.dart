@@ -1,21 +1,20 @@
-import '../../data_types/tracking_state.dart';
-
-TrackingStateChange deserializeTrackingState(String event) {
-  switch (event) {
-    case "start":
-      return TrackingStateChange.start;
-    case "stop":
-      return TrackingStateChange.stop;
-    case "publishable_key_error":
-      return TrackingStateChange.invalidPublishableKey;
-    case "permissions_denied":
-      return TrackingStateChange.permissionsDenied;
-    case "auth_error":
-      return TrackingStateChange.authError;
-    case "gps_disabled":
-      return TrackingStateChange.locationDisabled;
-    case "network_error":
-      return TrackingStateChange.networkError;
+bool deserializeIsTracking(Map<Object?, Object?> response) {
+  Map<String, bool> data = response.cast<String, bool>();
+  bool? isTracking = data[_keyIsTracking];
+  if(isTracking == null) {
+    throw Exception("Invalid isTracking response: ${response}");
   }
-  return TrackingStateChange.unknownError;
+  return isTracking;
 }
+
+bool deserializeIsRunning(Map<Object?, Object?> response) {
+  Map<String, bool> data = response.cast<String, bool>();
+  bool? isRunning = data[_keyIsRunning];
+  if(isRunning == null) {
+    throw Exception("Invalid isRunning response: ${response}");
+  }
+  return isRunning;
+}
+
+const _keyIsTracking = "isTracking";
+const _keyIsRunning = "isRunning";

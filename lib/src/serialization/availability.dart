@@ -1,30 +1,14 @@
-import '../../data_types/availability.dart';
-
-Availability deserializeAvailability(String response) {
-  switch (response) {
-    case _available:
-      {
-        return Availability.available;
-      }
-    case _unavailable:
-      {
-        return Availability.unavailable;
-      }
-    default:
-      {
-        throw Exception("Invalid availability response: ${response}");
-      }
-  }
+bool deserializeAvailability(Map<Object?, Object?> response) {
+    Map<String, bool> data = response.cast<String, bool>();
+    bool? availability = data[_keyAvailability];
+    if (availability == null) {
+      throw Exception("Invalid availability response: ${response}");
+    }
+    return availability;
 }
 
-bool serializeAvailability(Availability availability) {
-  switch(availability) {
-    case Availability.available:
-      return true;
-    case Availability.unavailable:
-      return false;
-  }
+Map<String, bool> serializeAvailability(bool available) {
+  return { _keyAvailability: available };
 }
 
-const _available = "available";
-const _unavailable = "unavailable";
+const _keyAvailability = "available";

@@ -1,10 +1,12 @@
 import 'package:flutter/services.dart';
-import 'package:hypertrack_plugin/src/sdk_methods.dart';
+import 'package:hypertrack_plugin/data_types/error.dart';
+import 'package:hypertrack_plugin/data_types/result.dart';
+import 'package:hypertrack_plugin/src/sdk_method.dart';
 import 'package:hypertrack_plugin/src/serialization/availability.dart';
+import 'package:hypertrack_plugin/src/serialization/error.dart';
 import 'package:hypertrack_plugin/src/serialization/tracking_state.dart';
 
-import 'data_types/availability.dart';
-import 'data_types/tracking_state.dart';
+import 'data_types/location.dart';
 
 /// This plugin allows you to use Hypertrack SDK for Flutter apps to get realtime device location
 class HyperTrack {
@@ -19,7 +21,7 @@ class HyperTrack {
   }
 
   /// Returns string that uniquely identifies device in HyperTrack platform.
-  Future<String> getDeviceId() {
+  Future<String> get deviceId async {
     return invokeSdkMethod(SdkMethod.getDeviceId);
   }
 
@@ -30,8 +32,8 @@ class HyperTrack {
   /// provided. In case of frequent changes, it is possible, that intermediate
   /// states could be lost, so if more real-time responsiveness is required
   /// it is recommended to use [addGeotag] for passing that data.
-  Future<void> setDeviceName(String deviceName) {
-    return invokeSdkVoidMethod(SdkMethod.setDeviceName, deviceName);
+  Future<void> setName(String name) {
+    return invokeSdkVoidMethod(SdkMethod.setDeviceName, name);
   }
 
   /// Returns `true` if tracking was started.
@@ -39,26 +41,35 @@ class HyperTrack {
   /// This doesn't actually means that SDK collecting location data, but only
   /// allows you to check the current state of tracking state switch.
   /// For details on whether tracking actually happens or not check [onTrackingStateChanged] events.
-  Future<bool> isRunning() => invokeSdkMethod(SdkMethod.isRunning);
-
-  Future<bool> isTracking() => invokeSdkMethod(SdkMethod.isTracking);
-
-  Future<Availability> getAvailability() {
-    return invokeSdkMethod(SdkMethod.getAvailability)
-        .then((value) => deserializeAvailability(value));
+  Future<bool> get isRunning async {
+    return invokeSdkMethod(SdkMethod.isRunning).then((value) {
+      return deserializeIsRunning(value);
+    });
   }
 
-  Future<void> setAvailability(Availability availability) {
+  Future<bool> get isTracking async {
+    return invokeSdkMethod(SdkMethod.isTracking).then((value) {
+      return deserializeIsTracking(value);
+    });
+  }
+
+  Future<bool> get isAvailable async {
+    return invokeSdkMethod(SdkMethod.getAvailability).then((value) {
+      return deserializeAvailability(value);
+    });
+  }
+
+  Future<void> setAvailability(bool available) {
     return invokeSdkVoidMethod(
-        SdkMethod.setAvailability, serializeAvailability(availability));
+        SdkMethod.setAvailability, serializeAvailability(available));
   }
 
   /// This method checks with HyperTrack cloud whether to start or stop tracking.
   ///
   /// Tracking starts when Devices or Trips API is used to either to start
   /// the device tracking or when a trip is created for this device.
-  Future<void> syncDeviceSettings() {
-    return invokeSdkVoidMethod(SdkMethod.syncDeviceSettings);
+  void syncDeviceSettings() {
+    invokeSdkVoidMethod(SdkMethod.syncDeviceSettings);
   }
 
   /// Sets current device data.
@@ -70,12 +81,16 @@ class HyperTrack {
   /// In case of frequent changes, it is possible, that intermediate states
   /// could be lost, so if more real-time responsiveness is required it is
   /// recommended to use [addGeotag] for passing that data.
-  Future<void> setDeviceMetadata(Map<String, Object> data) {
+  Future<void> setMetadata(Map<String, Object> data) {
     return invokeSdkVoidMethod(SdkMethod.setDeviceMetadata, data);
   }
 
-  Future<void> addGeotag(Map<String, Object> data) {
+  Future<Result<Location, TrackingError>> addGeotag(Map<String, Object> data) {
     return invokeSdkMethod(SdkMethod.addGeotag, data);
+  }
+
+  Future<Result<Location, TrackingError>> get location async {
+    return invokeSdkMethod(SdkMethod.getLocation);
   }
 
   /// Triggers tracking start.
@@ -83,51 +98,53 @@ class HyperTrack {
   /// This isn't always result in SDK tracking, as missing permissions or disabled
   /// geolocation sensors could lead to a tracking outage. Use [onTrackingStateChanged]
   /// stream to get the actual state details.
-  Future<void> start() => invokeSdkVoidMethod(SdkMethod.start);
+  void startTracking() => invokeSdkVoidMethod(SdkMethod.startTracking);
 
   /// Stops tracking.
-  Future<void> stop() => invokeSdkVoidMethod(SdkMethod.stop);
+  void stopTracking() => invokeSdkVoidMethod(SdkMethod.stopTracking);
 
   /// Allows you to use location mocking software (e.g. for development).
   ///
   /// Mock locations are ignored by HyperTrack SDK by default.
-  Future<void> allowMockLocations() {
-    return invokeSdkVoidMethod(SdkMethod.allowMockLocations, true);
+  void allowMockLocations() {
+    invokeSdkVoidMethod(SdkMethod.allowMockLocations, true);
   }
 
-  Future<void> enableDebugLogging() {
-    return invokeSdkVoidMethod(SdkMethod.enableDebugLogging, true);
+  void enableDebugLogging() {
+    invokeSdkVoidMethod(SdkMethod.enableDebugLogging, true);
   }
 
-  /// Allows you to use location mocking software (e.g. for development).
-  ///
-  /// Mock locations are ignored by HyperTrack SDK by default.
-  Stream<TrackingStateChange> get onTrackingStateChanged {
+  Stream<bool> get onTrackingStateChanged {
     return _trackingStateEventChannel.receiveBroadcastStream().map((event) {
-      return deserializeTrackingState(event);
+      return deserializeIsTracking(event);
     });
   }
 
-  /// Availability Subscription
-  Stream<Availability> get subscribeToAvailability {
+  Stream<bool> get onAvailabilityChanged {
     return _availabilityEventChannel.receiveBroadcastStream().map((event) {
       return deserializeAvailability(event);
+    });
+  }
+
+  Stream<TrackingError> get onError {
+    return _errorEventChannel.receiveBroadcastStream().map((event) {
+      return deserializeTrackingError(event);
     });
   }
 }
 
 const _channelPrefix = 'sdk.hypertrack.com';
-const String _notImplementedError =
-    "Method is not available for the current platform";
 
 // channel for invoking SDK methods
-const _methodChannel = MethodChannel('$_channelPrefix/handle');
+const _methodChannel = MethodChannel('$_channelPrefix/methods');
 
 // channels for receiving events from the SDK
 const EventChannel _trackingStateEventChannel =
     EventChannel('$_channelPrefix/trackingState');
 const EventChannel _availabilityEventChannel =
-    EventChannel('$_channelPrefix/availabilitySubscription');
+    EventChannel('$_channelPrefix/availability');
+const EventChannel _errorEventChannel =
+    EventChannel('$_channelPrefix/trackingError');
 
 Future<T> invokeSdkMethod<T>(SdkMethod method, [dynamic arguments]) {
   return _methodChannel.invokeMethod(method.name, arguments).then((value) {
