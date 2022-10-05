@@ -1,6 +1,7 @@
-enum TrackingError {
+enum HyperTrackError {
   gpsSignalLost,
   locationMocked,
+  permissionsDenied,
   locationPermissionsDenied,
   locationPermissionsInsufficientForBackground,
   locationPermissionsNotDetermined,

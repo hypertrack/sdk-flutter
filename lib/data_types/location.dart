@@ -1,10 +1,11 @@
 class Location {
-  double longitude;
   double latitude;
+  double longitude;
 
-  Location(this.longitude, this.latitude);
-}
+  Location(this.latitude, this.longitude);
 
-class LocationResponse {
-
+  @override
+  String toString() {
+    return "{$latitude, $longitude}";
+  }
 }

@@ -6,11 +6,11 @@ enum SdkMethod {
   startTracking,
   stopTracking,
   setAvailability,
-  setDeviceName,
+  setName,
+  setMetadata,
   isTracking,
   addGeotag,
   allowMockLocations,
   enableDebugLogging,
-  setDeviceMetadata,
-  syncDeviceSettings
+  sync
 }

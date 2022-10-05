@@ -158,7 +158,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                     result.success(null)
                 }
             }
-            SdkMethod.setDeviceName.name -> {
+            SdkMethod.setName.name -> {
                 withSdkInstance(call, result) { sdk ->
                     call.arguments<String>()?.let { name ->
                         sdk.setDeviceName(name)
@@ -170,7 +170,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                     )
                 }
             }
-            SdkMethod.setDeviceMetadata.name -> {
+            SdkMethod.setMetadata.name -> {
                 withSdkInstance(call, result) { sdk ->
                     call.arguments<Map<String, Any>?>()?.let { data ->
                         sdk.setDeviceMetadata(data)
@@ -184,7 +184,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                     }
                 }
             }
-            SdkMethod.syncDeviceSettings.name -> {
+            SdkMethod.sync.name -> {
                 withSdkInstance(call, result) { sdk ->
                     sdk.syncDeviceSettings()
                     result.success(null)
@@ -242,7 +242,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                             }
 
                             override fun onError(error: TrackingError) {
-                                events.success(getTrackingError(error))
+                                events.success(serializeTrackingError(getTrackingError(error)))
                             }
                         }
                     sdk.addTrackingListener(errorChannelTrackingStateListener)
@@ -331,6 +331,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         sdk: HyperTrack
     ) {
         val data = options[KEY_GEOTAG_DATA] as Map<String, Serializable>?
+        Log.d(javaClass.simpleName, data.toString())
         data?.let {
             val expectedLocation: Location? =
                 (options[KEY_GEOTAG_EXPECTED_LOCATION] as Map<String, Any>?)?.let { params ->
@@ -343,14 +344,10 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                 }
             when (val geotagResult = sdk.addGeotag(data, expectedLocation)) {
                 is GeotagResult.SuccessWithDeviation -> {
-                    result.success({
-                        KEY_LOCATION to serializeLocation(geotagResult.getDeviceLocation())
-                    })
+                    result.success(serializeLocation(geotagResult.getDeviceLocation()))
                 }
                 is GeotagResult.Success -> {
-                    result.success({
-                        KEY_LOCATION to serializeLocation(geotagResult.getDeviceLocation())
-                    })
+                    result.success(serializeLocation(geotagResult.getDeviceLocation()))
                 }
                 is GeotagResult.Error -> {
                     result.success(serializeTrackingError(getTrackingError(geotagResult.getReason())))
@@ -372,22 +369,22 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
-    private fun getTrackingError(error: TrackingError): HypertrackError {
+    private fun getTrackingError(error: TrackingError): HyperTrackError {
         return when (error.code) {
             TrackingError.INVALID_PUBLISHABLE_KEY_ERROR -> {
-                HypertrackError.invalidPublishableKey
+                HyperTrackError.invalidPublishableKey
             }
             TrackingError.PERMISSION_DENIED_ERROR -> {
-                HypertrackError.permissionsDenied
+                HyperTrackError.permissionsDenied
             }
             TrackingError.AUTHORIZATION_ERROR -> {
-                HypertrackError.blockedFromRunning
+                HyperTrackError.blockedFromRunning
             }
             TrackingError.GPS_PROVIDER_DISABLED_ERROR -> {
-                HypertrackError.locationServicesDisabled
+                HyperTrackError.locationServicesDisabled
             }
             TrackingError.UNKNOWN_NETWORK_ERROR -> {
-                HypertrackError.blockedFromRunning
+                HyperTrackError.blockedFromRunning
             }
             else -> {
                 throw RuntimeException("Unknown tracking error")
@@ -395,34 +392,34 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
-    private fun getTrackingError(outageReason: OutageReason): HypertrackError {
+    private fun getTrackingError(outageReason: OutageReason): HyperTrackError {
         return when (outageReason) {
-            OutageReason.NO_GPS_SIGNAL -> HypertrackError.gpsSignalLost
-            OutageReason.MISSING_LOCATION_PERMISSION -> HypertrackError.locationPermissionsDenied
-            OutageReason.LOCATION_SERVICE_DISABLED -> HypertrackError.locationServicesDisabled
-            OutageReason.MISSING_ACTIVITY_PERMISSION -> HypertrackError.motionActivityPermissionsDenied
-            OutageReason.NOT_TRACKING -> HypertrackError.notRunning
-            OutageReason.START_HAS_NOT_FINISHED -> HypertrackError.starting
+            OutageReason.NO_GPS_SIGNAL -> HyperTrackError.gpsSignalLost
+            OutageReason.MISSING_LOCATION_PERMISSION -> HyperTrackError.locationPermissionsDenied
+            OutageReason.LOCATION_SERVICE_DISABLED -> HyperTrackError.locationServicesDisabled
+            OutageReason.MISSING_ACTIVITY_PERMISSION -> HyperTrackError.motionActivityPermissionsDenied
+            OutageReason.NOT_TRACKING -> HyperTrackError.notRunning
+            OutageReason.START_HAS_NOT_FINISHED -> HyperTrackError.starting
             OutageReason.RESTART_REQUIRED -> {
                 throw IllegalStateException("RESTART_REQUIRED must not be returned")
             }
         }
     }
 
-    private fun getTrackingError(outageReason: Reason): HypertrackError {
+    private fun getTrackingError(outageReason: Reason): HyperTrackError {
         return when (outageReason) {
-            Reason.NO_GPS_SIGNAL -> HypertrackError.gpsSignalLost
-            Reason.MISSING_LOCATION_PERMISSION -> HypertrackError.locationPermissionsDenied
-            Reason.LOCATION_SERVICE_DISABLED -> HypertrackError.locationServicesDisabled
-            Reason.MISSING_ACTIVITY_PERMISSION -> HypertrackError.motionActivityPermissionsDenied
-            Reason.NOT_TRACKING -> HypertrackError.notRunning
-            Reason.START_HAS_NOT_FINISHED -> HypertrackError.starting
+            Reason.NO_GPS_SIGNAL -> HyperTrackError.gpsSignalLost
+            Reason.MISSING_LOCATION_PERMISSION -> HyperTrackError.locationPermissionsDenied
+            Reason.LOCATION_SERVICE_DISABLED -> HyperTrackError.locationServicesDisabled
+            Reason.MISSING_ACTIVITY_PERMISSION -> HyperTrackError.motionActivityPermissionsDenied
+            Reason.NOT_TRACKING -> HyperTrackError.notRunning
+            Reason.START_HAS_NOT_FINISHED -> HyperTrackError.starting
         }
     }
 
     private fun getLocationResponse(result: Result<Location, OutageReason>): Map<String, Any> {
         return if (result.isSuccess()) {
-            mapOf(KEY_LOCATION to serializeLocation(result.getValue()))
+            serializeLocation(result.getValue())
         } else {
             serializeTrackingError(getTrackingError(result.getError()))
         }
@@ -436,14 +433,16 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         return mapOf(KEY_AVAILABILITY to isAvailable)
     }
 
-    private fun serializeLocation(location: Location): Map<String, Double> {
+    private fun serializeLocation(location: Location): Map<String, Map<String, Double>> {
         return mapOf(
-            KEY_LATITUDE to location.latitude,
-            KEY_LONGITUDE to location.longitude
+            KEY_LOCATION to mapOf(
+                KEY_LATITUDE to location.latitude,
+                KEY_LONGITUDE to location.longitude
+            )
         )
     }
 
-    private fun serializeTrackingError(error: HypertrackError): Map<String, String> {
+    private fun serializeTrackingError(error: HyperTrackError): Map<String, String> {
         return mapOf(KEY_TRACKING_ERROR to error.name)
     }
 

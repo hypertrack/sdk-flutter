@@ -1,9 +1,13 @@
 import 'package:flutter/services.dart';
 import 'package:hypertrack_plugin/data_types/error.dart';
+import 'package:hypertrack_plugin/data_types/json.dart';
 import 'package:hypertrack_plugin/data_types/result.dart';
 import 'package:hypertrack_plugin/src/sdk_method.dart';
 import 'package:hypertrack_plugin/src/serialization/availability.dart';
 import 'package:hypertrack_plugin/src/serialization/error.dart';
+import 'package:hypertrack_plugin/src/serialization/geotag.dart';
+import 'package:hypertrack_plugin/src/serialization/location_result.dart';
+import 'package:hypertrack_plugin/src/serialization/metadata.dart';
 import 'package:hypertrack_plugin/src/serialization/tracking_state.dart';
 
 import 'data_types/location.dart';
@@ -33,7 +37,7 @@ class HyperTrack {
   /// states could be lost, so if more real-time responsiveness is required
   /// it is recommended to use [addGeotag] for passing that data.
   Future<void> setName(String name) {
-    return invokeSdkVoidMethod(SdkMethod.setDeviceName, name);
+    return invokeSdkVoidMethod(SdkMethod.setName, name);
   }
 
   Future<bool> get isTracking async {
@@ -57,8 +61,8 @@ class HyperTrack {
   ///
   /// Tracking starts when Devices or Trips API is used to either to start
   /// the device tracking or when a trip is created for this device.
-  void syncDeviceSettings() {
-    invokeSdkVoidMethod(SdkMethod.syncDeviceSettings);
+  void sync() {
+    invokeSdkVoidMethod(SdkMethod.sync);
   }
 
   /// Sets current device data.
@@ -70,22 +74,28 @@ class HyperTrack {
   /// In case of frequent changes, it is possible, that intermediate states
   /// could be lost, so if more real-time responsiveness is required it is
   /// recommended to use [addGeotag] for passing that data.
-  Future<void> setMetadata(Map<String, Object> data) {
-    return invokeSdkVoidMethod(SdkMethod.setDeviceMetadata, data);
+  Future<void> setMetadata(JSONObject data) {
+    return invokeSdkVoidMethod(
+        SdkMethod.setMetadata, serializeMetadata(data));
   }
 
-  Future<Result<Location, TrackingError>> addGeotag(Map<String, Object> data) {
-    return invokeSdkMethod(SdkMethod.addGeotag, data);
+  Future<Result<Location, HyperTrackError>> addGeotag(JSONObject data) {
+    return invokeSdkMethod(SdkMethod.addGeotag, serializeGeotag(data))
+        .then((value) {
+      return deserializeLocationResult(value);
+    });
   }
 
-  Future<Result<Location, TrackingError>> get location async {
-    return invokeSdkMethod(SdkMethod.getLocation);
+  Future<Result<Location, HyperTrackError>> get location async {
+    return invokeSdkMethod(SdkMethod.getLocation).then((value) {
+      return deserializeLocationResult(value);
+    });
   }
 
   /// Triggers tracking start.
   ///
   /// This isn't always result in SDK tracking, as missing permissions or disabled
-  /// geolocation sensors could lead to a tracking outage. Use [onTrackingStateChanged]
+  /// geolocation sensors could lead to a tracking outage. Use [onTrackingChanged]
   /// stream to get the actual state details.
   void startTracking() => invokeSdkVoidMethod(SdkMethod.startTracking);
 
@@ -103,7 +113,7 @@ class HyperTrack {
     invokeSdkVoidMethod(SdkMethod.enableDebugLogging, true);
   }
 
-  Stream<bool> get onTrackingStateChanged {
+  Stream<bool> get onTrackingChanged {
     return _trackingStateEventChannel.receiveBroadcastStream().map((event) {
       return deserializeIsTracking(event);
     });
@@ -115,7 +125,7 @@ class HyperTrack {
     });
   }
 
-  Stream<TrackingError> get onError {
+  Stream<HyperTrackError> get onError {
     return _errorEventChannel.receiveBroadcastStream().map((event) {
       return deserializeTrackingError(event);
     });

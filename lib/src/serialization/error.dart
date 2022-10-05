@@ -1,46 +1,48 @@
 import 'package:hypertrack_plugin/data_types/error.dart';
 
-TrackingError deserializeTrackingError(Map<Object?, Object?> response) {
+HyperTrackError deserializeTrackingError(Map<Object?, Object?> response) {
   Map<String, String> data = response.cast<String, String>();
-  String? trackingError = data[_keyTrackingError];
+  String? trackingError = data[keyTrackingError];
   switch (trackingError) {
     case "gpsSignalLost":
-      return TrackingError.gpsSignalLost;
+      return HyperTrackError.gpsSignalLost;
     case "locationMocked":
-      return TrackingError.locationMocked;
+      return HyperTrackError.locationMocked;
+    case "permissionsDenied":
+      return HyperTrackError.permissionsDenied;
     case "locationPermissionsDenied":
-      return TrackingError.locationPermissionsDenied;
+      return HyperTrackError.locationPermissionsDenied;
     case "locationPermissionsInsufficientForBackground":
-      return TrackingError.locationPermissionsInsufficientForBackground;
+      return HyperTrackError.locationPermissionsInsufficientForBackground;
     case "locationPermissionsNotDetermined":
-      return TrackingError.locationPermissionsNotDetermined;
+      return HyperTrackError.locationPermissionsNotDetermined;
     case "locationPermissionsReducedAccuracy":
-      return TrackingError.locationPermissionsReducedAccuracy;
+      return HyperTrackError.locationPermissionsReducedAccuracy;
     case "locationPermissionsProvisional":
-      return TrackingError.locationPermissionsProvisional;
+      return HyperTrackError.locationPermissionsProvisional;
     case "locationPermissionsRestricted":
-      return TrackingError.locationPermissionsRestricted;
+      return HyperTrackError.locationPermissionsRestricted;
     case "locationServicesDisabled":
-      return TrackingError.locationServicesDisabled;
+      return HyperTrackError.locationServicesDisabled;
     case "locationServicesUnavailable":
-      return TrackingError.locationServicesUnavailable;
+      return HyperTrackError.locationServicesUnavailable;
     case "motionActivityPermissionsNotDetermined":
-      return TrackingError.motionActivityPermissionsNotDetermined;
+      return HyperTrackError.motionActivityPermissionsNotDetermined;
     case "motionActivityPermissionsDenied":
-      return TrackingError.motionActivityPermissionsDenied;
+      return HyperTrackError.motionActivityPermissionsDenied;
     case "motionActivityServicesDisabled":
-      return TrackingError.motionActivityServicesDisabled;
+      return HyperTrackError.motionActivityServicesDisabled;
     case "notRunning":
-      return TrackingError.notRunning;
+      return HyperTrackError.notRunning;
     case "starting":
-      return TrackingError.starting;
+      return HyperTrackError.starting;
     case "invalidPublishableKey":
-      return TrackingError.invalidPublishableKey;
+      return HyperTrackError.invalidPublishableKey;
     case "blockedFromRunning":
-      return TrackingError.blockedFromRunning;
+      return HyperTrackError.blockedFromRunning;
     default:
       throw Exception("Invalid trackingError: ${response}");
   }
 }
 
-String _keyTrackingError = "trackingError";
+String keyTrackingError = "trackingError";
