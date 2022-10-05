@@ -88,11 +88,6 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                     result.success(sdk.deviceID)
                 }
             }
-            SdkMethod.isRunning.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    result.success(serializeIsRunning(sdk.isRunning))
-                }
-            }
             SdkMethod.isTracking.name -> {
                 withSdkInstance(call, result) { sdk ->
                     result.success(serializeIsTracking(sdk.isTracking))
@@ -437,10 +432,6 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         return mapOf(KEY_IS_TRACKING to isTracking)
     }
 
-    private fun serializeIsRunning(isRunning: Boolean): Map<String, Boolean> {
-        return mapOf(KEY_IS_RUNNING to isRunning)
-    }
-
     private fun serializeAvailability(isAvailable: Boolean): Map<String, Boolean> {
         return mapOf(KEY_AVAILABILITY to isAvailable)
     }
@@ -464,7 +455,6 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
 
         private const val KEY_AVAILABILITY = "available"
         private const val KEY_IS_TRACKING = "isTracking"
-        private const val KEY_IS_RUNNING = "isRunning"
         private const val KEY_TRACKING_ERROR = "trackingError"
         private const val KEY_LOCATION = "location"
         private const val KEY_LATITUDE = "latitude"

@@ -7,7 +7,6 @@ enum SdkMethod {
   stopTracking,
   setAvailability,
   setDeviceName,
-  isRunning,
   isTracking,
   addGeotag,
   allowMockLocations,

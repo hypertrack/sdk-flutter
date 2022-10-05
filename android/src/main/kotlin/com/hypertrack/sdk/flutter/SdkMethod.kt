@@ -11,7 +11,6 @@ internal enum class SdkMethod {
     stopTracking,
     setAvailability,
     setDeviceName,
-    isRunning,
     isTracking,
     addGeotag,
     allowMockLocations,

@@ -36,17 +36,6 @@ class HyperTrack {
     return invokeSdkVoidMethod(SdkMethod.setDeviceName, name);
   }
 
-  /// Returns `true` if tracking was started.
-  ///
-  /// This doesn't actually means that SDK collecting location data, but only
-  /// allows you to check the current state of tracking state switch.
-  /// For details on whether tracking actually happens or not check [onTrackingStateChanged] events.
-  Future<bool> get isRunning async {
-    return invokeSdkMethod(SdkMethod.isRunning).then((value) {
-      return deserializeIsRunning(value);
-    });
-  }
-
   Future<bool> get isTracking async {
     return invokeSdkMethod(SdkMethod.isTracking).then((value) {
       return deserializeIsTracking(value);
