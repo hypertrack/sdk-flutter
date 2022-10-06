@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 void main() {
   test('Serialize-deserialize JSON', () {
     JSONObject testValue = JSONObject({
+      "null": null,
       "string": JSONString("value"),
       "number": JSONNumber(1),
       "bool": JSONBool(false),
@@ -23,6 +24,7 @@ void main() {
 
     print(testValue.serialize().toString());
     Map<String, dynamic> expected = {
+      "null": null,
       "string": "value",
       "number": 1,
       "bool": false,

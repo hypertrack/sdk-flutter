@@ -8,14 +8,14 @@ abstract class JSONValue<T> {
 }
 
 class JSONObject extends JSONValue<Map<String, dynamic>> {
-  Map<String, JSONValue> fields;
+  Map<String, JSONValue?> fields;
 
   JSONObject(this.fields);
 
   @override
   Map<String, dynamic> serialize() {
     return fields.map((key, value) {
-      return MapEntry(key, value.serialize());
+      return MapEntry(key, value?.serialize());
     });
   }
 }
