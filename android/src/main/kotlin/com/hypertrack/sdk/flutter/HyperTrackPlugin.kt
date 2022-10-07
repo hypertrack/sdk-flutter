@@ -123,7 +123,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
             }
             SdkMethod.getLocation.name -> {
                 withSdkInstance(call, result) { sdk ->
-                    result.success(getLocationResponse(sdk.latestLocation))
+                    result.success(serializeLocationResponse(sdk.latestLocation))
                 }
             }
             SdkMethod.startTracking.name -> {
@@ -242,7 +242,9 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                             }
 
                             override fun onError(error: TrackingError) {
-                                events.success(serializeTrackingError(getTrackingError(error)))
+                                events.success(getTrackingErrors(error).map {
+                                    serializeHypertrackError(it)
+                                })
                             }
                         }
                     sdk.addTrackingListener(errorChannelTrackingStateListener)
@@ -344,13 +346,13 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                 }
             when (val geotagResult = sdk.addGeotag(data, expectedLocation)) {
                 is GeotagResult.SuccessWithDeviation -> {
-                    result.success(serializeLocation(geotagResult.getDeviceLocation()))
+                    result.success(serializeSuccess(geotagResult.getDeviceLocation()))
                 }
                 is GeotagResult.Success -> {
-                    result.success(serializeLocation(geotagResult.getDeviceLocation()))
+                    result.success(serializeSuccess(geotagResult.getDeviceLocation()))
                 }
                 is GeotagResult.Error -> {
-                    result.success(serializeTrackingError(getTrackingError(geotagResult.getReason())))
+                    result.success(serializeFailure(getLocationError(geotagResult.getReason())))
                 }
             }
         } ?: result.error(ERROR_CODE_METHOD_CALL, "Geotag data is null", null)
@@ -369,7 +371,62 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
-    private fun getTrackingError(error: TrackingError): HyperTrackError {
+    private fun getLocationError(error: TrackingError): LocationError {
+        return Errors(getTrackingErrors(error))
+    }
+
+    private fun getLocationError(error: OutageReason): LocationError {
+        val blockersErrors = getHyperTrackErrorsFromBlockers()
+        return when (error) {
+            OutageReason.NO_GPS_SIGNAL -> {
+                Errors(setOf(HyperTrackError.gpsSignalLost) + blockersErrors)
+            }
+            OutageReason.MISSING_LOCATION_PERMISSION -> {
+                Errors(setOf(HyperTrackError.locationPermissionsDenied) + blockersErrors)
+            }
+            OutageReason.LOCATION_SERVICE_DISABLED -> {
+                Errors(setOf(HyperTrackError.locationServicesDisabled) + blockersErrors)
+            }
+            OutageReason.MISSING_ACTIVITY_PERMISSION -> {
+                Errors(setOf(HyperTrackError.motionActivityPermissionsDenied) + blockersErrors)
+            }
+            OutageReason.NOT_TRACKING -> {
+                NotRunning
+            }
+            OutageReason.START_HAS_NOT_FINISHED -> {
+                Starting
+            }
+            OutageReason.RESTART_REQUIRED -> {
+                throw IllegalStateException("RESTART_REQUIRED must not be returned")
+            }
+        }
+    }
+
+    private fun getLocationError(error: Reason): LocationError {
+        val blockersErrors = getHyperTrackErrorsFromBlockers()
+        return when (error) {
+            Reason.NO_GPS_SIGNAL -> {
+                Errors(setOf(HyperTrackError.gpsSignalLost) + blockersErrors)
+            }
+            Reason.MISSING_LOCATION_PERMISSION -> {
+                Errors(setOf(HyperTrackError.locationPermissionsDenied) + blockersErrors)
+            }
+            Reason.LOCATION_SERVICE_DISABLED -> {
+                Errors(setOf(HyperTrackError.locationServicesDisabled) + blockersErrors)
+            }
+            Reason.MISSING_ACTIVITY_PERMISSION -> {
+                Errors(setOf(HyperTrackError.motionActivityPermissionsDenied) + blockersErrors)
+            }
+            Reason.NOT_TRACKING -> {
+                NotRunning
+            }
+            Reason.START_HAS_NOT_FINISHED -> {
+                Starting
+            }
+        }
+    }
+
+    private fun getTrackingErrors(error: TrackingError): Set<HyperTrackError> {
         return when (error.code) {
             TrackingError.INVALID_PUBLISHABLE_KEY_ERROR -> {
                 HyperTrackError.invalidPublishableKey
@@ -389,39 +446,49 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
             else -> {
                 throw RuntimeException("Unknown tracking error")
             }
+        }.let {
+            setOf(it) + getHyperTrackErrorsFromBlockers()
         }
     }
 
-    private fun getTrackingError(outageReason: OutageReason): HyperTrackError {
-        return when (outageReason) {
-            OutageReason.NO_GPS_SIGNAL -> HyperTrackError.gpsSignalLost
-            OutageReason.MISSING_LOCATION_PERMISSION -> HyperTrackError.locationPermissionsDenied
-            OutageReason.LOCATION_SERVICE_DISABLED -> HyperTrackError.locationServicesDisabled
-            OutageReason.MISSING_ACTIVITY_PERMISSION -> HyperTrackError.motionActivityPermissionsDenied
-            OutageReason.NOT_TRACKING -> HyperTrackError.notRunning
-            OutageReason.START_HAS_NOT_FINISHED -> HyperTrackError.starting
-            OutageReason.RESTART_REQUIRED -> {
-                throw IllegalStateException("RESTART_REQUIRED must not be returned")
+    private fun getHyperTrackErrorsFromBlockers(): Set<HyperTrackError> {
+        return HyperTrack.getBlockers().map {
+            when (it) {
+                Blocker.LOCATION_PERMISSION_DENIED -> {
+                    HyperTrackError.locationPermissionsDenied
+                }
+                Blocker.LOCATION_SERVICE_DISABLED -> {
+                    HyperTrackError.locationServicesDisabled
+                }
+                Blocker.ACTIVITY_PERMISSION_DENIED -> {
+                    HyperTrackError.motionActivityPermissionsDenied
+                }
+                Blocker.BACKGROUND_LOCATION_DENIED -> {
+                    HyperTrackError.locationPermissionsInsufficientForBackground
+                }
             }
-        }
+        }.toSet()
     }
 
-    private fun getTrackingError(outageReason: Reason): HyperTrackError {
-        return when (outageReason) {
-            Reason.NO_GPS_SIGNAL -> HyperTrackError.gpsSignalLost
-            Reason.MISSING_LOCATION_PERMISSION -> HyperTrackError.locationPermissionsDenied
-            Reason.LOCATION_SERVICE_DISABLED -> HyperTrackError.locationServicesDisabled
-            Reason.MISSING_ACTIVITY_PERMISSION -> HyperTrackError.motionActivityPermissionsDenied
-            Reason.NOT_TRACKING -> HyperTrackError.notRunning
-            Reason.START_HAS_NOT_FINISHED -> HyperTrackError.starting
-        }
+    private fun serializeSuccess(location: Location): Map<String, Any> {
+        return mapOf(
+            KEY_TYPE to TYPE_RESULT_SUCCESS,
+            KEY_VALUE to serializeLocation(location)
+        )
     }
 
-    private fun getLocationResponse(result: Result<Location, OutageReason>): Map<String, Any> {
+    private fun serializeFailure(locationError: LocationError): Map<String, Any> {
+        return mapOf(
+            KEY_TYPE to TYPE_RESULT_FAILURE,
+            KEY_VALUE to serializeLocationError(locationError)
+        )
+    }
+
+    private fun serializeLocationResponse(result: Result<Location, OutageReason>): Map<String, Any> {
         return if (result.isSuccess()) {
-            serializeLocation(result.getValue())
+            serializeSuccess(result.getValue())
         } else {
-            serializeTrackingError(getTrackingError(result.getError()))
+            serializeFailure(getLocationError(result.getError()))
         }
     }
 
@@ -433,17 +500,34 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         return mapOf(KEY_AVAILABILITY to isAvailable)
     }
 
-    private fun serializeLocation(location: Location): Map<String, Map<String, Double>> {
+    private fun serializeLocation(location: Location): Map<String, Double> {
         return mapOf(
-            KEY_LOCATION to mapOf(
-                KEY_LATITUDE to location.latitude,
-                KEY_LONGITUDE to location.longitude
-            )
+            KEY_LATITUDE to location.latitude,
+            KEY_LONGITUDE to location.longitude
         )
     }
 
-    private fun serializeTrackingError(error: HyperTrackError): Map<String, String> {
-        return mapOf(KEY_TRACKING_ERROR to error.name)
+    private fun serializeLocationError(locationError: LocationError): Map<String, Any> {
+        return when(locationError) {
+            NotRunning -> {
+                mapOf(KEY_TYPE to TYPE_LOCATION_ERROR_NOT_RUNNING)
+            }
+            Starting -> {
+                mapOf(KEY_TYPE to TYPE_LOCATION_ERROR_STARTING)
+            }
+            is Errors -> {
+                mapOf(
+                    KEY_TYPE to TYPE_LOCATION_ERROR_ERRORS,
+                    KEY_VALUE to locationError.errors.map { serializeHypertrackError(it) }
+                )
+            }
+        }
+    }
+
+    private fun serializeHypertrackError(error: HyperTrackError): Map<String, String> {
+        return mapOf(
+            KEY_TYPE to error.name,
+        )
     }
 
     companion object {
@@ -452,10 +536,19 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         private const val ERROR_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/trackingError"
         private const val AVAILABILTY_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/availability"
 
+        private const val KEY_TYPE = "type"
+        private const val KEY_VALUE = "value"
+
+        private const val TYPE_RESULT_SUCCESS = "success"
+        private const val TYPE_RESULT_FAILURE = "failure"
+
+        private const val TYPE_LOCATION_ERROR_NOT_RUNNING = "notRunning"
+        private const val TYPE_LOCATION_ERROR_STARTING = "starting"
+        private const val TYPE_LOCATION_ERROR_ERRORS = "errors"
+        private const val TYPE_HYPERTRACK_ERROR = "hypertrackError"
+
         private const val KEY_AVAILABILITY = "available"
         private const val KEY_IS_TRACKING = "isTracking"
-        private const val KEY_TRACKING_ERROR = "trackingError"
-        private const val KEY_LOCATION = "location"
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
         private const val KEY_GEOTAG_DATA = "data"

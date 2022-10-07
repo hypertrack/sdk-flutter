@@ -1,7 +1,6 @@
 enum HyperTrackError {
   gpsSignalLost,
   locationMocked,
-  permissionsDenied,
   locationPermissionsDenied,
   locationPermissionsInsufficientForBackground,
   locationPermissionsNotDetermined,
@@ -13,8 +12,6 @@ enum HyperTrackError {
   motionActivityPermissionsNotDetermined,
   motionActivityPermissionsDenied,
   motionActivityServicesDisabled,
-  notRunning,
-  starting,
   invalidPublishableKey,
   blockedFromRunning
 }

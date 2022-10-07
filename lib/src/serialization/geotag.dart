@@ -4,4 +4,4 @@ Map<String, dynamic> serializeGeotag(JSONObject data) {
   return { _keyData: data.serialize() };
 }
 
-const String _keyData = "data";
+const _keyData = "data";

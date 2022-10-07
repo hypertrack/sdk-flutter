@@ -5,10 +5,9 @@ package com.hypertrack.sdk.flutter
 enum class HyperTrackError {
     gpsSignalLost,
     locationPermissionsDenied,
+    locationPermissionsInsufficientForBackground,
     locationServicesDisabled,
     motionActivityPermissionsDenied,
-    notRunning,
-    starting,
     invalidPublishableKey,
     permissionsDenied,
     blockedFromRunning

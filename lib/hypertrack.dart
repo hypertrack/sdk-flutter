@@ -1,15 +1,16 @@
 import 'package:flutter/services.dart';
-import 'package:hypertrack_plugin/data_types/error.dart';
 import 'package:hypertrack_plugin/data_types/json.dart';
+import 'package:hypertrack_plugin/data_types/location_error.dart';
 import 'package:hypertrack_plugin/data_types/result.dart';
 import 'package:hypertrack_plugin/src/sdk_method.dart';
 import 'package:hypertrack_plugin/src/serialization/availability.dart';
-import 'package:hypertrack_plugin/src/serialization/error.dart';
 import 'package:hypertrack_plugin/src/serialization/geotag.dart';
+import 'package:hypertrack_plugin/src/serialization/hypertrack_error.dart';
 import 'package:hypertrack_plugin/src/serialization/location_result.dart';
 import 'package:hypertrack_plugin/src/serialization/metadata.dart';
 import 'package:hypertrack_plugin/src/serialization/tracking_state.dart';
 
+import 'data_types/hypertrack_error.dart';
 import 'data_types/location.dart';
 
 /// This plugin allows you to use Hypertrack SDK for Flutter apps to get realtime device location
@@ -79,14 +80,14 @@ class HyperTrack {
         SdkMethod.setMetadata, serializeMetadata(data));
   }
 
-  Future<Result<Location, HyperTrackError>> addGeotag(JSONObject data) {
+  Future<Result<Location, LocationError>> addGeotag(JSONObject data) {
     return invokeSdkMethod(SdkMethod.addGeotag, serializeGeotag(data))
         .then((value) {
       return deserializeLocationResult(value);
     });
   }
 
-  Future<Result<Location, HyperTrackError>> get location async {
+  Future<Result<Location, LocationError>> get location async {
     return invokeSdkMethod(SdkMethod.getLocation).then((value) {
       return deserializeLocationResult(value);
     });
@@ -105,12 +106,12 @@ class HyperTrack {
   /// Allows you to use location mocking software (e.g. for development).
   ///
   /// Mock locations are ignored by HyperTrack SDK by default.
-  void allowMockLocations() {
-    invokeSdkVoidMethod(SdkMethod.allowMockLocations, true);
+  void setAllowMockLocations(bool isAllowed) {
+    invokeSdkVoidMethod(SdkMethod.allowMockLocations, isAllowed);
   }
 
-  void enableDebugLogging() {
-    invokeSdkVoidMethod(SdkMethod.enableDebugLogging, true);
+  void setLoggingEnabled(bool isEnabled) {
+    invokeSdkVoidMethod(SdkMethod.enableDebugLogging, isEnabled);
   }
 
   Stream<bool> get onTrackingChanged {
@@ -125,9 +126,9 @@ class HyperTrack {
     });
   }
 
-  Stream<HyperTrackError> get onError {
+  Stream<Set<HyperTrackError>> get onError {
     return _errorEventChannel.receiveBroadcastStream().map((event) {
-      return deserializeTrackingError(event);
+      return deserializeTrackingErrors(event);
     });
   }
 }
