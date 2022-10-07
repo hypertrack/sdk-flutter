@@ -1,4 +1,4 @@
-abstract class JSONValue<T> {
+abstract class _JSONValue<T> {
   T serialize();
 
   @override
@@ -7,8 +7,8 @@ abstract class JSONValue<T> {
   }
 }
 
-class JSONObject extends JSONValue<Map<String, dynamic>> {
-  Map<String, JSONValue?> fields;
+class JSONObject extends _JSONValue<Map<String, dynamic>> {
+  Map<String, _JSONValue?> fields;
 
   JSONObject(this.fields);
 
@@ -20,7 +20,7 @@ class JSONObject extends JSONValue<Map<String, dynamic>> {
   }
 }
 
-class JSONArray<T, K extends JSONValue<T>, I extends Iterable<T>> extends JSONValue<I> {
+class JSONArray<T, K extends _JSONValue<T>, I extends Iterable<T>> extends _JSONValue<I> {
   Iterable<K> items;
 
   JSONArray(this.items);
@@ -31,7 +31,7 @@ class JSONArray<T, K extends JSONValue<T>, I extends Iterable<T>> extends JSONVa
   }
 }
 
-class JSONString extends JSONValue {
+class JSONString extends _JSONValue {
   String value;
 
   JSONString(this.value);
@@ -42,7 +42,7 @@ class JSONString extends JSONValue {
   }
 }
 
-class JSONNumber extends JSONValue {
+class JSONNumber extends _JSONValue {
   double value;
 
   JSONNumber(this.value);
@@ -53,7 +53,7 @@ class JSONNumber extends JSONValue {
   }
 }
 
-class JSONBool extends JSONValue {
+class JSONBool extends _JSONValue {
   bool value;
 
   JSONBool(this.value);

@@ -36,8 +36,8 @@ class HyperTrack {
   /// provided. In case of frequent changes, it is possible, that intermediate
   /// states could be lost, so if more real-time responsiveness is required
   /// it is recommended to use [addGeotag] for passing that data.
-  Future<void> setName(String name) {
-    return invokeSdkVoidMethod(SdkMethod.setName, name);
+  void setName(String name) {
+     invokeSdkVoidMethod(SdkMethod.setName, name);
   }
 
   Future<bool> get isTracking async {
@@ -52,8 +52,8 @@ class HyperTrack {
     });
   }
 
-  Future<void> setAvailability(bool available) {
-    return invokeSdkVoidMethod(
+  void setAvailability(bool available) {
+    invokeSdkVoidMethod(
         SdkMethod.setAvailability, serializeAvailability(available));
   }
 
@@ -74,8 +74,8 @@ class HyperTrack {
   /// In case of frequent changes, it is possible, that intermediate states
   /// could be lost, so if more real-time responsiveness is required it is
   /// recommended to use [addGeotag] for passing that data.
-  Future<void> setMetadata(JSONObject data) {
-    return invokeSdkVoidMethod(
+  void setMetadata(JSONObject data) {
+     invokeSdkVoidMethod(
         SdkMethod.setMetadata, serializeMetadata(data));
   }
 
