@@ -5,6 +5,9 @@ import android.content.Context
 import android.location.Location
 import android.util.Log
 import androidx.annotation.NonNull
+import com.hypertrack.sdk.flutter.common.*
+import com.hypertrack.sdk.flutter.common.Result
+import com.hypertrack.sdk.flutter.common.Success
 import com.hypertrack.sdk.*
 import com.hypertrack.sdk.GeotagResult.Error.Reason
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -18,6 +21,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.io.Serializable
 import java.lang.IllegalStateException
+import java.lang.NullPointerException
 import java.lang.RuntimeException
 import java.util.*
 
@@ -30,8 +34,6 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
     private var trackingStateEventChannel: EventChannel? = null
     private var availabilityEventChannel: EventChannel? = null
     private var errorEventChannel: EventChannel? = null
-
-    private var sdkInstance: HyperTrack? = null
 
     private var trackingStateListener: TrackingStateObserver.OnTrackingStateChangeListener? = null
     private var errorChannelTrackingStateListener: TrackingStateObserver.OnTrackingStateChangeListener? =
@@ -63,132 +65,71 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
          */
         when (call.method) {
             SdkMethod.initialize.name -> {
-                try {
-                    call.arguments<String>()?.let { publishableKey ->
-                        sdkInstance = HyperTrack.getInstance(publishableKey)
-                        result.success(null)
-                    } ?: run {
-                        result.error(
-                            ERROR_CODE_METHOD_CALL,
-                            "onMethodCall(${call.method}) - Publishable key can't be null",
-                            null
-                        )
-                    }
-                } catch (e: Exception) {
-                    result.error(ERROR_CODE_INIT, e.toString(), null)
-                }
-            }
-            SdkMethod.enableDebugLogging.name -> {
-                // boolean param for this method is ignored because of
-                // Hypertrack SDK Android API discrepancies
-                HyperTrack.enableDebugLogging()
+                withArgs<Map<String, Any>, Unit>(call) { args ->
+                    val publishableKey = args.getValue(KEY_PUBLISHABLE_KEY) as String
+                    val initParams = SdkInitParams.fromMap(args.filter {
+                        it.value is Boolean
+                    }.mapValues {
+                        it.value is Boolean
+                    })
+
+                    HyperTrackSdkWrapper.initialize(
+                        publishableKey,
+                        initParams
+                    )
+                    Success(Unit)
+                }.toFlutterResult(call, result)
             }
             SdkMethod.getDeviceId.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    result.success(sdk.deviceID)
-                }
+                HyperTrackSdkWrapper.getDeviceID()
+                    .toFlutterResult(call, result)
             }
             SdkMethod.isTracking.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    result.success(serializeIsTracking(sdk.isTracking))
-                }
+                HyperTrackSdkWrapper.isTracking()
+                    .toFlutterResult(call, result)
             }
-            SdkMethod.getAvailability.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    result.success(
-                        serializeAvailability(
-                            when (sdk.availability) {
-                                Availability.AVAILABLE -> true
-                                Availability.UNAVAILABLE -> false
-                            }
-                        )
-                    )
-                }
+            SdkMethod.isAvailable.name -> {
+                HyperTrackSdkWrapper.isAvailable()
+                    .toFlutterResult(call, result)
             }
             SdkMethod.setAvailability.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    call.arguments<Map<String, Boolean>>()
-                        ?.get(KEY_AVAILABILITY)
-                        ?.let { isAvailable ->
-                            setAvailability(result, sdk, isAvailable)
-                        } ?: run {
-                        result.error(
-                            ERROR_CODE_METHOD_CALL,
-                            "onMethodCall(${call.method}) - invalid availability data: ${call.arguments<Any>()}",
-                            null
-                        )
-                    }
-
-                }
+                withArgs<Map<String,Boolean>, Unit>(call) { args ->
+                    HyperTrackSdkWrapper.setAvailability(args)
+                    Success(Unit)
+                }.toFlutterResult(call, result)
             }
             SdkMethod.getLocation.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    result.success(serializeLocationResponse(sdk.latestLocation))
-                }
+                HyperTrackSdkWrapper.getLocation()
+                    .toFlutterResult(call, result)
             }
             SdkMethod.startTracking.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    start(result, sdk)
-                }
+                HyperTrackSdkWrapper.startTracking()
+                    .toFlutterResult(call, result)
             }
             SdkMethod.stopTracking.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    sdk.stop()
-                    result.success(null)
-                }
+                HyperTrackSdkWrapper.stopTracking()
+                    .toFlutterResult(call, result)
             }
             SdkMethod.addGeotag.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    call.arguments<Map<String, Any>>()?.let { arguments ->
-                        addGeotag(arguments, result, sdk)
-                    } ?: run {
-                        result.error(
-                            ERROR_CODE_METHOD_CALL,
-                            "onMethodCall(${call.method}) - arguments value is null",
-                            null
-                        )
-                    }
-                }
-            }
-            SdkMethod.allowMockLocations.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    // boolean param for this method is ignored because of
-                    // Hypertrack SDK Android API discrepancies
-                    sdk.allowMockLocations()
-                    result.success(null)
-                }
+                withArgs<Map<String, Any>, Map<String, Any>>(call) { args ->
+                    HyperTrackSdkWrapper.addGeotag(args)
+                }.toFlutterResult(call, result)
             }
             SdkMethod.setName.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    call.arguments<String>()?.let { name ->
-                        sdk.setDeviceName(name)
-                        result.success(null)
-                    } ?: result.error(
-                        ERROR_CODE_METHOD_CALL,
-                        "onMethodCall(${call.method}) - arguments value is null",
-                        null
-                    )
-                }
+                withArgs<String, Unit>(call) { args ->
+                    HyperTrackSdkWrapper.setName(args)
+                    Success(Unit)
+                }.toFlutterResult(call, result)
             }
             SdkMethod.setMetadata.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    call.arguments<Map<String, Any>?>()?.let { data ->
-                        sdk.setDeviceMetadata(data)
-                        result.success(null)
-                    } ?: run {
-                        result.error(
-                            ERROR_CODE_METHOD_CALL,
-                            "onMethodCall(${call.method}) - arguments value is null",
-                            null
-                        )
-                    }
-                }
+                withArgs<Map<String, Any>, Unit>(call) { args ->
+                    HyperTrackSdkWrapper.setMetadata(args)
+                    Success(Unit)
+                }.toFlutterResult(call, result)
             }
             SdkMethod.sync.name -> {
-                withSdkInstance(call, result) { sdk ->
-                    sdk.syncDeviceSettings()
-                    result.success(null)
-                }
+                HyperTrackSdkWrapper.sync()
+                    .toFlutterResult(call, result)
             }
             else -> {
                 result.notImplemented()
@@ -196,11 +137,16 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
+    private fun <T, N> withArgs(call: MethodCall, block: (T) -> Result<N>): Result<N> {
+        return call.arguments<T>()?.let { block.invoke(it) }
+            ?: Failure(NullPointerException(call.method))
+    }
+
     private fun initEventChannels(messenger: BinaryMessenger) {
         trackingStateEventChannel = EventChannel(messenger, TRACKING_STATE_EVENT_CHANNEL_NAME)
         trackingStateEventChannel?.setStreamHandler(object : StreamHandler {
             override fun onListen(arguments: Any?, events: EventSink) {
-                sdkInstance?.let { sdk ->
+                HyperTrackSdkWrapper.withSdkInstance { sdk ->
                     trackingStateListener =
                         object : TrackingStateObserver.OnTrackingStateChangeListener {
                             override fun onTrackingStart() {
@@ -216,21 +162,21 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                             }
                         }
                     sdk.addTrackingListener(trackingStateListener)
-                } ?: run {
-                    events.error(ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT, null)
-                }
+                }.sendEventIfError(events, ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT)
             }
 
             override fun onCancel(arguments: Any?) {
-                sdkInstance?.removeTrackingListener(trackingStateListener)
-                trackingStateListener = null
+                HyperTrackSdkWrapper.withSdkInstance { sdk ->
+                    sdk.removeTrackingListener(trackingStateListener)
+                    trackingStateListener = null
+                }
             }
         })
 
         errorEventChannel = EventChannel(messenger, ERROR_EVENT_CHANNEL_NAME)
         errorEventChannel?.setStreamHandler(object : StreamHandler {
             override fun onListen(arguments: Any?, events: EventSink) {
-                sdkInstance?.let { sdk ->
+                HyperTrackSdkWrapper.withSdkInstance { sdk ->
                     errorChannelTrackingStateListener =
                         object : TrackingStateObserver.OnTrackingStateChangeListener {
                             override fun onTrackingStart() {
@@ -242,20 +188,22 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                             }
 
                             override fun onError(error: TrackingError) {
-                                events.success(getTrackingErrors(error).map {
-                                    serializeHypertrackError(it)
-                                })
+                                events.success(
+                                    serializeErrors(
+                                        HyperTrackSdkWrapper.getTrackingErrors(error)
+                                    )
+                                )
                             }
                         }
                     sdk.addTrackingListener(errorChannelTrackingStateListener)
-                } ?: run {
-                    events.error(ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT, null)
-                }
+                }.sendEventIfError(events, ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT)
             }
 
             override fun onCancel(arguments: Any?) {
-                sdkInstance?.removeTrackingListener(errorChannelTrackingStateListener)
-                errorChannelTrackingStateListener = null
+                HyperTrackSdkWrapper.withSdkInstance { sdk ->
+                    sdk.removeTrackingListener(errorChannelTrackingStateListener)
+                    errorChannelTrackingStateListener = null
+                }
             }
         })
 
@@ -263,7 +211,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         availabilityEventChannel?.setStreamHandler(
             object : StreamHandler {
                 override fun onListen(arguments: Any?, events: EventSink) {
-                    sdkInstance?.let { sdk ->
+                    HyperTrackSdkWrapper.withSdkInstance { sdk ->
                         availabilityListener =
                             object : AvailabilityStateObserver.OnAvailabilityStateChangeListener {
                                 override fun onError(p0: AvailabilityError) {
@@ -279,255 +227,16 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                                 }
                             }
                         sdk.addAvailabilityListener(availabilityListener)
-                    } ?: run {
-                        events.error(ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT, null)
-                    }
+                    }.sendEventIfError(events, ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT)
                 }
 
                 override fun onCancel(arguments: Any?) {
-                    sdkInstance?.removeAvailabilityListener(availabilityListener)
-                    availabilityListener = null
-                }
-            })
-    }
-
-    private fun withSdkInstance(
-        call: MethodCall,
-        result: MethodChannel.Result,
-        onInstanceCall: (sdk: HyperTrack) -> Unit
-    ) {
-        sdkInstance.let { instance ->
-            if (instance == null) {
-                result.error(
-                    ERROR_CODE_SDK_NOT_INITIALIZED,
-                    "onMethodCall(${call.method}) - sdkInstance is null",
-                    null
-                )
-                return
-            } else {
-                onInstanceCall(instance)
-            }
-        }
-    }
-
-    private fun start(result: MethodChannel.Result, sdk: HyperTrack) {
-        val listener = object : TrackingStateObserver.OnTrackingStateChangeListener {
-            override fun onTrackingStart() {
-                result.success(null)
-                sdk.removeTrackingListener(this)
-            }
-
-            override fun onError(p0: TrackingError) {
-                sdk.removeTrackingListener(this)
-            }
-
-            override fun onTrackingStop() {
-            }
-        }
-        sdk.addTrackingListener(listener).start()
-    }
-
-    private fun addGeotag(
-        options: Map<String, Any>,
-        result: MethodChannel.Result,
-        sdk: HyperTrack
-    ) {
-        val data = options[KEY_GEOTAG_DATA] as Map<String, Serializable>?
-        Log.d(javaClass.simpleName, data.toString())
-        data?.let {
-            val expectedLocation: Location? =
-                (options[KEY_GEOTAG_EXPECTED_LOCATION] as Map<String, Any>?)?.let { params ->
-                    val lat = params[KEY_LATITUDE] as Double
-                    val lng = params[KEY_LONGITUDE] as Double
-                    Location("").apply {
-                        latitude = lat
-                        longitude = lng
+                    HyperTrackSdkWrapper.withSdkInstance { sdk ->
+                        sdk.removeAvailabilityListener(availabilityListener)
+                        availabilityListener = null
                     }
                 }
-            when (val geotagResult = sdk.addGeotag(data, expectedLocation)) {
-                is GeotagResult.SuccessWithDeviation -> {
-                    result.success(serializeSuccess(geotagResult.getDeviceLocation()))
-                }
-                is GeotagResult.Success -> {
-                    result.success(serializeSuccess(geotagResult.getDeviceLocation()))
-                }
-                is GeotagResult.Error -> {
-                    result.success(serializeFailure(getLocationError(geotagResult.getReason())))
-                }
-            }
-        } ?: result.error(ERROR_CODE_METHOD_CALL, "Geotag data is null", null)
-    }
-
-    private fun setAvailability(
-        result: MethodChannel.Result,
-        sdk: HyperTrack,
-        isAvailable: Boolean
-    ) {
-        if (isAvailable == true) {
-            sdk.setAvailability(Availability.AVAILABLE)
-        } else if (isAvailable == false) {
-            sdk.setAvailability(Availability.UNAVAILABLE)
-            result.success(null)
-        }
-    }
-
-    private fun getLocationError(error: TrackingError): LocationError {
-        return Errors(getTrackingErrors(error))
-    }
-
-    private fun getLocationError(error: OutageReason): LocationError {
-        val blockersErrors = getHyperTrackErrorsFromBlockers()
-        return when (error) {
-            OutageReason.NO_GPS_SIGNAL -> {
-                Errors(setOf(HyperTrackError.gpsSignalLost) + blockersErrors)
-            }
-            OutageReason.MISSING_LOCATION_PERMISSION -> {
-                Errors(setOf(HyperTrackError.locationPermissionsDenied) + blockersErrors)
-            }
-            OutageReason.LOCATION_SERVICE_DISABLED -> {
-                Errors(setOf(HyperTrackError.locationServicesDisabled) + blockersErrors)
-            }
-            OutageReason.MISSING_ACTIVITY_PERMISSION -> {
-                Errors(setOf(HyperTrackError.motionActivityPermissionsDenied) + blockersErrors)
-            }
-            OutageReason.NOT_TRACKING -> {
-                NotRunning
-            }
-            OutageReason.START_HAS_NOT_FINISHED -> {
-                Starting
-            }
-            OutageReason.RESTART_REQUIRED -> {
-                throw IllegalStateException("RESTART_REQUIRED must not be returned")
-            }
-        }
-    }
-
-    private fun getLocationError(error: Reason): LocationError {
-        val blockersErrors = getHyperTrackErrorsFromBlockers()
-        return when (error) {
-            Reason.NO_GPS_SIGNAL -> {
-                Errors(setOf(HyperTrackError.gpsSignalLost) + blockersErrors)
-            }
-            Reason.MISSING_LOCATION_PERMISSION -> {
-                Errors(setOf(HyperTrackError.locationPermissionsDenied) + blockersErrors)
-            }
-            Reason.LOCATION_SERVICE_DISABLED -> {
-                Errors(setOf(HyperTrackError.locationServicesDisabled) + blockersErrors)
-            }
-            Reason.MISSING_ACTIVITY_PERMISSION -> {
-                Errors(setOf(HyperTrackError.motionActivityPermissionsDenied) + blockersErrors)
-            }
-            Reason.NOT_TRACKING -> {
-                NotRunning
-            }
-            Reason.START_HAS_NOT_FINISHED -> {
-                Starting
-            }
-        }
-    }
-
-    private fun getTrackingErrors(error: TrackingError): Set<HyperTrackError> {
-        return when (error.code) {
-            TrackingError.INVALID_PUBLISHABLE_KEY_ERROR -> {
-                HyperTrackError.invalidPublishableKey
-            }
-            TrackingError.PERMISSION_DENIED_ERROR -> {
-                HyperTrackError.permissionsDenied
-            }
-            TrackingError.AUTHORIZATION_ERROR -> {
-                HyperTrackError.blockedFromRunning
-            }
-            TrackingError.GPS_PROVIDER_DISABLED_ERROR -> {
-                HyperTrackError.locationServicesDisabled
-            }
-            TrackingError.UNKNOWN_NETWORK_ERROR -> {
-                HyperTrackError.blockedFromRunning
-            }
-            else -> {
-                throw RuntimeException("Unknown tracking error")
-            }
-        }.let {
-            setOf(it) + getHyperTrackErrorsFromBlockers()
-        }
-    }
-
-    private fun getHyperTrackErrorsFromBlockers(): Set<HyperTrackError> {
-        return HyperTrack.getBlockers().map {
-            when (it) {
-                Blocker.LOCATION_PERMISSION_DENIED -> {
-                    HyperTrackError.locationPermissionsDenied
-                }
-                Blocker.LOCATION_SERVICE_DISABLED -> {
-                    HyperTrackError.locationServicesDisabled
-                }
-                Blocker.ACTIVITY_PERMISSION_DENIED -> {
-                    HyperTrackError.motionActivityPermissionsDenied
-                }
-                Blocker.BACKGROUND_LOCATION_DENIED -> {
-                    HyperTrackError.locationPermissionsInsufficientForBackground
-                }
-            }
-        }.toSet()
-    }
-
-    private fun serializeSuccess(location: Location): Map<String, Any> {
-        return mapOf(
-            KEY_TYPE to TYPE_RESULT_SUCCESS,
-            KEY_VALUE to serializeLocation(location)
-        )
-    }
-
-    private fun serializeFailure(locationError: LocationError): Map<String, Any> {
-        return mapOf(
-            KEY_TYPE to TYPE_RESULT_FAILURE,
-            KEY_VALUE to serializeLocationError(locationError)
-        )
-    }
-
-    private fun serializeLocationResponse(result: Result<Location, OutageReason>): Map<String, Any> {
-        return if (result.isSuccess()) {
-            serializeSuccess(result.getValue())
-        } else {
-            serializeFailure(getLocationError(result.getError()))
-        }
-    }
-
-    private fun serializeIsTracking(isTracking: Boolean): Map<String, Boolean> {
-        return mapOf(KEY_IS_TRACKING to isTracking)
-    }
-
-    private fun serializeAvailability(isAvailable: Boolean): Map<String, Boolean> {
-        return mapOf(KEY_AVAILABILITY to isAvailable)
-    }
-
-    private fun serializeLocation(location: Location): Map<String, Double> {
-        return mapOf(
-            KEY_LATITUDE to location.latitude,
-            KEY_LONGITUDE to location.longitude
-        )
-    }
-
-    private fun serializeLocationError(locationError: LocationError): Map<String, Any> {
-        return when(locationError) {
-            NotRunning -> {
-                mapOf(KEY_TYPE to TYPE_LOCATION_ERROR_NOT_RUNNING)
-            }
-            Starting -> {
-                mapOf(KEY_TYPE to TYPE_LOCATION_ERROR_STARTING)
-            }
-            is Errors -> {
-                mapOf(
-                    KEY_TYPE to TYPE_LOCATION_ERROR_ERRORS,
-                    KEY_VALUE to locationError.errors.map { serializeHypertrackError(it) }
-                )
-            }
-        }
-    }
-
-    private fun serializeHypertrackError(error: HyperTrackError): Map<String, String> {
-        return mapOf(
-            KEY_TYPE to error.name,
-        )
+            })
     }
 
     companion object {
@@ -536,28 +245,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         private const val ERROR_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/trackingError"
         private const val AVAILABILTY_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/availability"
 
-        private const val KEY_TYPE = "type"
-        private const val KEY_VALUE = "value"
-
-        private const val TYPE_RESULT_SUCCESS = "success"
-        private const val TYPE_RESULT_FAILURE = "failure"
-
-        private const val TYPE_LOCATION_ERROR_NOT_RUNNING = "notRunning"
-        private const val TYPE_LOCATION_ERROR_STARTING = "starting"
-        private const val TYPE_LOCATION_ERROR_ERRORS = "errors"
-        private const val TYPE_HYPERTRACK_ERROR = "hypertrackError"
-
-        private const val KEY_AVAILABILITY = "available"
-        private const val KEY_IS_TRACKING = "isTracking"
-        private const val KEY_LATITUDE = "latitude"
-        private const val KEY_LONGITUDE = "longitude"
-        private const val KEY_GEOTAG_DATA = "data"
-        private const val KEY_GEOTAG_EXPECTED_LOCATION = "expectedLocation"
-
-        private const val ERROR_CODE_INIT = "init_error"
-        private const val ERROR_CODE_SDK_NOT_INITIALIZED = "sdk_not_initialized_error"
-
-        private const val ERROR_CODE_METHOD_CALL = "method_call_error"
+        private const val KEY_PUBLISHABLE_KEY = "publishableKey"
 
         private const val ERROR_CODE_STREAM_INIT = "stream_init_error"
         private const val ERROR_MESSAGE_STREAM_INIT = "Unable to create stream before SDK init"

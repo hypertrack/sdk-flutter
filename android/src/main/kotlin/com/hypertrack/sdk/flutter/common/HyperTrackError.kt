@@ -1,7 +1,8 @@
-package com.hypertrack.sdk.flutter
+package com.hypertrack.sdk.flutter.common
 
-// enum naming convention is ingored to make datatype sync
+// enum naming convention is ignored to make datatype sync
 // across platforms easier
+@Suppress("EnumEntryName")
 enum class HyperTrackError {
     gpsSignalLost,
     locationPermissionsDenied,
@@ -9,6 +10,5 @@ enum class HyperTrackError {
     locationServicesDisabled,
     motionActivityPermissionsDenied,
     invalidPublishableKey,
-    permissionsDenied,
     blockedFromRunning
 }

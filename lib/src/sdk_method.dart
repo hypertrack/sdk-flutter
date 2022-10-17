@@ -1,6 +1,5 @@
 enum SdkMethod {
   initialize,
-  getAvailability,
   getDeviceId,
   getLocation,
   startTracking,
@@ -9,8 +8,7 @@ enum SdkMethod {
   setName,
   setMetadata,
   isTracking,
+  isAvailable,
   addGeotag,
-  allowMockLocations,
-  enableDebugLogging,
   sync
 }

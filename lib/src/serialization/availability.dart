@@ -11,4 +11,4 @@ Map<String, bool> serializeAvailability(bool available) {
   return { _keyAvailability: available };
 }
 
-const _keyAvailability = "available";
+const _keyAvailability = "isAvailable";

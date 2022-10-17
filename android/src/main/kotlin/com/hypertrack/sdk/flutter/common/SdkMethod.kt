@@ -1,10 +1,9 @@
-package com.hypertrack.sdk.flutter
+package com.hypertrack.sdk.flutter.common
 
 // enum naming convention is ingored to make datatype sync
 // across platforms easier
 internal enum class SdkMethod {
     initialize,
-    getAvailability,
     getDeviceId,
     getLocation,
     startTracking,
@@ -13,8 +12,7 @@ internal enum class SdkMethod {
     setName,
     setMetadata,
     isTracking,
+    isAvailable,
     addGeotag,
-    allowMockLocations,
-    enableDebugLogging,
     sync
 }

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/services.dart';
 import 'package:hypertrack_plugin/data_types/json.dart';
 import 'package:hypertrack_plugin/data_types/location_error.dart';
@@ -20,9 +22,19 @@ class HyperTrack {
   /// Use this method to get the SDK instance.
   ///
   /// SDK will use the account identified by [publishableKey].
-  static Future<HyperTrack> initialize(String publishableKey) {
-    return invokeSdkVoidMethod(SdkMethod.initialize, publishableKey)
-        .then((value) => HyperTrack._());
+  static Future<HyperTrack> initialize(
+    String publishableKey, {
+    Bool? requireBackgroundTrackingPermission,
+    bool? loggingEnabled,
+    bool? allowMockLocations,
+  }) {
+    return invokeSdkVoidMethod(SdkMethod.initialize, {
+      _keyPublishableKey: publishableKey,
+      _keyRequireBackgroundTrackingPermission:
+          requireBackgroundTrackingPermission,
+      _keyLoggingEnabled: loggingEnabled,
+      _keyAllowMockLocations: allowMockLocations
+    }).then((value) => HyperTrack._());
   }
 
   /// Returns string that uniquely identifies device in HyperTrack platform.
@@ -38,7 +50,7 @@ class HyperTrack {
   /// states could be lost, so if more real-time responsiveness is required
   /// it is recommended to use [addGeotag] for passing that data.
   void setName(String name) {
-     invokeSdkVoidMethod(SdkMethod.setName, name);
+    invokeSdkVoidMethod(SdkMethod.setName, name);
   }
 
   Future<bool> get isTracking async {
@@ -48,7 +60,7 @@ class HyperTrack {
   }
 
   Future<bool> get isAvailable async {
-    return invokeSdkMethod(SdkMethod.getAvailability).then((value) {
+    return invokeSdkMethod(SdkMethod.isAvailable).then((value) {
       return deserializeAvailability(value);
     });
   }
@@ -76,8 +88,7 @@ class HyperTrack {
   /// could be lost, so if more real-time responsiveness is required it is
   /// recommended to use [addGeotag] for passing that data.
   void setMetadata(JSONObject data) {
-     invokeSdkVoidMethod(
-        SdkMethod.setMetadata, serializeMetadata(data));
+    invokeSdkVoidMethod(SdkMethod.setMetadata, serializeMetadata(data));
   }
 
   Future<Result<Location, LocationError>> addGeotag(JSONObject data) {
@@ -103,17 +114,6 @@ class HyperTrack {
   /// Stops tracking.
   void stopTracking() => invokeSdkVoidMethod(SdkMethod.stopTracking);
 
-  /// Allows you to use location mocking software (e.g. for development).
-  ///
-  /// Mock locations are ignored by HyperTrack SDK by default.
-  void setAllowMockLocations(bool isAllowed) {
-    invokeSdkVoidMethod(SdkMethod.allowMockLocations, isAllowed);
-  }
-
-  void setLoggingEnabled(bool isEnabled) {
-    invokeSdkVoidMethod(SdkMethod.enableDebugLogging, isEnabled);
-  }
-
   Stream<bool> get onTrackingChanged {
     return _trackingStateEventChannel.receiveBroadcastStream().map((event) {
       return deserializeIsTracking(event);
@@ -134,6 +134,11 @@ class HyperTrack {
 }
 
 const _channelPrefix = 'sdk.hypertrack.com';
+const _keyPublishableKey = 'publishableKey';
+const _keyRequireBackgroundTrackingPermission =
+    'requireBackgroundTrackingPermission';
+const _keyLoggingEnabled = 'loggingEnabled';
+const _keyAllowMockLocations = 'allowMockLocations';
 
 // channel for invoking SDK methods
 const _methodChannel = MethodChannel('$_channelPrefix/methods');
