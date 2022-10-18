@@ -12,6 +12,8 @@ enum HyperTrackError {
   motionActivityPermissionsNotDetermined,
   motionActivityPermissionsDenied,
   motionActivityServicesDisabled,
+  motionActivityPermissionsRestricted,
+  networkConnectionUnavailable,
   invalidPublishableKey,
   blockedFromRunning
 }

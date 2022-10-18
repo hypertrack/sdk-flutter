@@ -6,7 +6,7 @@ Set<HyperTrackError> deserializeTrackingErrors(List<Object?> response) {
   try {
     return response.map((e) {
       final error = (e as Map).cast<String, String>();
-      switch (error[keyType]) {
+      switch (error[keyValue]) {
         case "gpsSignalLost":
           return HyperTrackError.gpsSignalLost;
         case "locationMocked":

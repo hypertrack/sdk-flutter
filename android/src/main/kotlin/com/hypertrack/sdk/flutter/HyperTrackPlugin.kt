@@ -78,58 +78,58 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                         initParams
                     )
                     Success(Unit)
-                }.toFlutterResult(call, result)
+                }.sendAsFlutterResult(call, result)
             }
             SdkMethod.getDeviceId.name -> {
                 HyperTrackSdkWrapper.getDeviceID()
-                    .toFlutterResult(call, result)
+                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.isTracking.name -> {
                 HyperTrackSdkWrapper.isTracking()
-                    .toFlutterResult(call, result)
+                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.isAvailable.name -> {
                 HyperTrackSdkWrapper.isAvailable()
-                    .toFlutterResult(call, result)
+                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.setAvailability.name -> {
-                withArgs<Map<String,Boolean>, Unit>(call) { args ->
+                withArgs<Map<String, Boolean>, Unit>(call) { args ->
                     HyperTrackSdkWrapper.setAvailability(args)
                     Success(Unit)
-                }.toFlutterResult(call, result)
+                }.sendAsFlutterResult(call, result)
             }
             SdkMethod.getLocation.name -> {
                 HyperTrackSdkWrapper.getLocation()
-                    .toFlutterResult(call, result)
+                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.startTracking.name -> {
                 HyperTrackSdkWrapper.startTracking()
-                    .toFlutterResult(call, result)
+                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.stopTracking.name -> {
                 HyperTrackSdkWrapper.stopTracking()
-                    .toFlutterResult(call, result)
+                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.addGeotag.name -> {
                 withArgs<Map<String, Any>, Map<String, Any>>(call) { args ->
                     HyperTrackSdkWrapper.addGeotag(args)
-                }.toFlutterResult(call, result)
+                }.sendAsFlutterResult(call, result)
             }
             SdkMethod.setName.name -> {
                 withArgs<String, Unit>(call) { args ->
                     HyperTrackSdkWrapper.setName(args)
                     Success(Unit)
-                }.toFlutterResult(call, result)
+                }.sendAsFlutterResult(call, result)
             }
             SdkMethod.setMetadata.name -> {
                 withArgs<Map<String, Any>, Unit>(call) { args ->
                     HyperTrackSdkWrapper.setMetadata(args)
                     Success(Unit)
-                }.toFlutterResult(call, result)
+                }.sendAsFlutterResult(call, result)
             }
             SdkMethod.sync.name -> {
                 HyperTrackSdkWrapper.sync()
-                    .toFlutterResult(call, result)
+                    .sendAsFlutterResult(call, result)
             }
             else -> {
                 result.notImplemented()
@@ -162,8 +162,8 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                             }
                         }
                     sdk.addTrackingListener(trackingStateListener)
-                    events.success(HyperTrackSdkWrapper.isTracking())
-                }.sendEventIfError(events, ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT)
+                    events.success(serializeIsTracking(sdk.isTracking))
+                }.sendEventIfError(events, ERROR_CODE_STREAM_INIT)
             }
 
             override fun onCancel(arguments: Any?) {
@@ -194,7 +194,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                         }
                     sdk.addTrackingListener(errorChannelTrackingStateListener)
                     events.success(HyperTrackSdkWrapper.getInitialErrors())
-                }.sendEventIfError(events, ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT)
+                }.sendEventIfError(events, ERROR_CODE_STREAM_INIT)
             }
 
             override fun onCancel(arguments: Any?) {
@@ -217,16 +217,16 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                                 }
 
                                 override fun onAvailable() {
-                                    events.success(serializeAvailability(true))
+                                    events.success(serializeIsAvailable(true))
                                 }
 
                                 override fun onUnavailable() {
-                                    events.success(serializeAvailability(false))
+                                    events.success(serializeIsAvailable(false))
                                 }
                             }
                         sdk.addAvailabilityListener(availabilityListener)
-                        events.success(HyperTrackSdkWrapper.isAvailable())
-                    }.sendEventIfError(events, ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT)
+                        events.success(serializeIsAvailable(sdk.availability.equals(Availability.AVAILABLE)))
+                    }.sendEventIfError(events, ERROR_CODE_STREAM_INIT)
                 }
 
                 override fun onCancel(arguments: Any?) {
@@ -240,14 +240,13 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
 
     companion object {
         private const val METHOD_CHANNEL_NAME = "sdk.hypertrack.com/methods"
-        private const val TRACKING_STATE_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/trackingState"
-        private const val ERROR_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/trackingError"
+        private const val TRACKING_STATE_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/tracking"
+        private const val ERROR_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/errors"
         private const val AVAILABILTY_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/availability"
 
         private const val KEY_PUBLISHABLE_KEY = "publishableKey"
 
         private const val ERROR_CODE_STREAM_INIT = "stream_init_error"
-        private const val ERROR_MESSAGE_STREAM_INIT = "Unable to create stream before SDK init"
     }
 }
 

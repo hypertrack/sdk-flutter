@@ -24,7 +24,7 @@ class HyperTrack {
   /// SDK will use the account identified by [publishableKey].
   static Future<HyperTrack> initialize(
     String publishableKey, {
-    Bool? requireBackgroundTrackingPermission,
+    bool? requireBackgroundTrackingPermission,
     bool? loggingEnabled,
     bool? allowMockLocations,
   }) {
@@ -145,11 +145,11 @@ const _methodChannel = MethodChannel('$_channelPrefix/methods');
 
 // channels for receiving events from the SDK
 const EventChannel _trackingStateEventChannel =
-    EventChannel('$_channelPrefix/trackingState');
+    EventChannel('$_channelPrefix/tracking');
 const EventChannel _availabilityEventChannel =
     EventChannel('$_channelPrefix/availability');
 const EventChannel _errorEventChannel =
-    EventChannel('$_channelPrefix/trackingError');
+    EventChannel('$_channelPrefix/errors');
 
 Future<T> invokeSdkMethod<T>(SdkMethod method, [dynamic arguments]) {
   return _methodChannel.invokeMethod(method.name, arguments).then((value) {

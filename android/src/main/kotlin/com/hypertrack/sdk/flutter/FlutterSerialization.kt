@@ -7,11 +7,11 @@ import io.flutter.plugin.common.EventChannel.EventSink
 
 private const val ERROR_CODE_METHOD_CALL = "method_call_error"
 
-fun Unit.toFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
+fun Unit.sendAsFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
     return flutterResult.success(null)
 }
 
-fun <T> Result<T>.toFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
+fun <T> Result<T>.sendAsFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
     when(this) {
         is Success -> {
            when(this.success) {
@@ -43,9 +43,9 @@ fun <T> Result<T>.toFlutterResult(call: MethodCall, flutterResult: MethodChannel
     }
 }
 
-fun <T> Result<T>.sendEventIfError(events: EventSink, errorCode: String, errorMessage: String) {
+fun <T> Result<T>.sendEventIfError(events: EventSink, errorCode: String) {
     if(this is Failure) {
-        events.error(errorCode, errorMessage, null)
+        events.error(errorCode, this.failure.toString(), null)
     }
 }
 

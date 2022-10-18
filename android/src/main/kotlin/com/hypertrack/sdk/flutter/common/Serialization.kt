@@ -1,6 +1,7 @@
 package com.hypertrack.sdk.flutter.common
 
 import android.location.Location
+import java.lang.IllegalArgumentException
 
 /**
  * Platform-independent serialization code that converts HyperTrack data types
@@ -27,16 +28,25 @@ fun serializeFailure(locationError: LocationError): Map<String, Any> {
   )
 }
 
-fun serializeIsTracking(isTracking: Boolean): Map<String, Boolean> {
-  return mapOf(KEY_IS_TRACKING to isTracking)
+fun serializeIsTracking(isTracking: Boolean): Map<String, Any> {
+  return mapOf(
+    KEY_TYPE to TYPE_IS_TRACKING,
+    KEY_VALUE to isTracking
+  )
 }
 
-fun serializeAvailability(isAvailable: Boolean): Map<String, Boolean> {
-  return mapOf(KEY_AVAILABILITY to isAvailable)
+fun serializeIsAvailable(isAvailable: Boolean): Map<String, Any> {
+  return mapOf(
+    KEY_TYPE to TYPE_AVAILABILITY,
+    KEY_VALUE to isAvailable
+  )
 }
 
-fun deserializeAvailability(isAvailable: Map<String, Boolean>): Boolean {
-  return isAvailable.getValue(KEY_AVAILABILITY)
+fun deserializeAvailability(isAvailable: Map<String, Any>): Boolean {
+  if(isAvailable.getValue(KEY_TYPE) != TYPE_AVAILABILITY) {
+    throw IllegalArgumentException(isAvailable.toString())
+  }
+  return isAvailable.getValue(KEY_VALUE) as Boolean
 }
 
 fun serializeLocation(location: Location): Map<String, Double> {
@@ -65,7 +75,8 @@ fun serializeLocationError(locationError: LocationError): Map<String, Any> {
 
 fun serializeHypertrackError(error: HyperTrackError): Map<String, String> {
   return mapOf(
-    KEY_TYPE to error.name,
+    KEY_TYPE to TYPE_HYPERTRACK_ERROR,
+    KEY_VALUE to error.name
   )
 }
 
@@ -75,12 +86,15 @@ private const val KEY_VALUE = "value"
 private const val TYPE_RESULT_SUCCESS = "success"
 private const val TYPE_RESULT_FAILURE = "failure"
 
+private const val TYPE_AVAILABILITY = "isAvailable"
+private const val TYPE_HYPERTRACK_ERROR = "hyperTrackError"
+private const val TYPE_IS_TRACKING = "isTracking"
+
 private const val TYPE_LOCATION_ERROR_NOT_RUNNING = "notRunning"
 private const val TYPE_LOCATION_ERROR_STARTING = "starting"
 private const val TYPE_LOCATION_ERROR_ERRORS = "errors"
 
-private const val KEY_AVAILABILITY = "isAvailable"
-private const val KEY_IS_TRACKING = "isTracking"
 private const val KEY_LATITUDE = "latitude"
 private const val KEY_LONGITUDE = "longitude"
+
 const val KEY_GEOTAG_DATA = "data"

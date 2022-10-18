@@ -38,12 +38,6 @@ object HyperTrackSdkWrapper {
     }
   }
 
-  fun isTracking(): Result<Map<String, Boolean>> {
-    return withSdkInstance { sdk ->
-      serializeIsTracking(sdk.isTracking)
-    }
-  }
-
   fun startTracking() {
     withSdkInstance { sdk ->
       sdk.start()
@@ -84,9 +78,15 @@ object HyperTrackSdkWrapper {
     }
   }
 
-  fun isAvailable(): Result<Map<String, Boolean>> {
+  fun isTracking(): Result<Map<String, Any>> {
     return withSdkInstance { sdk ->
-      serializeAvailability(sdk.availability.equals(Availability.AVAILABLE))
+      serializeIsTracking(sdk.isTracking)
+    }
+  }
+
+  fun isAvailable(): Result<Map<String, Any>> {
+    return withSdkInstance { sdk ->
+      serializeIsAvailable(sdk.availability.equals(Availability.AVAILABLE))
     }
   }
 

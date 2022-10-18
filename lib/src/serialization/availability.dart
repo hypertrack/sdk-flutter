@@ -1,14 +1,19 @@
+import 'common.dart';
+
 bool deserializeAvailability(Map<Object?, Object?> response) {
-    Map<String, bool> data = response.cast<String, bool>();
-    bool? availability = data[_keyAvailability];
-    if (availability == null) {
+    Map<String, dynamic> data = response.cast<String, dynamic>();
+    bool? availability = data[keyValue];
+    if (data[keyType] != _typeAvailability || availability == null) {
       throw Exception("Invalid availability response: ${response}");
     }
     return availability;
 }
 
-Map<String, bool> serializeAvailability(bool available) {
-  return { _keyAvailability: available };
+Map<String, dynamic> serializeAvailability(bool available) {
+  return {
+    keyType: _typeAvailability,
+    keyValue: available
+  };
 }
 
-const _keyAvailability = "isAvailable";
+const _typeAvailability = "isAvailable";
