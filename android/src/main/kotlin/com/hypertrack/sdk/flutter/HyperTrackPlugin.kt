@@ -162,6 +162,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                             }
                         }
                     sdk.addTrackingListener(trackingStateListener)
+                    events.success(HyperTrackSdkWrapper.isTracking())
                 }.sendEventIfError(events, ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT)
             }
 
@@ -188,14 +189,11 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                             }
 
                             override fun onError(error: TrackingError) {
-                                events.success(
-                                    serializeErrors(
-                                        HyperTrackSdkWrapper.getTrackingErrors(error)
-                                    )
-                                )
+                                events.success(HyperTrackSdkWrapper.getErrors(error))
                             }
                         }
                     sdk.addTrackingListener(errorChannelTrackingStateListener)
+                    events.success(HyperTrackSdkWrapper.getInitialErrors())
                 }.sendEventIfError(events, ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT)
             }
 
@@ -227,6 +225,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                                 }
                             }
                         sdk.addAvailabilityListener(availabilityListener)
+                        events.success(HyperTrackSdkWrapper.isAvailable())
                     }.sendEventIfError(events, ERROR_CODE_STREAM_INIT, ERROR_MESSAGE_STREAM_INIT)
                 }
 

@@ -124,7 +124,15 @@ object HyperTrackSdkWrapper {
     }
   }
 
-  fun getTrackingErrors(error: TrackingError): Set<HyperTrackError> {
+  fun getInitialErrors(): List<Map<String, String>> {
+    return serializeErrors(getHyperTrackErrorsFromBlockers())
+  }
+
+  fun getErrors(error: TrackingError): List<Map<String, String>> {
+    return serializeErrors(getTrackingErrors((error)))
+  }
+
+  private fun getTrackingErrors(error: TrackingError): Set<HyperTrackError> {
     return when (error.code) {
       TrackingError.INVALID_PUBLISHABLE_KEY_ERROR -> {
         HyperTrackError.invalidPublishableKey
