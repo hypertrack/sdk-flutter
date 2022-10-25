@@ -1,5 +1,5 @@
-let keyLoggingEnabled = "loggingEnabled"
-let keyAllowMockLocations = "allowMockLocations"
+private let keyLoggingEnabled = "loggingEnabled"
+private let keyAllowMockLocations = "allowMockLocations"
 
 public struct SDKInitParams {
     let loggingEnabled: Bool
