@@ -25,7 +25,7 @@ Result<Location, LocationError> deserializeLocationResult(
 
 Location deserializeLocation(Map<Object?, Object?> map) {
   try {
-    final data = map.cast<String, double>();
+    final data = (map[keyValue] as Map<Object?, Object?>).cast<String, double>();
     return Location(
         data[_keyLatitude]!,
         data[_keyLongitude]!

@@ -51,8 +51,11 @@ fun deserializeAvailability(isAvailable: Map<String, Any>): Boolean {
 
 fun serializeLocation(location: Location): Map<String, Double> {
   return mapOf(
-    KEY_LATITUDE to location.latitude,
-    KEY_LONGITUDE to location.longitude
+    KEY_TYPE to TYPE_LOCATION,
+    KEY_VALUE to mapOf(
+      KEY_LATITUDE to location.latitude,
+      KEY_LONGITUDE to location.longitude
+    )
   )
 }
 
@@ -86,6 +89,7 @@ private const val KEY_VALUE = "value"
 private const val TYPE_RESULT_SUCCESS = "success"
 private const val TYPE_RESULT_FAILURE = "failure"
 
+private const val TYPE_LOCATION = "location"
 private const val TYPE_AVAILABILITY = "isAvailable"
 private const val TYPE_HYPERTRACK_ERROR = "hyperTrackError"
 private const val TYPE_IS_TRACKING = "isTracking"

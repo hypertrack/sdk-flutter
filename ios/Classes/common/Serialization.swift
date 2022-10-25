@@ -84,7 +84,7 @@ public func serializeLocationResult(_ result: Result<HyperTrack.Location, HyperT
             ]
         ]
     case .failure(let failure):
-        var locationError: Dictionary<String, Any>? = nil
+        var locationError: Dictionary<String, Any>
         switch(failure) {
         case .locationPermissionsNotDetermined:
             locationError = serializeHyperTrackError(HyperTrackError.locationPermissionsNotDetermined)
@@ -125,54 +125,15 @@ public func serializeLocationResult(_ result: Result<HyperTrack.Location, HyperT
         
         return [
             keyType: typeFailure,
-            keyValue: locationError!
+            keyValue: locationError
         ]
-    }
-}
-
-func getHyperTrackErrorName(_ error: HyperTrackError) -> String {
-    switch (error) {
-    case .gpsSignalLost:
-        return "gpsSignalLost"
-    case .locationMocked:
-        return "locationMocked"
-    case .locationPermissionsDenied:
-        return "locationPermissionsDenied"
-    case .locationPermissionsInsufficientForBackground:
-        return "locationPermissionsInsufficientForBackground"
-    case .locationPermissionsNotDetermined:
-        return "locationPermissionsNotDetermined"
-    case .locationPermissionsReducedAccuracy:
-        return "locationPermissionsReducedAccuracy"
-    case .locationPermissionsProvisional:
-        return "locationPermissionsProvisional"
-    case .locationPermissionsRestricted:
-        return "locationPermissionsRestricted"
-    case .locationServicesDisabled:
-        return "locationServicesDisabled"
-    case .locationServicesUnavailable:
-        return "locationServicesUnavailable"
-    case .motionActivityPermissionsNotDetermined:
-        return "motionActivityPermissionsNotDetermined"
-    case .motionActivityPermissionsDenied:
-        return "motionActivityPermissionsDenied"
-    case .motionActivityServicesDisabled:
-        return "motionActivityServicesDisabled"
-    case .invalidPublishableKey:
-        return "invalidPublishableKey"
-    case .blockedFromRunning:
-        return "blockedFromRunning"
-    case .motionActivityPermissionsRestricted:
-        return "motionActivityPermissionsRestricted"
-    case .networkConnectionUnavailable:
-        return "networkConnectionUnavailable"
     }
 }
 
 func serializeHyperTrackError(_ error: HyperTrackError) -> Dictionary<String, Any> {
     return [
         keyType: typeHyperTrackError,
-        keyValue: getHyperTrackErrorName(error)
+        keyValue: error.rawValue
     ]
 }
 
