@@ -5,30 +5,38 @@ class AvailabilityEventStreamHandler: NSObject, FlutterStreamHandler {
     private var eventSink: FlutterEventSink?
     
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        eventSink = events
+        let eventSink = events
+        self.eventSink = eventSink
         NotificationCenter.default.addObserver(self, selector: #selector(onAvailable), name: HyperTrack.becameAvailableNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onUnavailable), name: HyperTrack.becameUnavailableNotification, object: nil)
         
         HyperTrackSDKWrapper.withSdkInstance { (sdk: HyperTrack) in
-            eventSink!(serializeIsAvailable(sdk.availability))
+            eventSink(serializeIsAvailable(sdk.availability))
             return .success(.void)
-        }.sendErrorIfAny(eventSink!, errorCode: errorCodeStreamInit)
+        }.sendErrorIfAny(eventSink, errorCode: errorCodeStreamInit)
         
         return nil
     }
     
     func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        NotificationCenter.default.removeObserver(self)
         eventSink = nil
         return nil
     }
     
     @objc
     private func onAvailable() {
-        eventSink!(serializeIsAvailable(.available))
+        guard let eventSink = eventSink else {
+            return
+        }
+        eventSink(serializeIsAvailable(.available))
     }
     
     @objc
     private func onUnavailable() {
-        eventSink!(serializeIsAvailable(.unavailable))
+        guard let eventSink = eventSink else {
+            return
+        }
+        eventSink(serializeIsAvailable(.unavailable))
     }
 }

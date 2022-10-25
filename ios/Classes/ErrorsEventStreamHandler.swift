@@ -13,6 +13,7 @@ class ErrorsEventStreamHandler: NSObject, FlutterStreamHandler {
     }
     
     func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        NotificationCenter.default.removeObserver(self)
         eventSink = nil
         return nil
     }
@@ -29,12 +30,15 @@ class ErrorsEventStreamHandler: NSObject, FlutterStreamHandler {
     
     @objc
     private func onSdkError(notification: Notification) {
+        guard let eventSink = eventSink else {
+            return
+        }
         let error: HyperTrack.TrackingError? = notification.hyperTrackTrackingError()
         switch(error) {
         case .unrestorableError(let unrestorableError):
-            eventSink!([serializeHyperTrackError(getHyperTrackError(unrestorableError))])
+            eventSink([serializeHyperTrackError(getHyperTrackError(unrestorableError))])
         case .restorableError(let restorableError):
-            eventSink!([serializeHyperTrackError(getHyperTrackError(restorableError))])
+            eventSink([serializeHyperTrackError(getHyperTrackError(restorableError))])
         default:
             print("onSdkError: Unexpected SDK error \(error)")
         }
