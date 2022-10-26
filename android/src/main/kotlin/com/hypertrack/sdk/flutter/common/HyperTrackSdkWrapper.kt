@@ -6,7 +6,7 @@ import java.lang.RuntimeException
 
 
 /**
- * This class store SDK instance, calls HyperTrack SDK methods and serializes responses
+ * This class stores SDK instance, calls HyperTrack SDK methods and serializes responses
  */
 object HyperTrackSdkWrapper {
 

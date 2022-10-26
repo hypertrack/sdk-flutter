@@ -5,10 +5,20 @@ package com.hypertrack.sdk.flutter.common
 @Suppress("EnumEntryName")
 enum class HyperTrackError {
     gpsSignalLost,
+    locationMocked,
     locationPermissionsDenied,
     locationPermissionsInsufficientForBackground,
+    locationPermissionsNotDetermined,
+    locationPermissionsReducedAccuracy,
+    locationPermissionsProvisional,
+    locationPermissionsRestricted,
     locationServicesDisabled,
+    locationServicesUnavailable,
+    motionActivityPermissionsNotDetermined,
     motionActivityPermissionsDenied,
+    motionActivityServicesDisabled,
+    motionActivityPermissionsRestricted,
+    networkConnectionUnavailable,
     invalidPublishableKey,
     blockedFromRunning
 }
