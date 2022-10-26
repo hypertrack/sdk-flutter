@@ -1,17 +1,16 @@
 package com.hypertrack.sdk.flutter
 
 import com.hypertrack.sdk.flutter.common.*
+import com.hypertrack.sdk.flutter.HyperTrackPlugin.Companion.ERROR_CODE_METHOD_CALL
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 
-private const val ERROR_CODE_METHOD_CALL = "method_call_error"
-
-fun Unit.sendAsFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
+internal fun Unit.sendAsFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
     return flutterResult.success(null)
 }
 
-fun <T> Result<T>.sendAsFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
+internal fun <T> Result<T>.sendAsFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
     when(this) {
         is Success -> {
            when(this.success) {
@@ -43,7 +42,7 @@ fun <T> Result<T>.sendAsFlutterResult(call: MethodCall, flutterResult: MethodCha
     }
 }
 
-fun <T> Result<T>.sendEventIfError(events: EventSink, errorCode: String) {
+internal fun <T> Result<T>.sendEventIfError(events: EventSink, errorCode: String) {
     if(this is Failure) {
         events.error(errorCode, this.failure.toString(), null)
     }

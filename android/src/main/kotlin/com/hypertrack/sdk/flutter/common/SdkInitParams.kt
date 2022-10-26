@@ -1,6 +1,6 @@
 package com.hypertrack.sdk.flutter.common
 
-data class SdkInitParams(
+internal data class SdkInitParams(
   val requireBackgroundTrackingPermission: Boolean,
   val loggingEnabled: Boolean,
   val allowMockLocations: Boolean,

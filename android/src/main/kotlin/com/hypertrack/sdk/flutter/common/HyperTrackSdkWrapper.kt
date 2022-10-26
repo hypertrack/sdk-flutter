@@ -8,7 +8,7 @@ import java.lang.RuntimeException
 /**
  * This class stores SDK instance, calls HyperTrack SDK methods and serializes responses
  */
-object HyperTrackSdkWrapper {
+internal object HyperTrackSdkWrapper {
 
   private var sdkInstance: HyperTrack? = null
 

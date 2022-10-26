@@ -246,6 +246,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
 
         private const val KEY_PUBLISHABLE_KEY = "publishableKey"
 
+        internal const val ERROR_CODE_METHOD_CALL = "method_call_error"
         private const val ERROR_CODE_STREAM_INIT = "stream_init_error"
     }
 }

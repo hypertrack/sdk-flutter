@@ -1,6 +1,6 @@
 package com.hypertrack.sdk.flutter.common
 
-sealed class Result<S> {
+internal sealed class Result<S> {
     fun <T> flatMap(function: (S) -> Result<T>): Result<T> {
         return when(this) {
             is Success -> {
@@ -12,5 +12,5 @@ sealed class Result<S> {
         }
     }
 }
-data class Success<S>(val success: S): Result<S>()
-data class Failure<S>(val failure: Exception): Result<S>()
+internal data class Success<S>(val success: S): Result<S>()
+internal data class Failure<S>(val failure: Exception): Result<S>()
