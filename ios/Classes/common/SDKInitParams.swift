@@ -5,21 +5,8 @@ public struct SDKInitParams {
     let loggingEnabled: Bool
     let allowMockLocations: Bool
     
-    public static func fromMap(map: NSDictionary) -> SDKInitParams {
-        return SDKInitParams(
-            loggingEnabled: map.getOrBooleanOrNil(key: keyLoggingEnabled) ?? false,
-            allowMockLocations: map.getOrBooleanOrNil(key: keyAllowMockLocations) ?? false
-        )
-    }
-}
-
-extension NSDictionary {
-    func getOrBooleanOrNil(key: String) -> Bool? {
-        let value = self[key]
-        if(value is NSNull) {
-            return nil
-        } else {
-            return value as? Bool
-        }
+    init?(_ map: NSDictionary) {
+        self.loggingEnabled = (map[keyLoggingEnabled] as? Bool) ?? false
+        self.allowMockLocations = (map[keyAllowMockLocations] as? Bool) ?? false
     }
 }

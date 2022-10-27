@@ -1,8 +1,6 @@
 import HyperTrack
 import Flutter
 
-let keyPublishableKey = "publishableKey"
-
 public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
     private static let methodChannelName = "sdk.hypertrack.com/methods"
     private static let trackingEventChannelName = "sdk.hypertrack.com/tracking"
@@ -33,8 +31,6 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
         let args = call.value(forKey: "_arguments")
         let method = call.value(forKey: "_method") as! String
         
-        print("HyperTrackPlugin", method)
-        
         HyperTrackPluginSwift.handleMethod(sdkMethod, args).sendAsFlutterResult(method, result)
     }
     
@@ -46,13 +42,18 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
         case .initialize:
             let params = args as! NSDictionary
             let publishableKey = params[keyPublishableKey] as! String
-            let sdkInitParams = SDKInitParams.fromMap(map: params)
-            return HyperTrackSDKWrapper.initializeSDK(
-                publishableKey: publishableKey,
-                sdkInitParams: sdkInitParams
-            )
+            if let sdkInitParams = SDKInitParams(params) {
+                return HyperTrackSDKWrapper.initializeSDK(
+                    publishableKey: publishableKey,
+                    sdkInitParams: sdkInitParams
+                )
+            } else {
+                return .failure("\(errorInvalidSDKInitParams) \(params)")
+            }
+            
         case .getDeviceId:
             return HyperTrackSDKWrapper.getDeviceID()
+            
         case .getLocation:
             return HyperTrackSDKWrapper.getLocation()
             
@@ -63,13 +64,15 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
             return HyperTrackSDKWrapper.stopTracking()
             
         case .setAvailability:
-            return HyperTrackSDKWrapper.setAvailability(args as! Dictionary<String, Any>)
+            return HyperTrackSDKWrapper.setAvailability(
+                deserializeAvailability(args as! Dictionary<String, Any>)
+            )
             
         case .setName:
             return HyperTrackSDKWrapper.setName(args as! String)
             
         case .setMetadata:
-            return HyperTrackSDKWrapper.setMetadata(args as! Dictionary)
+            return HyperTrackSDKWrapper.setMetadata(args as! Dictionary<String, Any>)
             
         case .isTracking:
             return HyperTrackSDKWrapper.isTracking()
@@ -78,7 +81,9 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
             return HyperTrackSDKWrapper.isAvailable()
             
         case .addGeotag:
-            return HyperTrackSDKWrapper.addGeotag(args as! Dictionary)
+            return HyperTrackSDKWrapper.addGeotag(
+                (args as! Dictionary<String, Any>)[keyGeotagData] as! Dictionary<String, Any>
+            )
             
         case .sync:
             return HyperTrackSDKWrapper.sync()

@@ -15,7 +15,10 @@ private let typeIsAvailable = "isAvailable"
 private let keyLatitude = "latitude"
 private let keyLongitude = "longitude"
 
-public func getHyperTrackError(_ error: HyperTrack.UnrestorableError) -> HyperTrackError {
+let keyGeotagData = "data"
+let keyPublishableKey = "publishableKey"
+
+func getHyperTrackError(_ error: HyperTrack.UnrestorableError) -> HyperTrackError {
     switch(error) {
     case .invalidPublishableKey:
         return HyperTrackError.invalidPublishableKey
@@ -24,7 +27,7 @@ public func getHyperTrackError(_ error: HyperTrack.UnrestorableError) -> HyperTr
     }
 }
 
-public func getHyperTrackError(_ error: HyperTrack.RestorableError) -> HyperTrackError {
+func getHyperTrackError(_ error: HyperTrack.RestorableError) -> HyperTrackError {
     switch(error) {
     case .locationPermissionsNotDetermined:
         return HyperTrackError.locationPermissionsNotDetermined
@@ -55,7 +58,7 @@ public func getHyperTrackError(_ error: HyperTrack.RestorableError) -> HyperTrac
     }
 }
 
-public func serializeFatalError(fatalError: HyperTrack.FatalError) -> String {
+func serializeFatalError(fatalError: HyperTrack.FatalError) -> String {
     switch fatalError {
     case .developmentError(.missingLocationUpdatesBackgroundModeCapability):
         return "missingLocationUpdatesBackgroundModeCapability"
@@ -70,7 +73,7 @@ public func serializeFatalError(fatalError: HyperTrack.FatalError) -> String {
     }
 }
 
-public func serializeLocationResult(_ result: Result<HyperTrack.Location, HyperTrack.LocationError>) -> Dictionary<String, Any>  {
+func serializeLocationResult(_ result: Result<HyperTrack.Location, HyperTrack.LocationError>) -> Dictionary<String, Any>  {
     switch (result) {
     case .success(let success):
         return [
@@ -137,21 +140,21 @@ func serializeHyperTrackError(_ error: HyperTrackError) -> Dictionary<String, An
     ]
 }
 
-public func serializeIsTracking(_ isTracking: Bool) -> Dictionary<String, Any> {
+func serializeIsTracking(_ isTracking: Bool) -> Dictionary<String, Any> {
     return [
         keyType: typeIsTracking,
         keyValue: isTracking
     ]
 }
 
-public func serializeIsAvailable(_ isAvailable: HyperTrack.Availability) -> Dictionary<String, Any> {
+func serializeIsAvailable(_ isAvailable: HyperTrack.Availability) -> Dictionary<String, Any> {
     return [
         keyType: typeIsAvailable,
         keyValue: isAvailable == .available
     ]
 }
 
-public func deserializeAvailability(_ data: Dictionary<String, Any>) -> Bool {
+func deserializeAvailability(_ data: Dictionary<String, Any>) -> Bool {
     assert(data[keyType] as! String == typeIsAvailable)
     return data[keyValue] as! Bool
 }

@@ -94,7 +94,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
             }
             SdkMethod.setAvailability.name -> {
                 withArgs<Map<String, Boolean>, Unit>(call) { args ->
-                    HyperTrackSdkWrapper.setAvailability(args)
+                    HyperTrackSdkWrapper.setAvailability(deserializeAvailability(args))
                     Success(Unit)
                 }.sendAsFlutterResult(call, result)
             }

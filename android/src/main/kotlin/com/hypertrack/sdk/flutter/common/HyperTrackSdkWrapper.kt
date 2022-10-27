@@ -90,9 +90,9 @@ internal object HyperTrackSdkWrapper {
     }
   }
 
-  fun setAvailability(availability: Map<String, Boolean>) {
+  fun setAvailability(isAvailable: Boolean) {
     withSdkInstance { sdk ->
-      if (deserializeAvailability(availability)) {
+      if (isAvailable) {
         sdk.availability = Availability.AVAILABLE
       } else {
         sdk.availability = Availability.UNAVAILABLE

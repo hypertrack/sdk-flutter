@@ -1,6 +1,6 @@
 import HyperTrack
 
-public enum SuccessResult {
+enum SuccessResult {
     case void
     case string(String)
     case dict(Dictionary<String, Any>)
@@ -8,14 +8,16 @@ public enum SuccessResult {
 extension String: Error {}
 
 let errorInvalidPublishableKey = "Invalid publishable key"
+let errorInvalidSDKInitParams = "Invalid SDK init parameters"
 let errorSDKInstanceNil = "SDK instance is nil"
 let errorFailedToParseMetadata = "Failed to parse metadata"
+let errorFailedToParseGeotagData = "Failed to parse geotag data"
 
-public class HyperTrackSDKWrapper {
+class HyperTrackSDKWrapper {
     
     private static var sdkInstance: HyperTrack?
     
-    static public func initializeSDK(
+    static func initializeSDK(
         publishableKey publishableKey: String,
         sdkInitParams sdkInitParams: SDKInitParams
     ) -> Result<SuccessResult, String> {
@@ -34,25 +36,24 @@ public class HyperTrackSDKWrapper {
         }
     }
     
-    static public func getDeviceID() -> Result<SuccessResult, String> {
+    static func getDeviceID() -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in .success(.string(sdk.deviceID)) }
     }
     
-    static public func getLocation() -> Result<SuccessResult, String> {
+    static func getLocation() -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in .success(.dict(serializeLocationResult(sdk.location))) }
     }
     
-    static public func startTracking() -> Result<SuccessResult, String> {
+    static func startTracking() -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in .success(asVoid(sdk.start())) }
     }
     
-    static public func stopTracking() -> Result<SuccessResult, String> {
+    static func stopTracking() -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in .success(asVoid(sdk.stop())) }
     }
     
-    static public func setAvailability(_ availability: Dictionary<String, Any>) -> Result<SuccessResult, String> {
+    static func setAvailability(_ isAvailable: Bool) -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in
-            let isAvailable = deserializeAvailability(availability)
             if(isAvailable) {
                 sdk.availability = .available
             } else {
@@ -62,15 +63,14 @@ public class HyperTrackSDKWrapper {
         }
     }
     
-    static public func setName(_ name: String) -> Result<SuccessResult, String> {
+    static func setName(_ name: String) -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in .success(asVoid(sdk.setDeviceName(name))) }
     }
     
-    static public func setMetadata(_ map: Dictionary<String, Any>) -> Result<SuccessResult, String> {
+    static func setMetadata(_ map: Dictionary<String, Any>) -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in
-            let metadata = HyperTrack.Metadata.init(dictionary: map)
-            if(metadata != nil) {
-                sdk.setDeviceMetadata(metadata!)
+            if let metadata = HyperTrack.Metadata.init(dictionary: map) {
+                sdk.setDeviceMetadata(metadata)
                 return .success(.void)
             } else {
                 return .failure(errorFailedToParseMetadata)
@@ -78,19 +78,18 @@ public class HyperTrackSDKWrapper {
         }
     }
     
-    static public func isTracking() -> Result<SuccessResult, String> {
+    static func isTracking() -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in .success(.dict(serializeIsTracking(sdk.isTracking))) }
     }
     
-    static public func isAvailable() -> Result<SuccessResult, String> {
+    static func isAvailable() -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in .success(.dict(serializeIsAvailable(sdk.availability))) }
     }
     
-    static public func addGeotag(_ map: Dictionary<String, Any>) -> Result<SuccessResult, String> {
+    static func addGeotag(_ data: Dictionary<String, Any>) -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in
-            let metadata = HyperTrack.Metadata.init(dictionary: map)
-            if(metadata != nil) {
-                sdk.addGeotag(metadata!)
+            if let metadata = HyperTrack.Metadata.init(dictionary: data) {
+                sdk.addGeotag(metadata)
                 return .success(.dict(serializeLocationResult(.failure(.gpsSignalLost))))
             } else {
                 return .failure(errorFailedToParseMetadata)
@@ -98,11 +97,11 @@ public class HyperTrackSDKWrapper {
         }
     }
     
-    static public func sync() -> Result<SuccessResult, String> {
+    static func sync() -> Result<SuccessResult, String> {
         return withSdkInstance { sdk in .success(asVoid(sdk.syncDeviceSettings())) }
     }
     
-    static public func withSdkInstance(_ block: (HyperTrack) -> Result<SuccessResult, String>) -> Result<SuccessResult, String> {
+    static func withSdkInstance(_ block: (HyperTrack) -> Result<SuccessResult, String>) -> Result<SuccessResult, String> {
         if(sdkInstance != nil) {
             return block(sdkInstance!)
         } else {

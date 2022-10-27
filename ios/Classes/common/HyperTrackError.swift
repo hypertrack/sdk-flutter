@@ -1,4 +1,4 @@
-public enum HyperTrackError: String {
+enum HyperTrackError: String {
     case gpsSignalLost
     case locationMocked
     case locationPermissionsDenied
