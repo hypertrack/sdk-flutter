@@ -1,19 +1,19 @@
 public enum HyperTrackError: String {
-    case gpsSignalLost = "gpsSignalLost"
-    case locationMocked = "locationMocked"
-    case locationPermissionsDenied = "locationPermissionsDenied"
-    case locationPermissionsInsufficientForBackground = "locationPermissionsInsufficientForBackground"
-    case locationPermissionsNotDetermined = "locationPermissionsNotDetermined"
-    case locationPermissionsReducedAccuracy = "locationPermissionsReducedAccuracy"
-    case locationPermissionsProvisional = "locationPermissionsProvisional"
-    case locationPermissionsRestricted = "locationPermissionsRestricted"
-    case locationServicesDisabled = "locationServicesDisabled"
-    case locationServicesUnavailable = "locationServicesUnavailable"
-    case motionActivityPermissionsNotDetermined = "motionActivityPermissionsNotDetermined"
-    case motionActivityPermissionsDenied = "motionActivityPermissionsDenied"
-    case motionActivityServicesDisabled = "motionActivityServicesDisabled"
-    case motionActivityPermissionsRestricted = "motionActivityPermissionsRestricted"
-    case networkConnectionUnavailable = "networkConnectionUnavailable"
-    case invalidPublishableKey = "invalidPublishableKey"
-    case blockedFromRunning = "blockedFromRunning"
+    case gpsSignalLost
+    case locationMocked
+    case locationPermissionsDenied
+    case locationPermissionsInsufficientForBackground
+    case locationPermissionsNotDetermined
+    case locationPermissionsReducedAccuracy
+    case locationPermissionsProvisional
+    case locationPermissionsRestricted
+    case locationServicesDisabled
+    case locationServicesUnavailable
+    case motionActivityPermissionsNotDetermined
+    case motionActivityPermissionsDenied
+    case motionActivityServicesDisabled
+    case motionActivityPermissionsRestricted
+    case networkConnectionUnavailable
+    case invalidPublishableKey
+    case blockedFromRunning
 }
