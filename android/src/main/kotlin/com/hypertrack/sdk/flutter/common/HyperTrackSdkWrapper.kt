@@ -132,7 +132,7 @@ internal object HyperTrackSdkWrapper {
         return serializeErrors(getTrackingErrors((error)))
     }
 
-    private fun getTrackingErrors(error: TrackingError): Set<HyperTrackError> {
+    fun getTrackingErrors(error: TrackingError): Set<HyperTrackError> {
         return when (error.code) {
             TrackingError.INVALID_PUBLISHABLE_KEY_ERROR -> {
                 HyperTrackError.invalidPublishableKey
