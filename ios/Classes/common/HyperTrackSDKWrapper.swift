@@ -90,7 +90,7 @@ class HyperTrackSDKWrapper {
         return withSdkInstance { sdk in
             if let metadata = HyperTrack.Metadata.init(dictionary: data) {
                 sdk.addGeotag(metadata)
-                return .success(.dict(serializeLocationResult(.failure(.gpsSignalLost))))
+                return .success(.dict(serializeLocationResult(sdk.location)))
             } else {
                 return .failure(errorFailedToParseMetadata)
             }

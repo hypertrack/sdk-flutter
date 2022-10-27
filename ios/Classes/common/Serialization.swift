@@ -7,8 +7,9 @@ private let typeLocation = "location"
 private let typeSuccess = "success"
 private let typeFailure = "failure"
 private let typeHyperTrackError = "hyperTrackError"
-private let typeNotRunning = "notRunning"
-private let typeStarting = "starting"
+private let typeLocationErrorNotRunning = "notRunning"
+private let typeLocationErrorStarting = "starting"
+private let typeLocationErrorErrors = "errors"
 private let typeIsTracking = "isTracking"
 private let typeIsAvailable = "isAvailable"
 
@@ -90,39 +91,39 @@ func serializeLocationResult(_ result: Result<HyperTrack.Location, HyperTrack.Lo
         var locationError: Dictionary<String, Any>
         switch(failure) {
         case .locationPermissionsNotDetermined:
-            locationError = serializeHyperTrackError(HyperTrackError.locationPermissionsNotDetermined)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.locationPermissionsNotDetermined)
         case .locationPermissionsCantBeAskedInBackground:
-            locationError = serializeHyperTrackError(HyperTrackError.locationPermissionsNotDetermined)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.locationPermissionsNotDetermined)
         case .locationPermissionsInsufficientForBackground:
-            locationError = serializeHyperTrackError(HyperTrackError.locationPermissionsInsufficientForBackground)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.locationPermissionsInsufficientForBackground)
         case .locationPermissionsRestricted:
-            locationError = serializeHyperTrackError(HyperTrackError.locationPermissionsRestricted)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.locationPermissionsRestricted)
         case .locationPermissionsReducedAccuracy:
-            locationError = serializeHyperTrackError(HyperTrackError.locationPermissionsReducedAccuracy)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.locationPermissionsReducedAccuracy)
         case .locationPermissionsDenied:
-            locationError = serializeHyperTrackError(HyperTrackError.locationPermissionsDenied)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.locationPermissionsDenied)
         case .locationServicesDisabled:
-            locationError = serializeHyperTrackError(HyperTrackError.locationServicesDisabled)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.locationServicesDisabled)
         case .motionActivityPermissionsNotDetermined:
-            locationError = serializeHyperTrackError(HyperTrackError.motionActivityPermissionsNotDetermined)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.motionActivityPermissionsNotDetermined)
         case .motionActivityPermissionsCantBeAskedInBackground:
-            locationError = serializeHyperTrackError(HyperTrackError.motionActivityPermissionsNotDetermined)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.motionActivityPermissionsNotDetermined)
         case .motionActivityPermissionsDenied:
-            locationError = serializeHyperTrackError(HyperTrackError.motionActivityPermissionsDenied)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.motionActivityPermissionsDenied)
         case .motionActivityServicesDisabled:
-            locationError = serializeHyperTrackError(HyperTrackError.motionActivityServicesDisabled)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.motionActivityServicesDisabled)
             
         case .gpsSignalLost:
-            locationError = serializeHyperTrackError(HyperTrackError.gpsSignalLost)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.gpsSignalLost)
         case .locationMocked:
-            locationError = serializeHyperTrackError(HyperTrackError.locationMocked)
+            locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.locationMocked)
         case .starting:
             locationError = [
-                keyType: typeStarting
+                keyType: typeLocationErrorStarting
             ]
         case .notRunning:
             locationError = [
-                keyType: typeNotRunning
+                keyType: typeLocationErrorNotRunning
             ]
         }
         
@@ -131,6 +132,18 @@ func serializeLocationResult(_ result: Result<HyperTrack.Location, HyperTrack.Lo
             keyValue: locationError
         ]
     }
+}
+
+func serializeHyperTrackErrorAsLocationError(_ error: HyperTrackError) -> Dictionary<String, Any> {
+    return [
+        keyType: typeLocationErrorErrors,
+        keyValue: [
+            [
+                keyType: typeHyperTrackError,
+                keyValue: error.rawValue
+            ]
+        ]
+    ]
 }
 
 func serializeHyperTrackError(_ error: HyperTrackError) -> Dictionary<String, Any> {
