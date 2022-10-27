@@ -24,5 +24,3 @@ internal data class SdkInitParams(
   }
 
 }
-
-

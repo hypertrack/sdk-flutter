@@ -47,5 +47,3 @@ internal fun <T> Result<T>.sendEventIfError(events: EventSink, errorCode: String
         events.error(errorCode, this.failure.toString(), null)
     }
 }
-
-
