@@ -109,7 +109,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
             }
             SdkMethod.addGeotag.name -> {
                 withArgs<Map<String, Any>, Map<String, Any>>(call) { args ->
-                    HyperTrackSdkWrapper.addGeotag(args)
+                    HyperTrackSdkWrapper.addGeotag(deserializeGeotagData(args))
                 }.sendAsFlutterResult(call, result)
             }
             SdkMethod.setName.name -> {

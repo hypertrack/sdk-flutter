@@ -42,13 +42,6 @@ internal fun serializeIsAvailable(isAvailable: Boolean): Map<String, Any> {
     )
 }
 
-internal fun deserializeAvailability(isAvailable: Map<String, Any>): Boolean {
-    if (isAvailable.getValue(KEY_TYPE) != TYPE_AVAILABILITY) {
-        throw IllegalArgumentException(isAvailable.toString())
-    }
-    return isAvailable.getValue(KEY_VALUE) as Boolean
-}
-
 internal fun serializeLocation(location: Location): Map<String, Any> {
     return mapOf(
         KEY_TYPE to TYPE_LOCATION,
@@ -81,6 +74,17 @@ internal fun serializeHypertrackError(error: HyperTrackError): Map<String, Strin
         KEY_TYPE to TYPE_HYPERTRACK_ERROR,
         KEY_VALUE to error.name
     )
+}
+
+internal fun deserializeAvailability(isAvailable: Map<String, Any>): Boolean {
+    if (isAvailable.getValue(KEY_TYPE) != TYPE_AVAILABILITY) {
+        throw IllegalArgumentException(isAvailable.toString())
+    }
+    return isAvailable.getValue(KEY_VALUE) as Boolean
+}
+
+internal fun deserializeGeotagData(map: Map<String, Any>): Map<String, Any> {
+    return map.getValue(KEY_GEOTAG_DATA) as Map<String, Any>
 }
 
 private const val KEY_TYPE = "type"

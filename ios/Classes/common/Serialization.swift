@@ -171,3 +171,7 @@ func deserializeAvailability(_ data: Dictionary<String, Any>) -> Bool {
     assert(data[keyType] as! String == typeIsAvailable)
     return data[keyValue] as! Bool
 }
+
+func deserializeGeotagData(_ data: Dictionary<String, Any>) -> Dictionary<String, Any> {
+    return data[keyGeotagData] as! Dictionary<String, Any>
+}

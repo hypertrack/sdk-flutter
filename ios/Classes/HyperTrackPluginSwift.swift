@@ -82,7 +82,7 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
             
         case .addGeotag:
             return HyperTrackSDKWrapper.addGeotag(
-                (args as! Dictionary<String, Any>)[keyGeotagData] as! Dictionary<String, Any>
+                deserializeGeotagData(args as! Dictionary<String, Any>)
             )
             
         case .sync:

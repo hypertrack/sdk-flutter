@@ -57,9 +57,9 @@ internal object HyperTrackSdkWrapper {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun addGeotag(map: Map<String, Any>): Result<Map<String, Any>> {
+    fun addGeotag(data: Map<String, Any>): Result<Map<String, Any>> {
         return withSdkInstance { sdk ->
-            sdk.addGeotag(map.getValue(KEY_GEOTAG_DATA) as Map<String, Any>).let { result ->
+            sdk.addGeotag(data).let { result ->
                 when (result) {
                     is GeotagResult.SuccessWithDeviation -> {
                         serializeSuccess(result.deviceLocation)
