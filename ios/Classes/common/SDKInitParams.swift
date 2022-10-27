@@ -19,7 +19,7 @@ extension NSDictionary {
         if(value is NSNull) {
             return nil
         } else {
-            return value as! Bool
+            return value as? Bool
         }
     }
 }
