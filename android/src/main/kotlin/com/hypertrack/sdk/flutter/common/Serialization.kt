@@ -9,78 +9,78 @@ import java.lang.IllegalArgumentException
  */
 
 internal fun serializeErrors(errors: Set<HyperTrackError>): List<Map<String, String>> {
-  return errors.map {
-    serializeHypertrackError(it)
-  }
+    return errors.map {
+        serializeHypertrackError(it)
+    }
 }
 
 internal fun serializeSuccess(location: Location): Map<String, Any> {
-  return mapOf(
-    KEY_TYPE to TYPE_RESULT_SUCCESS,
-    KEY_VALUE to serializeLocation(location)
-  )
+    return mapOf(
+        KEY_TYPE to TYPE_RESULT_SUCCESS,
+        KEY_VALUE to serializeLocation(location)
+    )
 }
 
 internal fun serializeFailure(locationError: LocationError): Map<String, Any> {
-  return mapOf(
-    KEY_TYPE to TYPE_RESULT_FAILURE,
-    KEY_VALUE to serializeLocationError(locationError)
-  )
+    return mapOf(
+        KEY_TYPE to TYPE_RESULT_FAILURE,
+        KEY_VALUE to serializeLocationError(locationError)
+    )
 }
 
 internal fun serializeIsTracking(isTracking: Boolean): Map<String, Any> {
-  return mapOf(
-    KEY_TYPE to TYPE_IS_TRACKING,
-    KEY_VALUE to isTracking
-  )
+    return mapOf(
+        KEY_TYPE to TYPE_IS_TRACKING,
+        KEY_VALUE to isTracking
+    )
 }
 
 internal fun serializeIsAvailable(isAvailable: Boolean): Map<String, Any> {
-  return mapOf(
-    KEY_TYPE to TYPE_AVAILABILITY,
-    KEY_VALUE to isAvailable
-  )
+    return mapOf(
+        KEY_TYPE to TYPE_AVAILABILITY,
+        KEY_VALUE to isAvailable
+    )
 }
 
 internal fun deserializeAvailability(isAvailable: Map<String, Any>): Boolean {
-  if(isAvailable.getValue(KEY_TYPE) != TYPE_AVAILABILITY) {
-    throw IllegalArgumentException(isAvailable.toString())
-  }
-  return isAvailable.getValue(KEY_VALUE) as Boolean
+    if (isAvailable.getValue(KEY_TYPE) != TYPE_AVAILABILITY) {
+        throw IllegalArgumentException(isAvailable.toString())
+    }
+    return isAvailable.getValue(KEY_VALUE) as Boolean
 }
 
 internal fun serializeLocation(location: Location): Map<String, Any> {
-  return mapOf(
-    KEY_TYPE to TYPE_LOCATION,
-    KEY_VALUE to mapOf(
-      KEY_LATITUDE to location.latitude,
-      KEY_LONGITUDE to location.longitude
+    return mapOf(
+        KEY_TYPE to TYPE_LOCATION,
+        KEY_VALUE to mapOf(
+            KEY_LATITUDE to location.latitude,
+            KEY_LONGITUDE to location.longitude
+        )
     )
-  )
 }
 
 internal fun serializeLocationError(locationError: LocationError): Map<String, Any> {
-  return when(locationError) {
-    NotRunning -> {
-      mapOf(KEY_TYPE to TYPE_LOCATION_ERROR_NOT_RUNNING)
+    return when (locationError) {
+        NotRunning -> {
+            mapOf(KEY_TYPE to TYPE_LOCATION_ERROR_NOT_RUNNING)
+        }
+        Starting -> {
+            mapOf(KEY_TYPE to TYPE_LOCATION_ERROR_STARTING)
+        }
+        is Errors -> {
+            mapOf(
+                KEY_TYPE to TYPE_LOCATION_ERROR_ERRORS,
+                KEY_VALUE to locationError.errors.map { serializeHypertrackError(it) }
+            )
+        }
     }
-    Starting -> {
-      mapOf(KEY_TYPE to TYPE_LOCATION_ERROR_STARTING)
-    }
-    is Errors -> {
-      mapOf(
-        KEY_TYPE to TYPE_LOCATION_ERROR_ERRORS,
-        KEY_VALUE to locationError.errors.map { serializeHypertrackError(it) }
-      )
-    }
-  }
 }
 
 internal fun serializeHypertrackError(error: HyperTrackError): Map<String, String> {
-  return mapOf(
-    KEY_TYPE to TYPE_HYPERTRACK_ERROR,
-    KEY_VALUE to error.name
-  )
+    return mapOf(
+        KEY_TYPE to TYPE_HYPERTRACK_ERROR,
+        KEY_VALUE to error.name
+    )
 }
 
 private const val KEY_TYPE = "type"

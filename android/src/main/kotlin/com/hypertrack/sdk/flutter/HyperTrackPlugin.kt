@@ -67,17 +67,14 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
             SdkMethod.initialize.name -> {
                 withArgs<Map<String, Any>, Unit>(call) { args ->
                     val publishableKey = args.getValue(KEY_PUBLISHABLE_KEY) as String
-                    val initParams = SdkInitParams.fromMap(args.filter {
-                        it.value is Boolean
-                    }.mapValues {
-                        it.value is Boolean
-                    })
-
-                    HyperTrackSdkWrapper.initialize(
-                        publishableKey,
-                        initParams
-                    )
-                    Success(Unit)
+                    SdkInitParams.fromMap(args)
+                        .flatMap { initParams ->
+                            HyperTrackSdkWrapper.initialize(
+                                publishableKey,
+                                initParams
+                            )
+                            Success(Unit)
+                        }
                 }.sendAsFlutterResult(call, result)
             }
             SdkMethod.getDeviceId.name -> {

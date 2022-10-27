@@ -10,27 +10,30 @@ internal fun Unit.sendAsFlutterResult(call: MethodCall, flutterResult: MethodCha
     return flutterResult.success(null)
 }
 
-internal fun <T> Result<T>.sendAsFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
-    when(this) {
+internal fun <T> Result<T>.sendAsFlutterResult(
+    call: MethodCall,
+    flutterResult: MethodChannel.Result
+) {
+    when (this) {
         is Success -> {
-           when(this.success) {
-               is Unit -> {
-                   flutterResult.success(null)
-               }
-               is String -> {
-                   flutterResult.success(this.success)
-               }
-               is Map<*, *> -> {
-                   flutterResult.success(this.success)
-               }
-               else -> {
-                   flutterResult.error(
-                       ERROR_CODE_METHOD_CALL,
-                       "onMethodCall(${call.method}) - Invalid response ${this.success}",
-                       null
-                   )
-               }
-           }
+            when (this.success) {
+                is Unit -> {
+                    flutterResult.success(null)
+                }
+                is String -> {
+                    flutterResult.success(this.success)
+                }
+                is Map<*, *> -> {
+                    flutterResult.success(this.success)
+                }
+                else -> {
+                    flutterResult.error(
+                        ERROR_CODE_METHOD_CALL,
+                        "onMethodCall(${call.method}) - Invalid response ${this.success}",
+                        null
+                    )
+                }
+            }
         }
         is Failure -> {
             flutterResult.error(
@@ -43,7 +46,7 @@ internal fun <T> Result<T>.sendAsFlutterResult(call: MethodCall, flutterResult: 
 }
 
 internal fun <T> Result<T>.sendEventIfError(events: EventSink, errorCode: String) {
-    if(this is Failure) {
+    if (this is Failure) {
         events.error(errorCode, this.failure.toString(), null)
     }
 }
