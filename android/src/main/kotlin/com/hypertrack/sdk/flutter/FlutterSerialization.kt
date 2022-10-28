@@ -26,6 +26,9 @@ internal fun <T> Result<T>.sendAsFlutterResult(
                 is Map<*, *> -> {
                     flutterResult.success(this.success)
                 }
+                is NotImplemented -> {
+                    flutterResult.notImplemented()
+                }
                 else -> {
                     flutterResult.error(
                         ERROR_CODE_METHOD_CALL,
@@ -36,11 +39,15 @@ internal fun <T> Result<T>.sendAsFlutterResult(
             }
         }
         is Failure -> {
-            flutterResult.error(
-                ERROR_CODE_METHOD_CALL,
-                this.failure.toString(),
-                null
-            )
+            if(this.failure is Exception) {
+                flutterResult.error(
+                    ERROR_CODE_METHOD_CALL,
+                    this.failure.toString(),
+                    null
+                )
+            } else {
+                throw this.failure
+            }
         }
     }
 }

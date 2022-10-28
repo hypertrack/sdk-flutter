@@ -38,40 +38,41 @@ internal object HyperTrackSdkWrapper {
         }
     }
 
-    fun startTracking() {
-        withSdkInstance { sdk ->
+    fun startTracking(): Result<Unit> {
+        return withSdkInstance { sdk ->
             sdk.start()
         }
     }
 
-    fun stopTracking() {
-        withSdkInstance { sdk ->
+    fun stopTracking(): Result<Unit> {
+        return withSdkInstance { sdk ->
             sdk.stop()
         }
     }
 
-    fun sync() {
-        withSdkInstance { sdk ->
+    fun sync(): Result<Unit> {
+        return withSdkInstance { sdk ->
             sdk.syncDeviceSettings()
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun addGeotag(data: Map<String, Any>): Result<Map<String, Any>> {
-        return withSdkInstance { sdk ->
-            sdk.addGeotag(data).let { result ->
-                when (result) {
-                    is GeotagResult.SuccessWithDeviation -> {
-                        serializeSuccess(result.deviceLocation)
-                    }
-                    is GeotagResult.Success -> {
-                        serializeSuccess(result.deviceLocation)
-                    }
-                    is GeotagResult.Error -> {
-                        serializeFailure(getLocationError(result.reason))
-                    }
-                    else -> {
-                        throw IllegalArgumentException()
+    fun addGeotag(args: Map<String, Any>): Result<Map<String, Any>> {
+        return deserializeGeotagData(args).flatMap {
+            withSdkInstance { sdk ->
+                sdk.addGeotag(it.data).let { result ->
+                    when (result) {
+                        is GeotagResult.SuccessWithDeviation -> {
+                            serializeSuccess(result.deviceLocation)
+                        }
+                        is GeotagResult.Success -> {
+                            serializeSuccess(result.deviceLocation)
+                        }
+                        is GeotagResult.Error -> {
+                            serializeFailure(getLocationError(result.reason))
+                        }
+                        else -> {
+                            throw IllegalArgumentException()
+                        }
                     }
                 }
             }
@@ -90,24 +91,26 @@ internal object HyperTrackSdkWrapper {
         }
     }
 
-    fun setAvailability(isAvailable: Boolean) {
-        withSdkInstance { sdk ->
-            if (isAvailable) {
-                sdk.availability = Availability.AVAILABLE
-            } else {
-                sdk.availability = Availability.UNAVAILABLE
+    fun setAvailability(args: Map<String, Any>): Result<Unit> {
+        return deserializeAvailability(args).flatMap { isAvailable ->
+            withSdkInstance { sdk ->
+                if (isAvailable) {
+                    sdk.availability = Availability.AVAILABLE
+                } else {
+                    sdk.availability = Availability.UNAVAILABLE
+                }
             }
         }
     }
 
-    fun setName(name: String) {
-        withSdkInstance { sdk ->
+    fun setName(name: String): Result<Unit> {
+        return withSdkInstance { sdk ->
             sdk.setDeviceName(name)
         }
     }
 
-    fun setMetadata(metadata: Map<String, Any>) {
-        withSdkInstance { sdk ->
+    fun setMetadata(metadata: Map<String, Any>): Result<Unit> {
+        return withSdkInstance { sdk ->
             sdk.setDeviceMetadata(metadata)
         }
     }
@@ -132,7 +135,23 @@ internal object HyperTrackSdkWrapper {
         return serializeErrors(getTrackingErrors((error)))
     }
 
-    fun getTrackingErrors(error: TrackingError): Set<HyperTrackError> {
+    fun <T> withSdkInstance(
+        onInstanceCall: (sdk: HyperTrack) -> T
+    ): Result<T> {
+        return this.sdkInstance.let { instance ->
+            if (instance == null) {
+                Failure(Exception("HyperTrack SDK is not initialized"))
+            } else {
+                try {
+                    Success(onInstanceCall(instance))
+                } catch (e: Exception) {
+                    Failure(e)
+                }
+            }
+        }
+    }
+
+    private fun getTrackingErrors(error: TrackingError): Set<HyperTrackError> {
         return when (error.code) {
             TrackingError.INVALID_PUBLISHABLE_KEY_ERROR -> {
                 HyperTrackError.invalidPublishableKey
@@ -154,22 +173,6 @@ internal object HyperTrackSdkWrapper {
             }
         }.let { hyperTrackError ->
             (hyperTrackError?.let { setOf(it) } ?: setOf()) + getHyperTrackErrorsFromBlockers()
-        }
-    }
-
-    fun <T> withSdkInstance(
-        onInstanceCall: (sdk: HyperTrack) -> T
-    ): Result<T> {
-        return this.sdkInstance.let { instance ->
-            if (instance == null) {
-                Failure(Exception("HyperTrack SDK is not initialized"))
-            } else {
-                try {
-                    Success(onInstanceCall(instance))
-                } catch (e: Exception) {
-                    Failure(e)
-                }
-            }
         }
     }
 

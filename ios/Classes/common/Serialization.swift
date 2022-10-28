@@ -167,11 +167,25 @@ func serializeIsAvailable(_ isAvailable: HyperTrack.Availability) -> Dictionary<
     ]
 }
 
-func deserializeAvailability(_ data: Dictionary<String, Any>) -> Bool {
-    assert(data[keyType] as! String == typeIsAvailable)
-    return data[keyValue] as! Bool
+func deserializeAvailability(_ data: Dictionary<String, Any>) -> Result<Bool, FailureResult> {
+    if(data[keyType] as? String != typeIsAvailable) {
+        return .failure(.fatalError(getParseError(data, key: keyType)))
+    }
+    guard let value = data[keyValue] as? Bool else {
+        return .failure(.fatalError(getParseError(data, key: keyValue)))
+    }
+    return .success(value)
 }
 
-func deserializeGeotagData(_ data: Dictionary<String, Any>) -> Dictionary<String, Any> {
-    return data[keyGeotagData] as! Dictionary<String, Any>
+func deserializeGeotagData(
+    _ data: Dictionary<String, Any>
+) -> Result<Dictionary<String, Any>, FailureResult> {
+    guard let data = data[keyGeotagData] as? Dictionary<String, Any> else {
+        return .failure(.fatalError(getParseError(data, key: keyGeotagData)))
+    }
+    return .success(data)
+}
+
+func getParseError(_ data: Any, key: String) -> String {
+    return "Invalid input for key \(key): \(data)"
 }

@@ -12,11 +12,14 @@ class TrackingEventStreamHandler: NSObject, FlutterStreamHandler {
         NotificationCenter.default.addObserver(self, selector: #selector(onTrackingStarted), name: HyperTrack.startedTrackingNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onTrackingStopped), name: HyperTrack.stoppedTrackingNotification, object: nil)
         
-        HyperTrackSDKWrapper.withSdkInstance { (sdk: HyperTrack) in
-            eventSink(serializeIsTracking(sdk.isTracking))
-            return .success(.void)
-        }.sendErrorIfAny(eventSink, errorCode: errorCodeStreamInit)
-        
+        sendErrorIfAny(
+            result: HyperTrackSDKWrapper.withSdkInstance { (sdk: HyperTrack) in
+                eventSink(serializeIsTracking(sdk.isTracking))
+                return .success(.void)
+            },
+            channel: eventSink,
+            errorCode: errorCodeStreamInit
+        )
         return nil
     }
     

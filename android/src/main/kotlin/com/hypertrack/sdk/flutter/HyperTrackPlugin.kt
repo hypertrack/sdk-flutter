@@ -58,12 +58,18 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        invokeSdkMethod(call).sendAsFlutterResult(call, result)
+    }
+
+    private fun invokeSdkMethod(
+        call: MethodCall
+    ): Result<*> {
         /**
          * we use withSdkInstance() to be able to check if the method is unknown
          * before checking if instance is present
          * for case if the unknown method is called before the init
          */
-        when (call.method) {
+        return when(call.method) {
             SdkMethod.initialize.name -> {
                 withArgs<Map<String, Any>, Unit>(call) { args ->
                     val publishableKey = args.getValue(KEY_PUBLISHABLE_KEY) as String
@@ -75,61 +81,51 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                             )
                             Success(Unit)
                         }
-                }.sendAsFlutterResult(call, result)
+                }
             }
             SdkMethod.getDeviceId.name -> {
                 HyperTrackSdkWrapper.getDeviceID()
-                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.isTracking.name -> {
                 HyperTrackSdkWrapper.isTracking()
-                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.isAvailable.name -> {
                 HyperTrackSdkWrapper.isAvailable()
-                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.setAvailability.name -> {
                 withArgs<Map<String, Boolean>, Unit>(call) { args ->
-                    HyperTrackSdkWrapper.setAvailability(deserializeAvailability(args))
-                    Success(Unit)
-                }.sendAsFlutterResult(call, result)
+                    HyperTrackSdkWrapper.setAvailability(args)
+                }
             }
             SdkMethod.getLocation.name -> {
                 HyperTrackSdkWrapper.getLocation()
-                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.startTracking.name -> {
                 HyperTrackSdkWrapper.startTracking()
-                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.stopTracking.name -> {
                 HyperTrackSdkWrapper.stopTracking()
-                    .sendAsFlutterResult(call, result)
             }
             SdkMethod.addGeotag.name -> {
                 withArgs<Map<String, Any>, Map<String, Any>>(call) { args ->
-                    HyperTrackSdkWrapper.addGeotag(deserializeGeotagData(args))
-                }.sendAsFlutterResult(call, result)
+                    HyperTrackSdkWrapper.addGeotag(args)
+                }
             }
             SdkMethod.setName.name -> {
                 withArgs<String, Unit>(call) { args ->
                     HyperTrackSdkWrapper.setName(args)
-                    Success(Unit)
-                }.sendAsFlutterResult(call, result)
+                }
             }
             SdkMethod.setMetadata.name -> {
                 withArgs<Map<String, Any>, Unit>(call) { args ->
                     HyperTrackSdkWrapper.setMetadata(args)
-                    Success(Unit)
-                }.sendAsFlutterResult(call, result)
+                }
             }
             SdkMethod.sync.name -> {
                 HyperTrackSdkWrapper.sync()
-                    .sendAsFlutterResult(call, result)
             }
             else -> {
-                result.notImplemented()
+                Success(NotImplemented)
             }
         }
     }
