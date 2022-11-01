@@ -103,7 +103,7 @@ private fun <T> parse(
     } catch (e: Exception) {
         Failure(
             if (handle.exceptions.isNotEmpty()) {
-                ParsingExceptions(source, handle.exceptions)
+                ParsingExceptions(source, handle.exceptions + listOf(e))
             } else {
                 e
             }
