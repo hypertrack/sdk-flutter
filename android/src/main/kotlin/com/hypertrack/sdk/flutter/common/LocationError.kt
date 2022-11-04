@@ -1,5 +1,8 @@
 package com.hypertrack.sdk.flutter.common
 
+/**
+ * Check HyperTrack SDK docs for LocationError
+ */
 internal sealed class LocationError
 internal object NotRunning : LocationError()
 internal object Starting : LocationError()

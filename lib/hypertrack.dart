@@ -6,6 +6,8 @@ import 'package:hypertrack_plugin/data_types/location_error.dart';
 import 'package:hypertrack_plugin/data_types/result.dart';
 import 'package:hypertrack_plugin/src/sdk_method.dart';
 import 'package:hypertrack_plugin/src/serialization/availability.dart';
+import 'package:hypertrack_plugin/src/serialization/device_id.dart';
+import 'package:hypertrack_plugin/src/serialization/device_name.dart';
 import 'package:hypertrack_plugin/src/serialization/geotag.dart';
 import 'package:hypertrack_plugin/src/serialization/hypertrack_error.dart';
 import 'package:hypertrack_plugin/src/serialization/location_result.dart';
@@ -31,15 +33,17 @@ class HyperTrack {
     return invokeSdkVoidMethod(SdkMethod.initialize, {
       _keyPublishableKey: publishableKey,
       _keyRequireBackgroundTrackingPermission:
-          requireBackgroundTrackingPermission,
-      _keyLoggingEnabled: loggingEnabled,
-      _keyAllowMockLocations: allowMockLocations
+          requireBackgroundTrackingPermission ??= false,
+      _keyLoggingEnabled: loggingEnabled ??= false,
+      _keyAllowMockLocations: allowMockLocations ??= false
     }).then((value) => HyperTrack._());
   }
 
   /// Returns string that uniquely identifies device in HyperTrack platform.
   Future<String> get deviceId async {
-    return invokeSdkMethod(SdkMethod.getDeviceId);
+    return invokeSdkMethod(SdkMethod.getDeviceId).then((value) {
+      return deserializeDeviceId(value);
+    });
   }
 
   /// Sets current device name, that can be used for easier dashboard navigation.
@@ -50,7 +54,7 @@ class HyperTrack {
   /// states could be lost, so if more real-time responsiveness is required
   /// it is recommended to use [addGeotag] for passing that data.
   void setName(String name) {
-    invokeSdkVoidMethod(SdkMethod.setName, name);
+    invokeSdkVoidMethod(SdkMethod.setName, serializeDeviceName(name));
   }
 
   Future<bool> get isTracking async {

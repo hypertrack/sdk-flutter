@@ -1,40 +1,61 @@
 package com.hypertrack.sdk.flutter.common
 
 import com.hypertrack.sdk.*
+import com.hypertrack.sdk.flutter.common.Serialization.deserializeAvailability
+import com.hypertrack.sdk.flutter.common.Serialization.deserializeGeotagData
+import com.hypertrack.sdk.flutter.common.Serialization.serializeFailure
+import com.hypertrack.sdk.flutter.common.Serialization.serializeErrors
+import com.hypertrack.sdk.flutter.common.Serialization.serializeIsAvailable
+import com.hypertrack.sdk.flutter.common.Serialization.serializeIsTracking
+import com.hypertrack.sdk.flutter.common.Serialization.serializeSuccess
+import com.hypertrack.sdk.flutter.common.Serialization.serializeDeviceId
+import com.hypertrack.sdk.flutter.common.Serialization.deserializeDeviceName
+import com.hypertrack.sdk.flutter.common.Serialization.parse
 import java.lang.IllegalStateException
 import java.lang.RuntimeException
+import android.util.Log
 
 
 /**
- * This class stores SDK instance, calls HyperTrack SDK methods and serializes responses
+ * This class stores SDK instance, calls HyperTrack SDK methods and serializes responses.
+ * It receives serialized params.
  */
 internal object HyperTrackSdkWrapper {
 
-    private var sdkInstance: HyperTrack? = null
+    // initialize method is guaranteed to be called (by non-native side)
+    // prior to any access to the SDK instance
+    private lateinit var sdkInstance: HyperTrack
 
     fun initialize(
-        publishableKey: String,
-        initParams: SdkInitParams
+        args: Map<String, Any?>
     ): Result<HyperTrack> {
         return try {
-            sdkInstance = HyperTrack.getInstance(publishableKey)
-            withSdkInstance { sdk ->
+            Log.v(javaClass.simpleName, "pretry")
+            SdkInitParams.fromMap(args).flatMapSuccess { initParams ->
+                Log.v(javaClass.simpleName, "preset")
+                sdkInstance = HyperTrack.getInstance(initParams.publishableKey)
+                Log.v(javaClass.simpleName, "sdkInstance set")
                 if (initParams.loggingEnabled) {
                     HyperTrack.enableDebugLogging()
                 }
+                Log.v(javaClass.simpleName, "sdkInstance get 1 ${this::sdkInstance.isInitialized}")
                 if (initParams.allowMockLocations) {
-                    sdk.allowMockLocations()
+                    sdkInstance.allowMockLocations()
                 }
-                sdk.backgroundTrackingRequirement(initParams.requireBackgroundTrackingPermission)
+                this.sdkInstance.backgroundTrackingRequirement(
+                    initParams.requireBackgroundTrackingPermission
+                )
+                Success(sdkInstance)
             }
         } catch (exception: Exception) {
+            Log.v(javaClass.simpleName, exception.toString())
             Failure(Exception("Hypertrack SDK initialization failed.", exception))
         }
     }
 
-    fun getDeviceID(): Result<String> {
+    fun getDeviceID(): Result<Map<String, Any?>> {
         return withSdkInstance { sdk ->
-            sdk.deviceID
+            serializeDeviceId(sdk.deviceID)
         }
     }
 
@@ -56,8 +77,8 @@ internal object HyperTrackSdkWrapper {
         }
     }
 
-    fun addGeotag(args: Map<String, Any>): Result<Map<String, Any>> {
-        return deserializeGeotagData(args).flatMap {
+    fun addGeotag(args: Map<String, Any?>): Result<Map<String, Any?>> {
+        return deserializeGeotagData(args).flatMapSuccess {
             withSdkInstance { sdk ->
                 sdk.addGeotag(it.data).let { result ->
                     when (result) {
@@ -79,20 +100,20 @@ internal object HyperTrackSdkWrapper {
         }
     }
 
-    fun isTracking(): Result<Map<String, Any>> {
+    fun isTracking(): Result<Map<String, Any?>> {
         return withSdkInstance { sdk ->
             serializeIsTracking(sdk.isTracking)
         }
     }
 
-    fun isAvailable(): Result<Map<String, Any>> {
+    fun isAvailable(): Result<Map<String, Any?>> {
         return withSdkInstance { sdk ->
             serializeIsAvailable(sdk.availability.equals(Availability.AVAILABLE))
         }
     }
 
-    fun setAvailability(args: Map<String, Any>): Result<Unit> {
-        return deserializeAvailability(args).flatMap { isAvailable ->
+    fun setAvailability(args: Map<String, Any?>): Result<Unit> {
+        return deserializeAvailability(args).flatMapSuccess { isAvailable ->
             withSdkInstance { sdk ->
                 if (isAvailable) {
                     sdk.availability = Availability.AVAILABLE
@@ -103,19 +124,22 @@ internal object HyperTrackSdkWrapper {
         }
     }
 
-    fun setName(name: String): Result<Unit> {
-        return withSdkInstance { sdk ->
-            sdk.setDeviceName(name)
+    fun setName(args: Map<String, Any?>): Result<Unit> {
+        return deserializeDeviceName(args).flatMapSuccess { name ->
+            withSdkInstance { sdk ->
+                sdk.setDeviceName(name)
+                Unit
+            }
         }
     }
 
-    fun setMetadata(metadata: Map<String, Any>): Result<Unit> {
+    fun setMetadata(metadata: Map<String, Any?>): Result<Unit> {
         return withSdkInstance { sdk ->
             sdk.setDeviceMetadata(metadata)
         }
     }
 
-    fun getLocation(): Result<Map<String, Any>> {
+    fun getLocation(): Result<Map<String, Any?>> {
         return withSdkInstance { sdk ->
             sdk.latestLocation.let { result ->
                 if (result.isSuccess) {
@@ -138,20 +162,15 @@ internal object HyperTrackSdkWrapper {
     fun <T> withSdkInstance(
         onInstanceCall: (sdk: HyperTrack) -> T
     ): Result<T> {
-        return this.sdkInstance.let { instance ->
-            if (instance == null) {
-                Failure(Exception("HyperTrack SDK is not initialized"))
-            } else {
-                try {
-                    Success(onInstanceCall(instance))
-                } catch (e: Exception) {
-                    Failure(e)
-                }
-            }
+        return try {
+            Log.v(javaClass.simpleName, "sdkInstance get ${this::sdkInstance.isInitialized}")
+            Success(onInstanceCall(sdkInstance))
+        } catch (e: Exception) {
+            Failure(e)
         }
     }
 
-    private fun getTrackingErrors(error: TrackingError): Set<HyperTrackError> {
+    internal fun getTrackingErrors(error: TrackingError): Set<HyperTrackError> {
         return when (error.code) {
             TrackingError.INVALID_PUBLISHABLE_KEY_ERROR -> {
                 HyperTrackError.invalidPublishableKey
@@ -228,22 +247,24 @@ internal object HyperTrackSdkWrapper {
     }
 
     private fun getHyperTrackErrorsFromBlockers(): Set<HyperTrackError> {
-        return HyperTrack.getBlockers().map {
-            when (it) {
-                Blocker.LOCATION_PERMISSION_DENIED -> {
-                    HyperTrackError.locationPermissionsDenied
-                }
-                Blocker.LOCATION_SERVICE_DISABLED -> {
-                    HyperTrackError.locationServicesDisabled
-                }
-                Blocker.ACTIVITY_PERMISSION_DENIED -> {
-                    HyperTrackError.motionActivityPermissionsDenied
-                }
-                Blocker.BACKGROUND_LOCATION_DENIED -> {
-                    HyperTrackError.locationPermissionsInsufficientForBackground
+        return HyperTrack.getBlockers()
+            .map {
+                when (it) {
+                    Blocker.LOCATION_PERMISSION_DENIED -> {
+                        HyperTrackError.locationPermissionsDenied
+                    }
+                    Blocker.LOCATION_SERVICE_DISABLED -> {
+                        HyperTrackError.locationServicesDisabled
+                    }
+                    Blocker.ACTIVITY_PERMISSION_DENIED -> {
+                        HyperTrackError.motionActivityPermissionsDenied
+                    }
+                    Blocker.BACKGROUND_LOCATION_DENIED -> {
+                        HyperTrackError.locationPermissionsInsufficientForBackground
+                    }
                 }
             }
-        }.toSet()
+            .toSet()
     }
 
 }

@@ -5,6 +5,7 @@ import com.hypertrack.sdk.flutter.HyperTrackPlugin.Companion.ERROR_CODE_METHOD_C
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.EventChannel.EventSink
+import android.util.Log
 
 internal fun Unit.sendAsFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
     return flutterResult.success(null)
@@ -40,6 +41,7 @@ internal fun <T> Result<T>.sendAsFlutterResult(
         }
         is Failure -> {
             if(this.failure is Exception) {
+                Log.v(javaClass.simpleName, this.failure.toString())
                 flutterResult.error(
                     ERROR_CODE_METHOD_CALL,
                     this.failure.toString(),

@@ -24,6 +24,9 @@ import java.lang.IllegalStateException
 import java.lang.NullPointerException
 import java.lang.RuntimeException
 import java.util.*
+import com.hypertrack.sdk.flutter.common.Serialization.serializeErrors
+import com.hypertrack.sdk.flutter.common.Serialization.serializeIsAvailable
+import com.hypertrack.sdk.flutter.common.Serialization.serializeIsTracking
 
 public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
 
@@ -64,74 +67,63 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
     private fun invokeSdkMethod(
         call: MethodCall
     ): Result<*> {
-        /**
-         * we use withSdkInstance() to be able to check if the method is unknown
-         * before checking if instance is present
-         * for case if the unknown method is called before the init
-         */
-        return when(call.method) {
-            SdkMethod.initialize.name -> {
-                withArgs<Map<String, Any>, Unit>(call) { args ->
-                    val publishableKey = args.getValue(KEY_PUBLISHABLE_KEY) as String
-                    SdkInitParams.fromMap(args)
-                        .flatMap { initParams ->
-                            HyperTrackSdkWrapper.initialize(
-                                publishableKey,
-                                initParams
-                            )
-                            Success(Unit)
-                        }
+        val method = SdkMethod.values().firstOrNull { it.name == call.method } ?: run {
+            return Success(NotImplemented)
+        }
+        return when(method) {
+            SdkMethod.initialize -> {
+                withArgs<Unit>(call) { args ->
+                    HyperTrackSdkWrapper.initialize(args).mapSuccess {
+                        Unit
+                    }
                 }
             }
-            SdkMethod.getDeviceId.name -> {
+            SdkMethod.getDeviceId -> {
                 HyperTrackSdkWrapper.getDeviceID()
             }
-            SdkMethod.isTracking.name -> {
+            SdkMethod.isTracking -> {
                 HyperTrackSdkWrapper.isTracking()
             }
-            SdkMethod.isAvailable.name -> {
+            SdkMethod.isAvailable -> {
                 HyperTrackSdkWrapper.isAvailable()
             }
-            SdkMethod.setAvailability.name -> {
-                withArgs<Map<String, Boolean>, Unit>(call) { args ->
+            SdkMethod.setAvailability -> {
+                withArgs<Unit>(call) { args ->
                     HyperTrackSdkWrapper.setAvailability(args)
                 }
             }
-            SdkMethod.getLocation.name -> {
+            SdkMethod.getLocation -> {
                 HyperTrackSdkWrapper.getLocation()
             }
-            SdkMethod.startTracking.name -> {
+            SdkMethod.startTracking -> {
                 HyperTrackSdkWrapper.startTracking()
             }
-            SdkMethod.stopTracking.name -> {
+            SdkMethod.stopTracking -> {
                 HyperTrackSdkWrapper.stopTracking()
             }
-            SdkMethod.addGeotag.name -> {
-                withArgs<Map<String, Any>, Map<String, Any>>(call) { args ->
+            SdkMethod.addGeotag -> {
+                withArgs<Map<String, Any?>>(call) { args ->
                     HyperTrackSdkWrapper.addGeotag(args)
                 }
             }
-            SdkMethod.setName.name -> {
-                withArgs<String, Unit>(call) { args ->
+            SdkMethod.setName -> {
+                withArgs<Unit>(call) { args ->
                     HyperTrackSdkWrapper.setName(args)
                 }
             }
-            SdkMethod.setMetadata.name -> {
-                withArgs<Map<String, Any>, Unit>(call) { args ->
+            SdkMethod.setMetadata -> {
+                withArgs<Unit>(call) { args ->
                     HyperTrackSdkWrapper.setMetadata(args)
                 }
             }
-            SdkMethod.sync.name -> {
+            SdkMethod.sync -> {
                 HyperTrackSdkWrapper.sync()
-            }
-            else -> {
-                Success(NotImplemented)
             }
         }
     }
 
-    private fun <T, N> withArgs(call: MethodCall, block: (T) -> Result<N>): Result<N> {
-        return call.arguments<T>()?.let { block.invoke(it) }
+    private fun <N> withArgs(call: MethodCall, block: (Map<String, Any?>) -> Result<N>): Result<N> {
+        return call.arguments<Map<String, Any?>>()?.let { block.invoke(it) }
             ?: Failure(NullPointerException(call.method))
     }
 
@@ -236,8 +228,6 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         private const val TRACKING_STATE_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/tracking"
         private const val ERROR_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/errors"
         private const val AVAILABILTY_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/availability"
-
-        private const val KEY_PUBLISHABLE_KEY = "publishableKey"
 
         internal const val ERROR_CODE_METHOD_CALL = "method_call_error"
         private const val ERROR_CODE_STREAM_INIT = "stream_init_error"
