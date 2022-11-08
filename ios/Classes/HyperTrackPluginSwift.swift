@@ -1,16 +1,14 @@
 import HyperTrack
 import Flutter
 
-let errorCodeMethodCall = "method_call_error"
-let errorCodeStreamInit = "stream_init_error"
 
 public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
-    private static let methodChannelName = "sdk.hypertrack.com/methods"
     private static let trackingEventChannelName = "sdk.hypertrack.com/tracking"
     private static let errorsEventChannelName = "sdk.hypertrack.com/errors"
     private static let availabilityEventChannelName = "sdk.hypertrack.com/availability"
-    
-    static var methodChannel: FlutterMethodChannel?
+    private static let errorCodeMethodCall = "method_call_error"
+    private static let errorCodeStreamInit = "stream_init_error"
+
     static var trackingEventChannel: FlutterEventChannel?
     static var errorsEventChannel: FlutterEventChannel?
     static var availabilityEventChannel: FlutterEventChannel?
@@ -18,19 +16,18 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
     @objc(registerWithRegistrar:)
     public static func register(with registrar: FlutterPluginRegistrar) {
         let messenger = registrar.messenger()
-        methodChannel = FlutterMethodChannel(name: methodChannelName, binaryMessenger: registrar.messenger())
+        let methodChannel = FlutterMethodChannel(name: "sdk.hypertrack.com/methods", binaryMessenger: messenger) // Obj-C comm, assume always non-optional
         let instance = HyperTrackPluginSwift()
-        registrar.addMethodCallDelegate(instance, channel: methodChannel!)
+        registrar.addMethodCallDelegate(instance, channel: methodChannel)
         initEventChannels(messenger)
     }
     
     @objc
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let sdkMethod = SDKMethod(rawValue: call.method) else {
-            result(FlutterMethodNotImplemented)
-            return
+            preconditionFailure("Unknown method called from Flutter")
         }
-        
+
         let args = call.value(forKey: "_arguments")
         let method = call.value(forKey: "_method") as! String
         
@@ -125,7 +122,7 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
         case .failure(let failure):
             switch(failure) {
             case .error(let message):
-                flutterResult(FlutterError.init(code: errorCodeMethodCall,
+                flutterResult(FlutterError.init(code: HyperTrackPluginSwift.errorCodeMethodCall,
                                                 message: message,
                                                 details: nil))
             case .fatalError(let message):

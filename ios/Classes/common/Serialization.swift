@@ -168,7 +168,7 @@ func serializeIsAvailable(_ isAvailable: HyperTrack.Availability) -> Dictionary<
 }
 
 func deserializeAvailability(_ data: Dictionary<String, Any>) -> Result<Bool, FailureResult> {
-    if(data[keyType] as? String != typeIsAvailable) {
+    if (data[keyType] as? String != typeIsAvailable) {
         return .failure(.fatalError(getParseError(data, key: keyType)))
     }
     guard let value = data[keyValue] as? Bool else {

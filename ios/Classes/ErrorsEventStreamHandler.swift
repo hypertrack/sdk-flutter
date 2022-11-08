@@ -19,16 +19,6 @@ class ErrorsEventStreamHandler: NSObject, FlutterStreamHandler {
     }
     
     @objc
-    private func onTrackingStarted() {
-        // do nothing (handled by TrackingEventStreamHandler)
-    }
-    
-    @objc
-    private func onTrackingStopped() {
-        // do nothing (handled by TrackingEventStreamHandler)
-    }
-    
-    @objc
     private func onSdkError(notification: Notification) {
         guard let eventSink = eventSink else {
             return
@@ -40,7 +30,7 @@ class ErrorsEventStreamHandler: NSObject, FlutterStreamHandler {
         case .restorableError(let restorableError):
             eventSink([serializeHyperTrackError(getHyperTrackError(restorableError))])
         default:
-            print("onSdkError: Unexpected SDK error \(error)")
+            preconditionFailure("onSdkError: Unexpected SDK error \(String(describing: error))")
         }
     }
     
