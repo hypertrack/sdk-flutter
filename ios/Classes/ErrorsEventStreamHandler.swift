@@ -9,6 +9,7 @@ class ErrorsEventStreamHandler: NSObject, FlutterStreamHandler {
         eventSink = events
         NotificationCenter.default.addObserver(self, selector: #selector(onSdkError(notification:)), name: HyperTrack.didEncounterRestorableErrorNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onSdkError(notification:)), name: HyperTrack.didEncounterUnrestorableErrorNotification, object: nil)
+        // we don't send initial errors value heere because errors getter is not implemented for iOS SDK yet
         return nil
     }
     
@@ -16,16 +17,6 @@ class ErrorsEventStreamHandler: NSObject, FlutterStreamHandler {
         NotificationCenter.default.removeObserver(self)
         eventSink = nil
         return nil
-    }
-    
-    @objc
-    private func onTrackingStarted() {
-        // do nothing (handled by TrackingEventStreamHandler)
-    }
-    
-    @objc
-    private func onTrackingStopped() {
-        // do nothing (handled by TrackingEventStreamHandler)
     }
     
     @objc
@@ -40,7 +31,7 @@ class ErrorsEventStreamHandler: NSObject, FlutterStreamHandler {
         case .restorableError(let restorableError):
             eventSink([serializeHyperTrackError(getHyperTrackError(restorableError))])
         default:
-            print("onSdkError: Unexpected SDK error \(error)")
+            preconditionFailure("onSdkError: Unexpected SDK error \(String(describing: error))")
         }
     }
     

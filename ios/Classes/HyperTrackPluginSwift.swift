@@ -1,37 +1,52 @@
 import HyperTrack
 import Flutter
 
-let errorCodeMethodCall = "method_call_error"
-let errorCodeStreamInit = "stream_init_error"
 
 public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
-    private static let methodChannelName = "sdk.hypertrack.com/methods"
-    private static let trackingEventChannelName = "sdk.hypertrack.com/tracking"
-    private static let errorsEventChannelName = "sdk.hypertrack.com/errors"
-    private static let availabilityEventChannelName = "sdk.hypertrack.com/availability"
     
-    static var methodChannel: FlutterMethodChannel?
-    static var trackingEventChannel: FlutterEventChannel?
-    static var errorsEventChannel: FlutterEventChannel?
-    static var availabilityEventChannel: FlutterEventChannel?
+    private let trackingEventChannel: FlutterEventChannel
+    private let errorsEventChannel: FlutterEventChannel
+    private let availabilityEventChannel: FlutterEventChannel
+    
+    public init(
+        trackingEventChannel: FlutterEventChannel,
+        errorsEventChannel: FlutterEventChannel,
+        availabilityEventChannel: FlutterEventChannel
+    ) {
+        self.trackingEventChannel = trackingEventChannel
+        self.errorsEventChannel = errorsEventChannel
+        self.availabilityEventChannel = availabilityEventChannel
+        super.init()
+    }
     
     @objc(registerWithRegistrar:)
     public static func register(with registrar: FlutterPluginRegistrar) {
         let messenger = registrar.messenger()
-        methodChannel = FlutterMethodChannel(name: methodChannelName, binaryMessenger: registrar.messenger())
-        let instance = HyperTrackPluginSwift()
-        registrar.addMethodCallDelegate(instance, channel: methodChannel!)
-        initEventChannels(messenger)
+        
+        let methodChannel = FlutterMethodChannel(name: "sdk.hypertrack.com/methods", binaryMessenger: messenger)
+        
+        let trackingEventChannel = FlutterEventChannel(name: "sdk.hypertrack.com/tracking", binaryMessenger: messenger)
+        trackingEventChannel.setStreamHandler(TrackingEventStreamHandler())
+        
+        let availabilityEventChannel = FlutterEventChannel(name: "sdk.hypertrack.com/availability", binaryMessenger: messenger)
+        availabilityEventChannel.setStreamHandler(AvailabilityEventStreamHandler())
+        
+        let errorsEventChannel = FlutterEventChannel(name: "sdk.hypertrack.com/errors", binaryMessenger: messenger)
+        errorsEventChannel.setStreamHandler(ErrorsEventStreamHandler())
+        
+        let instance = HyperTrackPluginSwift(
+            trackingEventChannel: trackingEventChannel, errorsEventChannel: errorsEventChannel, availabilityEventChannel: availabilityEventChannel
+        )
+        registrar.addMethodCallDelegate(instance, channel: methodChannel)
     }
     
     @objc
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let sdkMethod = SDKMethod(rawValue: call.method) else {
-            result(FlutterMethodNotImplemented)
-            return
+            preconditionFailure("Unknown method \(call.method)")
         }
         
-        let args = call.value(forKey: "_arguments")
+        let args = call.value(forKey: "_arguments") as! Dictionary<String, Any>?
         let method = call.value(forKey: "_method") as! String
         
         sendAsFlutterResult(
@@ -43,68 +58,45 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
     
     private static func handleMethod(
         _ sdkMethod: SDKMethod,
-        _ args: Any?
+        _ args: Dictionary<String, Any>?
     ) -> Result<SuccessResult, FailureResult> {
         switch(sdkMethod) {
         case .initialize:
-            let params = args as! NSDictionary
-            let publishableKey = params[keyPublishableKey] as! String
-            if let sdkInitParams = SDKInitParams(params) {
-                return HyperTrackSDKWrapper.initializeSDK(
-                    publishableKey: publishableKey,
-                    sdkInitParams: sdkInitParams
-                )
-            } else {
-                return .failure(.error("\(errorInvalidSDKInitParams) \(params)"))
-            }
-            
+            return initializeSDK(args!)
         case .getDeviceId:
-            return HyperTrackSDKWrapper.getDeviceID()
+            return getDeviceID()
             
         case .getLocation:
-            return HyperTrackSDKWrapper.getLocation()
+            return getLocation()
             
         case .startTracking:
-            return HyperTrackSDKWrapper.startTracking()
+            return startTracking()
             
         case .stopTracking:
-            return HyperTrackSDKWrapper.stopTracking()
+            return stopTracking()
             
         case .setAvailability:
-            return HyperTrackSDKWrapper.setAvailability(
-                args as! Dictionary<String, Any>
-            )
+            return setAvailability(args!)
             
         case .setName:
-            return HyperTrackSDKWrapper.setName(args as! String)
+            return setName(args!)
             
         case .setMetadata:
-            return HyperTrackSDKWrapper.setMetadata(args as! Dictionary<String, Any>)
+            return setMetadata(args!)
             
         case .isTracking:
-            return HyperTrackSDKWrapper.isTracking()
+            return isTracking()
             
         case .isAvailable:
-            return HyperTrackSDKWrapper.isAvailable()
+            return isAvailable()
             
         case .addGeotag:
-            return HyperTrackSDKWrapper.addGeotag(args as! Dictionary<String, Any>)
+            return addGeotag(args!)
             
         case .sync:
-            return HyperTrackSDKWrapper.sync()
+            return sync()
             
         }
-    }
-    
-    private static func initEventChannels(_ messenger: FlutterBinaryMessenger) {
-        trackingEventChannel = FlutterEventChannel(name: trackingEventChannelName, binaryMessenger: messenger)
-        trackingEventChannel!.setStreamHandler(TrackingEventStreamHandler())
-        
-        availabilityEventChannel = FlutterEventChannel(name: availabilityEventChannelName, binaryMessenger: messenger)
-        availabilityEventChannel!.setStreamHandler(AvailabilityEventStreamHandler())
-        
-        errorsEventChannel = FlutterEventChannel(name: errorsEventChannelName, binaryMessenger: messenger)
-        errorsEventChannel!.setStreamHandler(ErrorsEventStreamHandler())
     }
     
     private func sendAsFlutterResult(
@@ -117,37 +109,18 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
             switch (success) {
             case .void:
                 flutterResult(nil)
-            case .string(let value):
-                flutterResult(value)
             case .dict(let value):
                 flutterResult(value)
             }
         case .failure(let failure):
             switch(failure) {
             case .error(let message):
-                flutterResult(FlutterError.init(code: errorCodeMethodCall,
+                flutterResult(FlutterError.init(code: "method_call_error",
                                                 message: message,
                                                 details: nil))
             case .fatalError(let message):
                 preconditionFailure(message)
             }
         }
-    }
-}
-
-func sendErrorIfAny(result: Result<SuccessResult, FailureResult>, channel eventSink: FlutterEventSink, errorCode: String) {
-    switch result {
-    case .failure(let failure):
-        switch failure {
-        case .fatalError(let message):
-            preconditionFailure(message)
-        case .error(let message):
-            eventSink(FlutterError.init(code: errorCodeMethodCall,
-                                        message: message,
-                                        details: nil))
-        }
-        
-    default:
-        return
     }
 }

@@ -7,19 +7,10 @@ class TrackingEventStreamHandler: NSObject, FlutterStreamHandler {
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         let eventSink = events
         self.eventSink = eventSink
-        NotificationCenter.default.addObserver(self, selector: #selector(onSdkError), name: HyperTrack.didEncounterRestorableErrorNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(onSdkError), name: HyperTrack.didEncounterUnrestorableErrorNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onTrackingStarted), name: HyperTrack.startedTrackingNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onTrackingStopped), name: HyperTrack.stoppedTrackingNotification, object: nil)
-        
-        sendErrorIfAny(
-            result: HyperTrackSDKWrapper.withSdkInstance { (sdk: HyperTrack) in
-                eventSink(serializeIsTracking(sdk.isTracking))
-                return .success(.void)
-            },
-            channel: eventSink,
-            errorCode: errorCodeStreamInit
-        )
+
+        eventSink(serializeIsTracking(sdkInstance.isTracking))
         return nil
     }
     
@@ -44,10 +35,4 @@ class TrackingEventStreamHandler: NSObject, FlutterStreamHandler {
         }
         eventSink(serializeIsTracking(false))
     }
-    
-    @objc
-    private func onSdkError() {
-        // do nothind (handled by ErrorsEventStreamHandler)
-    }
-    
 }
