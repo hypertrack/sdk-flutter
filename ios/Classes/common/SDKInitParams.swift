@@ -1,12 +1,11 @@
-private let keyLoggingEnabled = "loggingEnabled"
-private let keyAllowMockLocations = "allowMockLocations"
-
 public struct SDKInitParams {
+    let publishableKey: String
     let loggingEnabled: Bool
     let allowMockLocations: Bool
     
-    init?(_ map: NSDictionary) {
-        self.loggingEnabled = (map[keyLoggingEnabled] as? Bool) ?? false
-        self.allowMockLocations = (map[keyAllowMockLocations] as? Bool) ?? false
+    init?(_ map: Dictionary<String, Any>) {
+        self.publishableKey = (map["publishableKey"] as! String)
+        self.loggingEnabled = (map["loggingEnabled"] as! Bool)
+        self.allowMockLocations = (map["allowMockLocations"] as! Bool)
     }
 }

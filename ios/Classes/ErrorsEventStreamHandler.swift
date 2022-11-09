@@ -9,6 +9,7 @@ class ErrorsEventStreamHandler: NSObject, FlutterStreamHandler {
         eventSink = events
         NotificationCenter.default.addObserver(self, selector: #selector(onSdkError(notification:)), name: HyperTrack.didEncounterRestorableErrorNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onSdkError(notification:)), name: HyperTrack.didEncounterUnrestorableErrorNotification, object: nil)
+        // we don't send initial errors value heere because errors getter is not implemented for iOS SDK yet
         return nil
     }
     

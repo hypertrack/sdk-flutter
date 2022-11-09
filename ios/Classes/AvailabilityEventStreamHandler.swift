@@ -10,14 +10,7 @@ class AvailabilityEventStreamHandler: NSObject, FlutterStreamHandler {
         NotificationCenter.default.addObserver(self, selector: #selector(onAvailable), name: HyperTrack.becameAvailableNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(onUnavailable), name: HyperTrack.becameUnavailableNotification, object: nil)
         
-        sendErrorIfAny(
-            result: HyperTrackSDKWrapper.withSdkInstance { (sdk: HyperTrack) in
-                eventSink(serializeIsAvailable(sdk.availability))
-                return .success(.void)
-            },
-            channel: eventSink,
-            errorCode: errorCodeStreamInit
-        )
+        eventSink(serializeIsAvailable(sdkInstance.availability))
         return nil
     }
     

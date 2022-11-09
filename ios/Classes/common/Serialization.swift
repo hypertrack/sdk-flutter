@@ -3,21 +3,13 @@ import HyperTrack
 private let keyType = "type"
 private let keyValue = "value"
 
-private let typeLocation = "location"
 private let typeSuccess = "success"
 private let typeFailure = "failure"
 private let typeHyperTrackError = "hyperTrackError"
-private let typeLocationErrorNotRunning = "notRunning"
-private let typeLocationErrorStarting = "starting"
-private let typeLocationErrorErrors = "errors"
 private let typeIsTracking = "isTracking"
 private let typeIsAvailable = "isAvailable"
 
-private let keyLatitude = "latitude"
-private let keyLongitude = "longitude"
-
 let keyGeotagData = "data"
-let keyPublishableKey = "publishableKey"
 
 func getHyperTrackError(_ error: HyperTrack.UnrestorableError) -> HyperTrackError {
     switch(error) {
@@ -59,19 +51,11 @@ func getHyperTrackError(_ error: HyperTrack.RestorableError) -> HyperTrackError 
     }
 }
 
-func serializeFatalError(fatalError: HyperTrack.FatalError) -> String {
-    switch fatalError {
-    case .developmentError(.missingLocationUpdatesBackgroundModeCapability):
-        return "missingLocationUpdatesBackgroundModeCapability"
-    case .productionError(.locationServicesUnavalible):
-        return "locationServicesUnavalible"
-    case .developmentError(.runningOnSimulatorUnsupported):
-        return "runningOnSimulatorUnsupported"
-    case .productionError(.motionActivityServicesUnavalible):
-        return "motionActivityServicesUnavalible"
-    case .productionError(.motionActivityPermissionsDenied):
-        return "motionActivityPermissionsDenied"
-    }
+func serializeDeviceId(_ deviceId: String) -> Dictionary<String, Any> {
+    return [
+        keyType: "deviceID",
+        keyValue: deviceId
+    ]
 }
 
 func serializeLocationResult(_ result: Result<HyperTrack.Location, HyperTrack.LocationError>) -> Dictionary<String, Any>  {
@@ -80,10 +64,10 @@ func serializeLocationResult(_ result: Result<HyperTrack.Location, HyperTrack.Lo
         return [
             keyType: typeSuccess,
             keyValue: [
-                keyType: typeLocation,
+                keyType: "location",
                 keyValue: [
-                    keyLatitude: success.latitude,
-                    keyLongitude: success.longitude
+                    "latitude": success.latitude,
+                    "longitude": success.longitude
                 ]
             ]
         ]
@@ -119,11 +103,11 @@ func serializeLocationResult(_ result: Result<HyperTrack.Location, HyperTrack.Lo
             locationError = serializeHyperTrackErrorAsLocationError(HyperTrackError.locationMocked)
         case .starting:
             locationError = [
-                keyType: typeLocationErrorStarting
+                keyType: "starting"
             ]
         case .notRunning:
             locationError = [
-                keyType: typeLocationErrorNotRunning
+                keyType: "notRunning"
             ]
         }
         
@@ -136,7 +120,7 @@ func serializeLocationResult(_ result: Result<HyperTrack.Location, HyperTrack.Lo
 
 func serializeHyperTrackErrorAsLocationError(_ error: HyperTrackError) -> Dictionary<String, Any> {
     return [
-        keyType: typeLocationErrorErrors,
+        keyType: "errors",
         keyValue: [
             [
                 keyType: typeHyperTrackError,
@@ -165,6 +149,16 @@ func serializeIsAvailable(_ isAvailable: HyperTrack.Availability) -> Dictionary<
         keyType: typeIsAvailable,
         keyValue: isAvailable == .available
     ]
+}
+
+func deserializeDeviceName(_ data: Dictionary<String, Any>) -> Result<String, FailureResult> {
+    if (data[keyType] as? String != "deviceName") {
+        return .failure(.fatalError(getParseError(data, key: keyType)))
+    }
+    guard let value = data[keyValue] as? String else {
+        return .failure(.fatalError(getParseError(data, key: keyValue)))
+    }
+    return .success(value)
 }
 
 func deserializeAvailability(_ data: Dictionary<String, Any>) -> Result<Bool, FailureResult> {
