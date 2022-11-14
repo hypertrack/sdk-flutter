@@ -172,10 +172,10 @@ func deserializeAvailability(_ data: Dictionary<String, Any>) -> Result<Bool, Fa
 }
 
 func deserializeGeotagData(
-    _ data: Dictionary<String, Any>
+    _ geotag: Dictionary<String, Any>
 ) -> Result<Dictionary<String, Any>, FailureResult> {
-    guard let data = data[keyGeotagData] as? Dictionary<String, Any> else {
-        return .failure(.fatalError(getParseError(data, key: keyGeotagData)))
+    guard let data = geotag[keyGeotagData] as? Dictionary<String, Any> else {
+        return .failure(.fatalError(getParseError(geotag, key: keyGeotagData)))
     }
     return .success(data)
 }

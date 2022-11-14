@@ -90,12 +90,14 @@ func isAvailable() -> Result<SuccessResult, FailureResult> {
     .success(.dict(serializeIsAvailable(sdkInstance.availability)))
 }
 
-func addGeotag(_ data: Dictionary<String, Any>) -> Result<SuccessResult, FailureResult> {
-    if let metadata = HyperTrack.Metadata.init(dictionary: data) {
-        sdkInstance.addGeotag(metadata)
-        return .success(.dict(serializeLocationResult(sdkInstance.location)))
-    } else {
-        return .failure(.error("Failed to parse geotag data"))
+func addGeotag(_ args: Dictionary<String, Any>) -> Result<SuccessResult, FailureResult> {
+    return deserializeGeotagData(args).flatMap { data in
+        if let metadata = HyperTrack.Metadata.init(dictionary: data) {
+            sdkInstance.addGeotag(metadata)
+            return .success(.dict(serializeLocationResult(sdkInstance.location)))
+        } else {
+            return .failure(.error("Failed to parse geotag data"))
+        }
     }
 }
 
