@@ -54,8 +54,8 @@ internal fun <T> Result<T>.sendAsFlutterResult(
     }
 }
 
-internal fun <T> Result<T>.sendEventIfError(events: EventSink, errorCode: String) {
+internal fun <T> Result<T>.crashAppIfError() {
     if (this is Failure) {
-        events.error(errorCode, this.failure.toString(), null)
+        throw Throwable(this.failure.toString(), this.failure)
     }
 }

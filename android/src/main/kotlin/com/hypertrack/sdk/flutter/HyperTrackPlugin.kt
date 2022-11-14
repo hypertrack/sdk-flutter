@@ -70,7 +70,7 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         val method = SdkMethod.values().firstOrNull { it.name == call.method } ?: run {
             return Success(NotImplemented)
         }
-        return when(method) {
+        return when (method) {
             SdkMethod.initialize -> {
                 withArgs<Unit>(call) { args ->
                     HyperTrackSdkWrapper.initialize(args).mapSuccess {
@@ -131,28 +131,31 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         trackingStateEventChannel = EventChannel(messenger, TRACKING_STATE_EVENT_CHANNEL_NAME)
         trackingStateEventChannel?.setStreamHandler(object : StreamHandler {
             override fun onListen(arguments: Any?, events: EventSink) {
-                HyperTrackSdkWrapper.withSdkInstance { sdk ->
-                    trackingStateListener =
-                        object : TrackingStateObserver.OnTrackingStateChangeListener {
-                            override fun onTrackingStart() {
-                                events.success(serializeIsTracking(true))
-                            }
+                Result
+                    .tryAsResult {
+                        val sdk = HyperTrackSdkWrapper.sdkInstance
+                        trackingStateListener =
+                            object : TrackingStateObserver.OnTrackingStateChangeListener {
+                                override fun onTrackingStart() {
+                                    events.success(serializeIsTracking(true))
+                                }
 
-                            override fun onTrackingStop() {
-                                events.success(serializeIsTracking(false))
-                            }
+                                override fun onTrackingStop() {
+                                    events.success(serializeIsTracking(false))
+                                }
 
-                            override fun onError(p0: TrackingError) {
-                                // ignored, errors are handled by errorEventChannel
+                                override fun onError(p0: TrackingError) {
+                                    // ignored, errors are handled by errorEventChannel
+                                }
                             }
-                        }
-                    sdk.addTrackingListener(trackingStateListener)
-                    events.success(serializeIsTracking(sdk.isTracking))
-                }.sendEventIfError(events, ERROR_CODE_STREAM_INIT)
+                        sdk.addTrackingListener(trackingStateListener)
+                        events.success(serializeIsTracking(sdk.isTracking))
+                    }
+                    .crashAppIfError()
             }
 
             override fun onCancel(arguments: Any?) {
-                HyperTrackSdkWrapper.withSdkInstance { sdk ->
+                HyperTrackSdkWrapper.sdkInstance.let { sdk ->
                     sdk.removeTrackingListener(trackingStateListener)
                     trackingStateListener = null
                 }
@@ -162,28 +165,31 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         errorEventChannel = EventChannel(messenger, ERROR_EVENT_CHANNEL_NAME)
         errorEventChannel?.setStreamHandler(object : StreamHandler {
             override fun onListen(arguments: Any?, events: EventSink) {
-                HyperTrackSdkWrapper.withSdkInstance { sdk ->
-                    errorChannelTrackingStateListener =
-                        object : TrackingStateObserver.OnTrackingStateChangeListener {
-                            override fun onTrackingStart() {
-                                // ignored, trackingState is handled by trackingStateEventChannel
-                            }
+                Result
+                    .tryAsResult {
+                        val sdk = HyperTrackSdkWrapper.sdkInstance
+                        errorChannelTrackingStateListener =
+                            object : TrackingStateObserver.OnTrackingStateChangeListener {
+                                override fun onTrackingStart() {
+                                    // ignored, trackingState is handled by trackingStateEventChannel
+                                }
 
-                            override fun onTrackingStop() {
-                                // ignored, trackingState is handled by trackingStateEventChannel
-                            }
+                                override fun onTrackingStop() {
+                                    // ignored, trackingState is handled by trackingStateEventChannel
+                                }
 
-                            override fun onError(error: TrackingError) {
-                                events.success(HyperTrackSdkWrapper.getErrors(error))
+                                override fun onError(error: TrackingError) {
+                                    events.success(HyperTrackSdkWrapper.getErrors(error))
+                                }
                             }
-                        }
-                    sdk.addTrackingListener(errorChannelTrackingStateListener)
-                    events.success(HyperTrackSdkWrapper.getInitialErrors())
-                }.sendEventIfError(events, ERROR_CODE_STREAM_INIT)
+                        sdk.addTrackingListener(errorChannelTrackingStateListener)
+                        events.success(HyperTrackSdkWrapper.getInitialErrors())
+                    }
+                    .crashAppIfError()
             }
 
             override fun onCancel(arguments: Any?) {
-                HyperTrackSdkWrapper.withSdkInstance { sdk ->
+                HyperTrackSdkWrapper.sdkInstance.let { sdk ->
                     sdk.removeTrackingListener(errorChannelTrackingStateListener)
                     errorChannelTrackingStateListener = null
                 }
@@ -194,28 +200,32 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         availabilityEventChannel?.setStreamHandler(
             object : StreamHandler {
                 override fun onListen(arguments: Any?, events: EventSink) {
-                    HyperTrackSdkWrapper.withSdkInstance { sdk ->
-                        availabilityListener =
-                            object : AvailabilityStateObserver.OnAvailabilityStateChangeListener {
-                                override fun onError(p0: AvailabilityError) {
-                                    // ignored, errors are handled by errorEventChannel
-                                }
+                    Result
+                        .tryAsResult {
+                            val sdk = HyperTrackSdkWrapper.sdkInstance
+                            availabilityListener =
+                                object :
+                                    AvailabilityStateObserver.OnAvailabilityStateChangeListener {
+                                    override fun onError(p0: AvailabilityError) {
+                                        // ignored, errors are handled by errorEventChannel
+                                    }
 
-                                override fun onAvailable() {
-                                    events.success(serializeIsAvailable(true))
-                                }
+                                    override fun onAvailable() {
+                                        events.success(serializeIsAvailable(true))
+                                    }
 
-                                override fun onUnavailable() {
-                                    events.success(serializeIsAvailable(false))
+                                    override fun onUnavailable() {
+                                        events.success(serializeIsAvailable(false))
+                                    }
                                 }
-                            }
-                        sdk.addAvailabilityListener(availabilityListener)
-                        events.success(serializeIsAvailable(sdk.availability.equals(Availability.AVAILABLE)))
-                    }.sendEventIfError(events, ERROR_CODE_STREAM_INIT)
+                            sdk.addAvailabilityListener(availabilityListener)
+                            events.success(serializeIsAvailable(sdk.availability.equals(Availability.AVAILABLE)))
+                        }
+                        .crashAppIfError()
                 }
 
                 override fun onCancel(arguments: Any?) {
-                    HyperTrackSdkWrapper.withSdkInstance { sdk ->
+                    HyperTrackSdkWrapper.sdkInstance.let { sdk ->
                         sdk.removeAvailabilityListener(availabilityListener)
                         availabilityListener = null
                     }
@@ -230,7 +240,6 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         private const val AVAILABILTY_EVENT_CHANNEL_NAME = "sdk.hypertrack.com/availability"
 
         internal const val ERROR_CODE_METHOD_CALL = "method_call_error"
-        private const val ERROR_CODE_STREAM_INIT = "stream_init_error"
     }
 }
 
