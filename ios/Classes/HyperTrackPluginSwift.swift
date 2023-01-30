@@ -18,7 +18,12 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
         self.availabilityEventChannel = availabilityEventChannel
         super.init()
     }
-    
+
+    public func application( _ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+      return false
+    }
+  
     @objc(registerWithRegistrar:)
     public static func register(with registrar: FlutterPluginRegistrar) {
         let messenger = registrar.messenger()
@@ -38,6 +43,7 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
             trackingEventChannel: trackingEventChannel, errorsEventChannel: errorsEventChannel, availabilityEventChannel: availabilityEventChannel
         )
         registrar.addMethodCallDelegate(instance, channel: methodChannel)
+        registrar.addApplicationDelegate(instance)
     }
     
     @objc
