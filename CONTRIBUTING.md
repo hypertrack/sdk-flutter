@@ -20,14 +20,12 @@
 
 3. Update CHANGELOG
 4. Update badge in README
-5. Commit and create a version tag (without v)
-6. Push
-7. Create a release
+5. Run `flutter pub publish --dry-run` to test is everything OK with the release
+6. Commit, merge changes and create a version tag (without v)
+7. Push
+8. Create a release
     - Release title - version
-9. Publish Flutter package
-    1. flutter pub publish --dry-run
-        - to test is everything OK with release
-    2. flutter pub publish
+9. Publish Flutter package with `flutter pub publish`
 
 ### How to change build config
 
