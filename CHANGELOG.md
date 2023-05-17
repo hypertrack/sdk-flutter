@@ -25,9 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - `getLatestLocation()`
-- `allowMockLocations()` (use `initialize()` param `allowMockLocations` istead)
-- `enableDebugLogging()` (use `initialize()` param `loggingEnabled` istead)
+- `allowMockLocations()` (use `initialize()` param `allowMockLocations` instead)
+- `enableDebugLogging()` (use `initialize()` param `loggingEnabled` instead)
 - `getRunnigStatus()`
+- 'expectedLocation' param from 'addGeotag()'
 
 ## [0.4.3] - 2022-09-16
 #### Changed

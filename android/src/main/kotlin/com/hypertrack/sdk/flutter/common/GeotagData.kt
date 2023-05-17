@@ -7,7 +7,7 @@ import android.location.Location
  *
  * @param data Geotag payload
  */
-internal data class Geotag(
+internal data class GeotagData(
     val data: Map<String, Any?>,
     val expectedLocation: Location?
 )
