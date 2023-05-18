@@ -20,7 +20,7 @@
 
 3. Update CHANGELOG
 4. Update badge in README
-5. Run `flutter pub publish --dry-run` to test is everything OK with the release
+5. Run `just release` to do a release dry-run and is everything OK
 6. Commit, merge changes and create a version tag (without v)
 7. Push
 8. Create a release
