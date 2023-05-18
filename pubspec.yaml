@@ -3,6 +3,7 @@ description: Flutter plugin for HyperTrack, a cross-platform location tracking s
 repository: https://github.com/hypertrack/sdk-flutter
 version: 1.0.0
 homepage: https://www.hypertrack.com/
+url: https://github.com/hypertrack/sdk-flutter
 
 environment:
   sdk: ">=2.17.0 <3.0.0"

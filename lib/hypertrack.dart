@@ -8,7 +8,7 @@ import 'package:hypertrack_plugin/src/sdk_method.dart';
 import 'package:hypertrack_plugin/src/serialization/availability.dart';
 import 'package:hypertrack_plugin/src/serialization/device_id.dart';
 import 'package:hypertrack_plugin/src/serialization/device_name.dart';
-import 'package:hypertrack_plugin/src/serialization/geotag.dart';
+import 'package:hypertrack_plugin/src/serialization/geotag_data.dart';
 import 'package:hypertrack_plugin/src/serialization/hypertrack_error.dart';
 import 'package:hypertrack_plugin/src/serialization/location_result.dart';
 import 'package:hypertrack_plugin/src/serialization/metadata.dart';
@@ -70,12 +70,11 @@ class HyperTrack {
         SdkMethod.setAvailability, serializeAvailability(available));
   }
 
-  
   /// Sets the name for the device
   void setName(String name) {
     _invokeSdkVoidMethod(SdkMethod.setName, serializeDeviceName(name));
   }
-  
+
   /// Sets the metadata for the device
   void setMetadata(JSONObject data) {
     _invokeSdkVoidMethod(SdkMethod.setMetadata, serializeMetadata(data));
@@ -87,8 +86,10 @@ class HyperTrack {
   }
 
   /// Adds a new geotag
-  Future<Result<Location, LocationError>> addGeotag(JSONObject data) {
-    return _invokeSdkMethod(SdkMethod.addGeotag, serializeGeotag(data))
+  Future<Result<Location, LocationError>> addGeotag(JSONObject data,
+      {Location? expectedLocation}) {
+    return _invokeSdkMethod(
+            SdkMethod.addGeotag, serializeGeotagData(data, expectedLocation))
         .then((value) {
       return deserializeLocationResult(value);
     });
@@ -99,7 +100,7 @@ class HyperTrack {
     return _invokeSdkMethod(SdkMethod.getLocation).then((value) {
       return deserializeLocationResult(value);
     });
-  }  
+  }
 
   /// Subscribe to tracking intent changes
   Stream<bool> get onTrackingChanged {
@@ -168,8 +169,7 @@ const EventChannel _trackingStateEventChannel =
     EventChannel('$_channelPrefix/tracking');
 const EventChannel _availabilityEventChannel =
     EventChannel('$_channelPrefix/availability');
-const EventChannel _errorEventChannel =
-    EventChannel('$_channelPrefix/errors');
+const EventChannel _errorEventChannel = EventChannel('$_channelPrefix/errors');
 
 Future<T> _invokeSdkMethod<T>(SdkMethod method, [dynamic arguments]) {
   return _methodChannel.invokeMethod(method.name, arguments).then((value) {
