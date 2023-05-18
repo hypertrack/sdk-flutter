@@ -17,7 +17,7 @@ HyperTrack SDK Flutter plugin is a wrapper around native HyperTrack SDK that all
   s.source_files        = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency          'Flutter'
-  s.dependency          'HyperTrack', '4.14.0'
+  s.dependency          'HyperTrack', '4.15.0-rc.1'
   s.platform            = :ios, '11.0'
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
