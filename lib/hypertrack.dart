@@ -38,7 +38,7 @@ class HyperTrack {
       _keyLoggingEnabled: loggingEnabled ??= false,
       _keyAllowMockLocations: allowMockLocations ??= false,
       _keyAutomaticallyRequestPermissions: automaticallyRequestPermissions ??=
-          false,
+          true,
     }).then((value) => HyperTrack._());
   }
 
