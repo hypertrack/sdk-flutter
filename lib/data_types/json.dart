@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_no_such_method
+
 abstract class _JSONValue<T> {
   T serialize();
 
@@ -33,7 +35,7 @@ abstract class _JSONValue<T> {
 }
 
 class JSONObject extends _JSONValue<Map<String, dynamic>> {
-  Map<String, _JSONValue?> fields;
+  Map<String, _JSONValue<dynamic>?> fields;
 
   JSONObject(this.fields);
 
@@ -75,14 +77,15 @@ class JSONObject extends _JSONValue<Map<String, dynamic>> {
   }
 }
 
-class JSONArray<T, K extends _JSONValue<T>, I extends Iterable<T>> extends _JSONValue<I> {
+class JSONArray<T, K extends _JSONValue<T>, I extends Iterable<T>>
+    extends _JSONValue<I> {
   Iterable<K> items;
 
   JSONArray(this.items);
 
   @override
   I serialize() {
-    return items.map((e) => e.serialize()) as I;
+    return items.map((e) => e.serialize()).toList() as I;
   }
 
   /// @nodoc
@@ -116,7 +119,7 @@ class JSONArray<T, K extends _JSONValue<T>, I extends Iterable<T>> extends _JSON
   }
 }
 
-class JSONString extends _JSONValue {
+class JSONString extends _JSONValue<dynamic> {
   String value;
 
   JSONString(this.value);
@@ -157,7 +160,7 @@ class JSONString extends _JSONValue {
   }
 }
 
-class JSONNumber extends _JSONValue {
+class JSONNumber extends _JSONValue<dynamic> {
   double value;
 
   JSONNumber(this.value);
@@ -198,7 +201,7 @@ class JSONNumber extends _JSONValue {
   }
 }
 
-class JSONBool extends _JSONValue {
+class JSONBool extends _JSONValue<dynamic> {
   bool value;
 
   JSONBool(this.value);
@@ -206,6 +209,45 @@ class JSONBool extends _JSONValue {
   @override
   bool serialize() {
     return value;
+  }
+
+  /// @nodoc
+  @override
+  String toString() {
+    return super.toString();
+  }
+
+  /// @nodoc
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    return super.noSuchMethod(invocation);
+  }
+
+  /// @nodoc
+  @override
+  bool operator ==(Object other) {
+    return super == other;
+  }
+
+  /// @nodoc
+  @override
+  int get hashCode {
+    return super.hashCode;
+  }
+
+  /// @nodoc
+  @override
+  Type get runtimeType {
+    return super.runtimeType;
+  }
+}
+
+class JSONNull extends _JSONValue<dynamic> {
+  JSONNull();
+
+  @override
+  dynamic serialize() {
+    return null;
   }
 
   /// @nodoc
