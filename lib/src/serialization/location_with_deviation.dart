@@ -7,15 +7,15 @@ import 'location.dart';
 LocationWithDeviation deserializeLocationWithDeviation(
     Map<Object?, Object?> map) {
   try {
-    final data = (map[keyValue] as Map<Object?, Object?>)
-        .cast<String, Object?>()
-        .cast<String, double>();
+    final data =
+        (map[keyValue] as Map<Object?, Object?>).cast<String, Object?>();
     return LocationWithDeviation(
-        Location(data[keyLatitude]!, data[keyLongitude]!),
-        data[_keyDeviation]!);
+        deserializeLocation(data[_keyLocation]! as Map<Object?, Object?>),
+        data[_keyDeviation]! as double);
   } catch (e) {
-    throw Exception("Invalid location $map $e");
+    throw Exception("Invalid location with deviation $map $e");
   }
 }
 
+const _keyLocation = "location";
 const _keyDeviation = "deviation";

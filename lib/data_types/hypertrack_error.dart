@@ -21,7 +21,7 @@ enum HyperTrackError {
   /// @nodoc
   @override
   String toString() {
-    return super.toString();
+    return super.toString().split('.').last;
   }
 
   /// @nodoc

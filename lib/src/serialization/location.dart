@@ -2,7 +2,10 @@ import '../../data_types/location.dart';
 import 'common.dart';
 
 Map<String, dynamic> serializeLocation(Location location) {
-  return {keyLatitude: location.latitude, keyLongitude: location.longitude};
+  return {
+    keyType: _typeLocation,
+    keyValue: {keyLatitude: location.latitude, keyLongitude: location.longitude}
+  };
 }
 
 Location deserializeLocation(Map<Object?, Object?> map) {
@@ -17,3 +20,4 @@ Location deserializeLocation(Map<Object?, Object?> map) {
 
 const keyLatitude = "latitude";
 const keyLongitude = "longitude";
+const _typeLocation = "location";
