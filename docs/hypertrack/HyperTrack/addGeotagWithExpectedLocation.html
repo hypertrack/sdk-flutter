@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the sync method from the HyperTrack class, for the Dart programming language.">
-  <title>sync method - HyperTrack class - hypertrack library - Dart API</title>
+  <meta name="description" content="API docs for the addGeotagWithExpectedLocation method from the HyperTrack class, for the Dart programming language.">
+  <title>addGeotagWithExpectedLocation method - HyperTrack class - hypertrack library - Dart API</title>
 
 
   
@@ -31,9 +31,9 @@
     <li><a href="../../index.html">hypertrack_plugin</a></li>
     <li><a href="../../hypertrack/hypertrack-library.html">hypertrack</a></li>
     <li><a href="../../hypertrack/HyperTrack-class.html">HyperTrack</a></li>
-    <li class="self-crumb">sync method</li>
+    <li class="self-crumb">addGeotagWithExpectedLocation method</li>
   </ol>
-  <div class="self-name">sync</div>
+  <div class="self-name">addGeotagWithExpectedLocation</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -50,30 +50,38 @@
 
   <div id="dartdoc-main-content" class="main-content">
       <div>
-<h1><span class="kind-method">sync</span> method 
+<h1><span class="kind-method">addGeotagWithExpectedLocation</span> method 
     <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
 </h1></div>
 
     <section class="multi-line-signature">
       
 
-<span class="returntype">void</span>
-<span class="name ">sync</span>(<wbr>)
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../data_types_result/Result-class.html">Result</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../data_types_location_with_deviation/LocationWithDeviation-class.html">LocationWithDeviation</a></span>, <span class="type-parameter"><a href="../../data_types_location_error/LocationError-class.html">LocationError</a></span>&gt;</span></span>&gt;</span></span>
+<span class="name ">addGeotagWithExpectedLocation</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="addGeotagWithExpectedLocation-param-data"><span class="type-annotation"><a href="../../data_types_json/JSONObject-class.html">JSONObject</a></span> <span class="parameter-name">data</span>, </span></li>
+<li><span class="parameter" id="addGeotagWithExpectedLocation-param-expectedLocation"><span class="type-annotation"><a href="../../data_types_location/Location-class.html">Location</a></span> <span class="parameter-name">expectedLocation</span></span></li>
+</ol>)
 
       
 
     </section>
     
 <section class="desc markdown">
-  <p>Syncs device state with HyperTrack servers</p>
+  <p>Adds a new geotag with expected location</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">void sync() {
-  _invokeSdkVoidMethod(SdkMethod.sync);
+  <pre class="language-dart"><code class="language-dart">Future&lt;Result&lt;LocationWithDeviation, LocationError&gt;&gt;
+    addGeotagWithExpectedLocation(
+        JSONObject data, Location expectedLocation) {
+  return _invokeSdkMethod(
+          SdkMethod.addGeotag, serializeGeotagData(data, expectedLocation))
+      .then((value) {
+    return deserializeLocationWithDeviationResult(value);
+  });
 }</code></pre>
 </section>
 
@@ -91,7 +99,7 @@
   <li><a href="../../index.html">hypertrack_plugin</a></li>
   <li><a href="../../hypertrack/hypertrack-library.html">hypertrack</a></li>
   <li><a href="../../hypertrack/HyperTrack-class.html">HyperTrack</a></li>
-  <li class="self-crumb">sync method</li>
+  <li class="self-crumb">addGeotagWithExpectedLocation method</li>
 </ol>
 
 
