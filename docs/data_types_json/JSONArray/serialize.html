@@ -76,7 +76,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">@override
 I serialize() {
-  return items.map((e) =&gt; e.serialize()) as I;
+  return items.map((e) =&gt; e.serialize()).toList() as I;
 }</code></pre>
 </section>
 
@@ -129,7 +129,7 @@ I serialize() {
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      1.0.0
+      1.1.0
   </span>
 
   

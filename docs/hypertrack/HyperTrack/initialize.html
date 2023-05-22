@@ -61,7 +61,8 @@
 <span class="name ">initialize</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="initialize-param-publishableKey"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">publishableKey</span>, </span></li>
 <li><span class="parameter" id="initialize-param-requireBackgroundTrackingPermission">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">requireBackgroundTrackingPermission</span>, </span></li>
 <li><span class="parameter" id="initialize-param-loggingEnabled"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">loggingEnabled</span>, </span></li>
-<li><span class="parameter" id="initialize-param-allowMockLocations"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">allowMockLocations</span>}</span></li>
+<li><span class="parameter" id="initialize-param-allowMockLocations"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">allowMockLocations</span>, </span></li>
+<li><span class="parameter" id="initialize-param-automaticallyRequestPermissions"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a>?</span> <span class="parameter-name">automaticallyRequestPermissions</span>}</span></li>
 </ol>)
 
       
@@ -81,13 +82,16 @@
   bool? requireBackgroundTrackingPermission,
   bool? loggingEnabled,
   bool? allowMockLocations,
+  bool? automaticallyRequestPermissions,
 }) {
   return _invokeSdkVoidMethod(SdkMethod.initialize, {
     _keyPublishableKey: publishableKey,
     _keyRequireBackgroundTrackingPermission:
         requireBackgroundTrackingPermission ??= false,
     _keyLoggingEnabled: loggingEnabled ??= false,
-    _keyAllowMockLocations: allowMockLocations ??= false
+    _keyAllowMockLocations: allowMockLocations ??= false,
+    _keyAutomaticallyRequestPermissions: automaticallyRequestPermissions ??=
+        true,
   }).then((value) =&gt; HyperTrack._());
 }</code></pre>
 </section>
@@ -128,6 +132,7 @@
 
         <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#instance-methods">Methods</a></li>
           <li><a href="../../hypertrack/HyperTrack/addGeotag.html">addGeotag</a></li>
+          <li><a href="../../hypertrack/HyperTrack/addGeotagWithExpectedLocation.html">addGeotagWithExpectedLocation</a></li>
           <li><a href="../../hypertrack/HyperTrack/setAvailability.html">setAvailability</a></li>
           <li><a href="../../hypertrack/HyperTrack/setMetadata.html">setMetadata</a></li>
           <li><a href="../../hypertrack/HyperTrack/setName.html">setName</a></li>
@@ -153,7 +158,7 @@
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      1.0.0
+      1.1.0
   </span>
 
   

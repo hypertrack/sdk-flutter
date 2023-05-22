@@ -68,14 +68,14 @@
 
 
 <section class="desc markdown">
-  <p>A string which is used to uniquely identify the user.</p>
+  <p>Returns a string that is used to uniquely identify the device</p>
 </section>
 
 
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">Future&lt;String&gt; get deviceId async {
-  return _invokeSdkMethod(SdkMethod.getDeviceId).then((value) {
+  return _invokeSdkMethod(SdkMethod.getDeviceID).then((value) {
     return deserializeDeviceId(value);
   });
 }</code></pre>
@@ -119,6 +119,7 @@
 
         <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#instance-methods">Methods</a></li>
           <li><a href="../../hypertrack/HyperTrack/addGeotag.html">addGeotag</a></li>
+          <li><a href="../../hypertrack/HyperTrack/addGeotagWithExpectedLocation.html">addGeotagWithExpectedLocation</a></li>
           <li><a href="../../hypertrack/HyperTrack/setAvailability.html">setAvailability</a></li>
           <li><a href="../../hypertrack/HyperTrack/setMetadata.html">setMetadata</a></li>
           <li><a href="../../hypertrack/HyperTrack/setName.html">setName</a></li>
@@ -144,7 +145,7 @@
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      1.0.0
+      1.1.0
   </span>
 
   

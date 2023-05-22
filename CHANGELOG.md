@@ -3,6 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2023-05-18
+
+### Added
+- `addGeotag` with expected location
+- `automaticallyRequestPermissions` param to SDK initialization
+- JSONNull type to JSONValue
+
+### Changed
+- Updated HyperTrack iOS SDK to 4.15.0
+
+### Fixed
+- String representation of errors in subscribeToErrors result
+
 ## [1.0.0] - 2023-02-17
 
 ### Changed
@@ -25,9 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - `getLatestLocation()`
-- `allowMockLocations()` (use `initialize()` param `allowMockLocations` istead)
-- `enableDebugLogging()` (use `initialize()` param `loggingEnabled` istead)
+- `allowMockLocations()` (use `initialize()` param `allowMockLocations` instead)
+- `enableDebugLogging()` (use `initialize()` param `loggingEnabled` instead)
 - `getRunnigStatus()`
+- 'expectedLocation' param from 'addGeotag()'
 
 ## [0.4.3] - 2022-09-16
 #### Changed
