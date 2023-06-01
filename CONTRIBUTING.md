@@ -19,6 +19,8 @@
     - ios/hypertrack_plugin.podspec
 
 3. Update CHANGELOG
+
+   - Add the release link to the bottom
    
 4. Update badge in README
    
