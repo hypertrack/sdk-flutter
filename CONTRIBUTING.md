@@ -19,12 +19,20 @@
     - ios/hypertrack_plugin.podspec
 
 3. Update CHANGELOG
+
+   - Add the release link to the bottom
+   
 4. Update badge in README
+   
 5. Run `just release` to do a release dry-run and is everything OK
+   
 6. Commit, merge changes and create a version tag (without v)
+   
 7. Push
+   
 8. Create a release
     - Release title - version
+  
 9. Publish Flutter package with `flutter pub publish`
 
 ### How to change build config
