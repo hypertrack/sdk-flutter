@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated HyperTrack Android SDK to 6.4.2
+- Updated Kotlin to 1.6.21
 
 ## [1.1.1] - 2023-06-01
 
