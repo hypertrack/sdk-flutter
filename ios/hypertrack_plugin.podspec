@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name                = 'hypertrack_plugin'
-  s.version             = '1.1.1'
+  s.version             = '1.1.2'
   s.summary             = 'HyperTrack SDK Flutter plugin is a wrapper around native HyperTrack SDK that allows to integrate it into Flutter apps'
   s.description         = <<-DESC
 HyperTrack SDK Flutter plugin is a wrapper around native HyperTrack SDK that allows to integrate it into Flutter apps

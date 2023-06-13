@@ -2,7 +2,7 @@ group 'com.hypertrack.sdk.flutter'
 version '0.0.1-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.6.21'
     repositories {
         mavenCentral()
         google()
@@ -43,7 +43,7 @@ android {
         disable 'InvalidPackage'
     }
     dependencies {
-        implementation 'com.hypertrack:hypertrack:6.4.0'
+        implementation 'com.hypertrack:hypertrack:6.4.2'
     }
 }
 

@@ -7,33 +7,31 @@
 1. Update SDK version
 
     - android
-        - android/build.gradle
+        - [android/build.gradle](android/build.gradle)
             - implementation 'com.hypertrack:hypertrack:**version**
     - ios
-        - hypertrack_plugin.podspec
+        - [ios/hypertrack_plugin.podspec](ios/hypertrack_plugin.podspec)
             - s.dependency 'HyperTrack/Objective-C', '**version**'
 
 2. Increment wrapper version
-    - pubspec.yaml
+    - [pubspec.yaml](pubspec.yaml)
         - version
-    - ios/hypertrack_plugin.podspec
+    - [ios/hypertrack_plugin.podspec](ios/hypertrack_plugin.podspec)
 
-3. Update CHANGELOG
+3. Update [CHANGELOG](CHANGELOG.md)
 
-   - Add the release link to the bottom
+   - **Add the release link to the bottom**
    
-4. Update badge in README
+4. Update badge in [README](README.md)
    
 5. Run `just release` to do a release dry-run and is everything OK
    
-6. Commit, merge changes and create a version tag (without v)
+6. Merge changes and create a version tag
    
-7. Push
-   
-8. Create a release
+7. Create a release
     - Release title - version
   
-9. Publish Flutter package with `flutter pub publish`
+8. Publish Flutter package with `flutter pub publish`
 
 ### How to change build config
 
