@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2023-06-14
+
+### Changed
+- Updated HyperTrack Android SDK to 6.4.2
+- Updated Kotlin to 1.6.21
+
 ## [1.1.1] - 2023-06-01
 
 ### Changed
@@ -130,6 +136,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Added
 - Initial release.
 
+[1.1.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/1.1.2
 [1.1.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/1.1.1
 [1.1.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/1.1.0
 [1.0.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/1.0.0
