@@ -31,7 +31,7 @@
     <li><a href="../../index.html">hypertrack_plugin</a></li>
     <li><a href="../../hypertrack/hypertrack-library.html">hypertrack</a></li>
     <li><a href="../../hypertrack/HyperTrack-class.html">HyperTrack</a></li>
-    <li class="self-crumb">setMetadata method</li>
+    <li class="self-crumb">setMetadata static method</li>
   </ol>
   <div class="self-name">setMetadata</div>
   <form class="search navbar-right" role="search">
@@ -50,7 +50,7 @@
 
   <div id="dartdoc-main-content" class="main-content">
       <div>
-<h1><span class="kind-method">setMetadata</span> method 
+<h1><span class="kind-method">setMetadata</span> static method 
     <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
 </h1></div>
 
@@ -65,15 +65,12 @@
 
     </section>
     
-<section class="desc markdown">
-  <p>Sets the metadata for the device</p>
-</section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">void setMetadata(JSONObject data) {
+  <pre class="language-dart"><code class="language-dart">static void setMetadata(JSONObject data) {
   _invokeSdkVoidMethod(SdkMethod.setMetadata, serializeMetadata(data));
 }</code></pre>
 </section>
@@ -92,41 +89,42 @@
   <li><a href="../../index.html">hypertrack_plugin</a></li>
   <li><a href="../../hypertrack/hypertrack-library.html">hypertrack</a></li>
   <li><a href="../../hypertrack/HyperTrack-class.html">HyperTrack</a></li>
-  <li class="self-crumb">setMetadata method</li>
+  <li class="self-crumb">setMetadata static method</li>
 </ol>
 
 
     <h5>HyperTrack class</h5>
     <ol>
 
+        <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#constructors">Constructors</a></li>
+          <li><a href="../../hypertrack/HyperTrack/HyperTrack.html">HyperTrack</a></li>
 
 
-        <li class="section-title">
-          <a href="../../hypertrack/HyperTrack-class.html#instance-properties">Properties</a>
-        </li>
+
+
+
+
+        <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#static-properties">Static properties</a></li>
           <li><a href="../../hypertrack/HyperTrack/deviceId.html">deviceId</a></li>
+          <li><a href="../../hypertrack/HyperTrack/errors.html">errors</a></li>
+          <li><a href="../../hypertrack/HyperTrack/errorsSubscription.html">errorsSubscription</a></li>
           <li><a href="../../hypertrack/HyperTrack/isAvailable.html">isAvailable</a></li>
+          <li><a href="../../hypertrack/HyperTrack/isAvailableSubscription.html">isAvailableSubscription</a></li>
           <li><a href="../../hypertrack/HyperTrack/isTracking.html">isTracking</a></li>
+          <li><a href="../../hypertrack/HyperTrack/isTrackingSubscription.html">isTrackingSubscription</a></li>
           <li><a href="../../hypertrack/HyperTrack/location.html">location</a></li>
-          <li><a href="../../hypertrack/HyperTrack/onAvailabilityChanged.html">onAvailabilityChanged</a></li>
-          <li><a href="../../hypertrack/HyperTrack/onError.html">onError</a></li>
-          <li><a href="../../hypertrack/HyperTrack/onTrackingChanged.html">onTrackingChanged</a></li>
-
-        <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#instance-methods">Methods</a></li>
-          <li><a href="../../hypertrack/HyperTrack/addGeotag.html">addGeotag</a></li>
-          <li><a href="../../hypertrack/HyperTrack/addGeotagWithExpectedLocation.html">addGeotagWithExpectedLocation</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setAvailability.html">setAvailability</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setMetadata.html">setMetadata</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setName.html">setName</a></li>
-          <li><a href="../../hypertrack/HyperTrack/startTracking.html">startTracking</a></li>
-          <li><a href="../../hypertrack/HyperTrack/stopTracking.html">stopTracking</a></li>
-          <li><a href="../../hypertrack/HyperTrack/sync.html">sync</a></li>
-
-
-
+          <li><a href="../../hypertrack/HyperTrack/locationSubscription.html">locationSubscription</a></li>
+          <li><a href="../../hypertrack/HyperTrack/metadata.html">metadata</a></li>
+          <li><a href="../../hypertrack/HyperTrack/name.html">name</a></li>
 
         <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#static-methods">Static methods</a></li>
-          <li><a href="../../hypertrack/HyperTrack/initialize.html">initialize</a></li>
+          <li><a href="../../hypertrack/HyperTrack/addGeotag.html">addGeotag</a></li>
+          <li><a href="../../hypertrack/HyperTrack/addGeotagWithExpectedLocation.html">addGeotagWithExpectedLocation</a></li>
+          <li><a href="../../hypertrack/HyperTrack/locate.html">locate</a></li>
+          <li><a href="../../hypertrack/HyperTrack/setIsAvailable.html">setIsAvailable</a></li>
+          <li><a href="../../hypertrack/HyperTrack/setIsTracking.html">setIsTracking</a></li>
+          <li><a href="../../hypertrack/HyperTrack/setMetadata.html">setMetadata</a></li>
+          <li><a href="../../hypertrack/HyperTrack/setName.html">setName</a></li>
 
 </ol>
 
@@ -140,7 +138,7 @@
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      1.1.3
+      2.0.0
   </span>
 
   

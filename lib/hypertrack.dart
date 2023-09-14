@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:hypertrack_plugin/data_types/json.dart';
@@ -6,135 +7,124 @@ import 'package:hypertrack_plugin/data_types/location_error.dart';
 import 'package:hypertrack_plugin/data_types/location_with_deviation.dart';
 import 'package:hypertrack_plugin/data_types/result.dart';
 import 'package:hypertrack_plugin/src/sdk_method.dart';
-import 'package:hypertrack_plugin/src/serialization/availability.dart';
-import 'package:hypertrack_plugin/src/serialization/device_id.dart';
-import 'package:hypertrack_plugin/src/serialization/device_name.dart';
-import 'package:hypertrack_plugin/src/serialization/geotag_data.dart';
-import 'package:hypertrack_plugin/src/serialization/hypertrack_error.dart';
-import 'package:hypertrack_plugin/src/serialization/location_result.dart';
-import 'package:hypertrack_plugin/src/serialization/location_with_deviation_result.dart';
-import 'package:hypertrack_plugin/src/serialization/metadata.dart';
-import 'package:hypertrack_plugin/src/serialization/tracking_state.dart';
+import 'package:hypertrack_plugin/src/serialization.dart';
 
 import 'data_types/hypertrack_error.dart';
 import 'data_types/location.dart';
 
-/// This plugin allows you to use Hypertrack SDK for Flutter apps to get realtime device location
+/// This plugin allows you to use HyperTrack SDK for Flutter apps
 class HyperTrack {
-  HyperTrack._();
-
-  /// Creates an SDK instance
-  static Future<HyperTrack> initialize(
-    String publishableKey, {
-    bool? requireBackgroundTrackingPermission,
-    bool? loggingEnabled,
-    bool? allowMockLocations,
-    bool? automaticallyRequestPermissions,
-  }) {
-    return _invokeSdkVoidMethod(SdkMethod.initialize, {
-      _keyPublishableKey: publishableKey,
-      _keyRequireBackgroundTrackingPermission:
-          requireBackgroundTrackingPermission ??= false,
-      _keyLoggingEnabled: loggingEnabled ??= false,
-      _keyAllowMockLocations: allowMockLocations ??= false,
-      _keyAutomaticallyRequestPermissions: automaticallyRequestPermissions ??=
-          true,
-    }).then((value) => HyperTrack._());
-  }
-
-  /// Returns a string that is used to uniquely identify the device
-  Future<String> get deviceId async {
-    return _invokeSdkMethod(SdkMethod.getDeviceID).then((value) {
-      return deserializeDeviceId(value);
-    });
-  }
-
-  /// Reflects the tracking intent for the device
-  Future<bool> get isTracking async {
-    return _invokeSdkMethod(SdkMethod.isTracking).then((value) {
-      return deserializeIsTracking(value);
-    });
-  }
-
-  /// Reflects availability of the device for the Nearby search
-  Future<bool> get isAvailable async {
-    return _invokeSdkMethod(SdkMethod.isAvailable).then((value) {
-      return deserializeAvailability(value);
-    });
-  }
-
-  /// Expresses an intent to start location tracking for the device
-  void startTracking() => _invokeSdkVoidMethod(SdkMethod.startTracking);
-
-  /// Stops location tracking immediately
-  void stopTracking() => _invokeSdkVoidMethod(SdkMethod.stopTracking);
-
-  /// Sets the availability of the device for the Nearby search
-  void setAvailability(bool available) {
-    _invokeSdkVoidMethod(
-        SdkMethod.setAvailability, serializeAvailability(available));
-  }
-
-  /// Sets the name for the device
-  void setName(String name) {
-    _invokeSdkVoidMethod(SdkMethod.setName, serializeDeviceName(name));
-  }
-
-  /// Sets the metadata for the device
-  void setMetadata(JSONObject data) {
-    _invokeSdkVoidMethod(SdkMethod.setMetadata, serializeMetadata(data));
-  }
-
-  /// Syncs device state with HyperTrack servers
-  void sync() {
-    _invokeSdkVoidMethod(SdkMethod.sync);
-  }
-
-  /// Adds a new geotag
-  Future<Result<Location, LocationError>> addGeotag(JSONObject data) {
-    return _invokeSdkMethod(
+  static Future<Result<Location, LocationError>> addGeotag(JSONObject data) {
+    return _invokeSdkMethod<Map<Object?, Object?>>(
             SdkMethod.addGeotag, serializeGeotagData(data, null))
         .then((value) {
       return deserializeLocationResult(value);
     });
   }
 
-  /// Adds a new geotag with expected location
-  Future<Result<LocationWithDeviation, LocationError>>
+  static Future<Result<LocationWithDeviation, LocationError>>
       addGeotagWithExpectedLocation(
           JSONObject data, Location expectedLocation) {
-    return _invokeSdkMethod(
+    return _invokeSdkMethod<Map<Object?, Object?>>(
             SdkMethod.addGeotag, serializeGeotagData(data, expectedLocation))
         .then((value) {
       return deserializeLocationWithDeviationResult(value);
     });
   }
 
-  /// Reflects the current location of the user or an outage reason
-  Future<Result<Location, LocationError>> get location async {
-    return _invokeSdkMethod(SdkMethod.getLocation).then((value) {
+  static Future<String> get deviceId async {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getDeviceID)
+        .then((value) {
+      return deserializeDeviceId(value);
+    });
+  }
+
+  static Future<Set<HyperTrackError>> get errors async {
+    return _invokeSdkMethod<List<Object?>>(SdkMethod.getErrors).then((value) {
+      return deserializeErrors(value.cast<Map<Object?, Object?>>());
+    });
+  }
+
+  static Future<bool> get isAvailable async {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getIsAvailable)
+        .then((value) {
+      return deserializeIsAvailable(value);
+    });
+  }
+
+  static Future<bool> get isTracking async {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getIsTracking)
+        .then((value) {
+      return deserializeIsTracking(value);
+    });
+  }
+
+  static Future<Result<Location, LocationError>> get location async {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getLocation)
+        .then((value) {
       return deserializeLocationResult(value);
     });
   }
 
-  /// Subscribe to tracking intent changes
-  Stream<bool> get onTrackingChanged {
-    return _trackingStateEventChannel.receiveBroadcastStream().map((event) {
+  static Future<JSONObject> get metadata async {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getMetadata)
+        .then((value) {
+      return deserializeMetadata(value);
+    });
+  }
+
+  static Future<String> get name async {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getName)
+        .then((value) {
+      return deserializeName(value);
+    });
+  }
+
+  static Stream<Result<Location, Set<HyperTrackError>>> locate() {
+    return _locateChannel.receiveBroadcastStream().map((event) {
+      return deserializeLocateResult(event);
+    });
+  }
+
+  static void setIsAvailable(bool available) {
+    _invokeSdkVoidMethod(
+        SdkMethod.setIsAvailable, serializeIsAvailable(available));
+  }
+
+  static void setIsTracking(bool tracking) {
+    _invokeSdkVoidMethod(
+        SdkMethod.setIsTracking, serializeIsTracking(tracking));
+  }
+
+  static void setName(String name) {
+    _invokeSdkVoidMethod(SdkMethod.setName, serializeName(name));
+  }
+
+  static void setMetadata(JSONObject data) {
+    _invokeSdkVoidMethod(SdkMethod.setMetadata, serializeMetadata(data));
+  }
+
+  static Stream<Set<HyperTrackError>> get errorsSubscription {
+    return _errorsChannel.receiveBroadcastStream().map((event) {
+      return deserializeErrors(event.cast<Map<Object?, Object?>>());
+    });
+  }
+
+  static Stream<bool> get isAvailableSubscription {
+    return _isAvailableChannel.receiveBroadcastStream().map((event) {
+      return deserializeIsAvailable(event);
+    });
+  }
+
+  static Stream<bool> get isTrackingSubscription {
+    return _isTrackingChannel.receiveBroadcastStream().map((event) {
       return deserializeIsTracking(event);
     });
   }
 
-  /// Subscribe to availability changes
-  Stream<bool> get onAvailabilityChanged {
-    return _availabilityEventChannel.receiveBroadcastStream().map((event) {
-      return deserializeAvailability(event);
-    });
-  }
-
-  /// Subscribe to tracking errors
-  Stream<Set<HyperTrackError>> get onError {
-    return _errorEventChannel.receiveBroadcastStream().map((event) {
-      return deserializeTrackingErrors(event);
+  static Stream<Result<Location, LocationError>> get locationSubscription {
+    return _locationChannel.receiveBroadcastStream().map((event) {
+      return deserializeLocationResult(event);
     });
   }
 
@@ -170,24 +160,21 @@ class HyperTrack {
 }
 
 const _channelPrefix = 'sdk.hypertrack.com';
-const _keyPublishableKey = 'publishableKey';
-const _keyRequireBackgroundTrackingPermission =
-    'requireBackgroundTrackingPermission';
-const _keyLoggingEnabled = 'loggingEnabled';
-const _keyAllowMockLocations = 'allowMockLocations';
-const _keyAutomaticallyRequestPermissions = 'automaticallyRequestPermissions';
 
 // channel for invoking SDK methods
 const _methodChannel = MethodChannel('$_channelPrefix/methods');
 
 // channels for receiving events from the SDK
-const EventChannel _trackingStateEventChannel =
-    EventChannel('$_channelPrefix/tracking');
-const EventChannel _availabilityEventChannel =
-    EventChannel('$_channelPrefix/availability');
-const EventChannel _errorEventChannel = EventChannel('$_channelPrefix/errors');
+const EventChannel _errorsChannel = EventChannel('$_channelPrefix/errors');
+const EventChannel _isAvailableChannel =
+    EventChannel('$_channelPrefix/isAvailable');
+const EventChannel _isTrackingChannel =
+    EventChannel('$_channelPrefix/isTracking');
+const EventChannel _locationChannel = EventChannel('$_channelPrefix/location');
+const EventChannel _locateChannel = EventChannel('$_channelPrefix/locate');
 
-Future<T> _invokeSdkMethod<T>(SdkMethod method, [dynamic arguments]) {
+Future<T> _invokeSdkMethod<T>(SdkMethod method,
+    [Map<Object?, Object?>? arguments]) {
   return _methodChannel.invokeMethod(method.name, arguments).then((value) {
     if (value == null) {
       throw Exception("Unexpected null response for ${method.toString()}");
