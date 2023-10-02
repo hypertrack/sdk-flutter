@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `onTrackingChanged` to `isTrackingSubscription`
 - Renamed `onAvailabilityChanged` to `isAvailableSubscription`
 - Renamed `onError` to `errorsSubscription`
+- Renamed `JSONValue` to `JSON`
 
 ### Removed
 
