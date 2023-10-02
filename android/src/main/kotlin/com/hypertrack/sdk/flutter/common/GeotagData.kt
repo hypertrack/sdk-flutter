@@ -9,5 +9,5 @@ import android.location.Location
  */
 internal data class GeotagData(
     val data: Map<String, Any?>,
-    val expectedLocation: Location?
+    val expectedLocation: Location?,
 )

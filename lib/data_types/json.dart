@@ -1,6 +1,24 @@
 // ignore_for_file: unnecessary_no_such_method
 
-abstract class _JSONValue<T> {
+import 'dart:convert';
+
+abstract class JSON<T> {
+  static JSONObject? fromMap(Map<String, dynamic> map) {
+    try {
+      return fromMap(map);
+    } catch (Exception) {
+      return null;
+    }
+  }
+
+  static JSONObject? fromString(String jsonString) {
+    try {
+      return JSON.fromMap(json.decode(jsonString));
+    } catch (Exception) {
+      return null;
+    }
+  }
+
   T serialize();
 
   /// @nodoc
@@ -34,8 +52,8 @@ abstract class _JSONValue<T> {
   }
 }
 
-class JSONObject extends _JSONValue<Map<String, dynamic>> {
-  Map<String, _JSONValue<dynamic>?> fields;
+class JSONObject extends JSON<Map<String, dynamic>> {
+  Map<String, JSON<dynamic>?> fields;
 
   JSONObject(this.fields);
 
@@ -77,8 +95,7 @@ class JSONObject extends _JSONValue<Map<String, dynamic>> {
   }
 }
 
-class JSONArray<T, K extends _JSONValue<T>, I extends Iterable<T>>
-    extends _JSONValue<I> {
+class JSONArray<T, K extends JSON<T>, I extends Iterable<T>> extends JSON<I> {
   Iterable<K> items;
 
   JSONArray(this.items);
@@ -119,7 +136,7 @@ class JSONArray<T, K extends _JSONValue<T>, I extends Iterable<T>>
   }
 }
 
-class JSONString extends _JSONValue<dynamic> {
+class JSONString extends JSON<dynamic> {
   String value;
 
   JSONString(this.value);
@@ -160,7 +177,7 @@ class JSONString extends _JSONValue<dynamic> {
   }
 }
 
-class JSONNumber extends _JSONValue<dynamic> {
+class JSONNumber extends JSON<dynamic> {
   double value;
 
   JSONNumber(this.value);
@@ -201,7 +218,7 @@ class JSONNumber extends _JSONValue<dynamic> {
   }
 }
 
-class JSONBool extends _JSONValue<dynamic> {
+class JSONBool extends JSON<dynamic> {
   bool value;
 
   JSONBool(this.value);
@@ -242,7 +259,7 @@ class JSONBool extends _JSONValue<dynamic> {
   }
 }
 
-class JSONNull extends _JSONValue<dynamic> {
+class JSONNull extends JSON<dynamic> {
   JSONNull();
 
   @override
@@ -279,4 +296,45 @@ class JSONNull extends _JSONValue<dynamic> {
   Type get runtimeType {
     return super.runtimeType;
   }
+}
+
+JSONObject fromMap(Map<Object?, Object?> map) {
+  return JSONObject(map.map((rawKey, value) {
+    String key = rawKey as String;
+    if (value is Map<Object?, Object?>) {
+      return MapEntry(key, fromMap(value));
+    } else if (value is List<Object?>) {
+      return MapEntry(key, _fromList(value));
+    } else if (value is String) {
+      return MapEntry(key, JSONString(value));
+    } else if (value is double) {
+      return MapEntry(key, JSONNumber(value));
+    } else if (value is bool) {
+      return MapEntry(key, JSONBool(value));
+    } else if (value == null) {
+      return MapEntry(key, JSONNull());
+    } else {
+      throw Exception("Unexpected type ${value.runtimeType} in JSON map");
+    }
+  }));
+}
+
+JSONArray _fromList(List<Object?> list) {
+  return JSONArray(list.map((e) {
+    if (e is Map<Object?, Object?>) {
+      return fromMap(e);
+    } else if (e is List<Object?>) {
+      return _fromList(e) as JSON<dynamic>;
+    } else if (e is String) {
+      return JSONString(e);
+    } else if (e is double) {
+      return JSONNumber(e);
+    } else if (e is bool) {
+      return JSONBool(e);
+    } else if (e == null) {
+      return JSONNull();
+    } else {
+      throw Exception("Unexpected type ${e.runtimeType} in JSON list");
+    }
+  }).toList());
 }

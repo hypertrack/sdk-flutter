@@ -21,7 +21,7 @@ rootProject.allprojects {
         mavenLocal()
         maven {
             name 'hypertrack'
-            url  'https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/'
+            url 'https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/'
         }
     }
 }
@@ -43,7 +43,10 @@ android {
         disable 'InvalidPackage'
     }
     dependencies {
-        implementation 'com.hypertrack:hypertrack:6.4.2'
+        def hyperTrackVersion = "7.0.3"
+        implementation "com.hypertrack:sdk-android:${hyperTrackVersion}"
+        implementation "com.hypertrack:location-services-google:${hyperTrackVersion}"
+        implementation "com.hypertrack:push-service-firebase:${hyperTrackVersion}"
     }
 }
 

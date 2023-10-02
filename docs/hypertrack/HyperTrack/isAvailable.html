@@ -67,16 +67,14 @@
 </section>
 
 
-<section class="desc markdown">
-  <p>Reflects availability of the device for the Nearby search</p>
-</section>
 
 
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Future&lt;bool&gt; get isAvailable async {
-  return _invokeSdkMethod(SdkMethod.isAvailable).then((value) {
-    return deserializeAvailability(value);
+  <pre class="language-dart"><code class="language-dart">static Future&lt;bool&gt; get isAvailable async {
+  return _invokeSdkMethod&lt;Map&lt;Object?, Object?&gt;&gt;(SdkMethod.getIsAvailable)
+      .then((value) {
+    return deserializeIsAvailable(value);
   });
 }</code></pre>
 </section>
@@ -104,34 +102,35 @@
     <h5>HyperTrack class</h5>
     <ol>
 
+        <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#constructors">Constructors</a></li>
+          <li><a href="../../hypertrack/HyperTrack/HyperTrack.html">HyperTrack</a></li>
 
 
-        <li class="section-title">
-          <a href="../../hypertrack/HyperTrack-class.html#instance-properties">Properties</a>
-        </li>
+
+
+
+
+        <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#static-properties">Static properties</a></li>
           <li><a href="../../hypertrack/HyperTrack/deviceId.html">deviceId</a></li>
+          <li><a href="../../hypertrack/HyperTrack/errors.html">errors</a></li>
+          <li><a href="../../hypertrack/HyperTrack/errorsSubscription.html">errorsSubscription</a></li>
           <li><a href="../../hypertrack/HyperTrack/isAvailable.html">isAvailable</a></li>
+          <li><a href="../../hypertrack/HyperTrack/isAvailableSubscription.html">isAvailableSubscription</a></li>
           <li><a href="../../hypertrack/HyperTrack/isTracking.html">isTracking</a></li>
+          <li><a href="../../hypertrack/HyperTrack/isTrackingSubscription.html">isTrackingSubscription</a></li>
           <li><a href="../../hypertrack/HyperTrack/location.html">location</a></li>
-          <li><a href="../../hypertrack/HyperTrack/onAvailabilityChanged.html">onAvailabilityChanged</a></li>
-          <li><a href="../../hypertrack/HyperTrack/onError.html">onError</a></li>
-          <li><a href="../../hypertrack/HyperTrack/onTrackingChanged.html">onTrackingChanged</a></li>
-
-        <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#instance-methods">Methods</a></li>
-          <li><a href="../../hypertrack/HyperTrack/addGeotag.html">addGeotag</a></li>
-          <li><a href="../../hypertrack/HyperTrack/addGeotagWithExpectedLocation.html">addGeotagWithExpectedLocation</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setAvailability.html">setAvailability</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setMetadata.html">setMetadata</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setName.html">setName</a></li>
-          <li><a href="../../hypertrack/HyperTrack/startTracking.html">startTracking</a></li>
-          <li><a href="../../hypertrack/HyperTrack/stopTracking.html">stopTracking</a></li>
-          <li><a href="../../hypertrack/HyperTrack/sync.html">sync</a></li>
-
-
-
+          <li><a href="../../hypertrack/HyperTrack/locationSubscription.html">locationSubscription</a></li>
+          <li><a href="../../hypertrack/HyperTrack/metadata.html">metadata</a></li>
+          <li><a href="../../hypertrack/HyperTrack/name.html">name</a></li>
 
         <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#static-methods">Static methods</a></li>
-          <li><a href="../../hypertrack/HyperTrack/initialize.html">initialize</a></li>
+          <li><a href="../../hypertrack/HyperTrack/addGeotag.html">addGeotag</a></li>
+          <li><a href="../../hypertrack/HyperTrack/addGeotagWithExpectedLocation.html">addGeotagWithExpectedLocation</a></li>
+          <li><a href="../../hypertrack/HyperTrack/locate.html">locate</a></li>
+          <li><a href="../../hypertrack/HyperTrack/setIsAvailable.html">setIsAvailable</a></li>
+          <li><a href="../../hypertrack/HyperTrack/setIsTracking.html">setIsTracking</a></li>
+          <li><a href="../../hypertrack/HyperTrack/setMetadata.html">setMetadata</a></li>
+          <li><a href="../../hypertrack/HyperTrack/setName.html">setName</a></li>
 
 </ol>
 
@@ -145,7 +144,7 @@
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      1.1.3
+      2.0.0
   </span>
 
   

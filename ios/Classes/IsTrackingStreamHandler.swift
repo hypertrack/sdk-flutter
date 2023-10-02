@@ -1,14 +1,13 @@
 import HyperTrack
 
-class TrackingEventStreamHandler: NSObject, FlutterStreamHandler {
+class IsTrackingStreamHandler: NSObject, FlutterStreamHandler {
     
     private var subscription: HyperTrack.Cancellable?
 
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        subscription = sdkInstance.subscribeToIsTracking(callback: { isTracking in
+        subscription = HyperTrack.subscribeToIsTracking { isTracking in
             events(serializeIsTracking(isTracking))
-        })
-        events(serializeIsTracking(sdkInstance.isTracking))
+        }
         return nil
     }
 

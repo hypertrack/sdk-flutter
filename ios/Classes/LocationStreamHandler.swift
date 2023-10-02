@@ -1,17 +1,16 @@
 import HyperTrack
 
-class AvailabilityEventStreamHandler: NSObject, FlutterStreamHandler {
+class LocationStreamHandler: NSObject, FlutterStreamHandler {
     
     private var subscription: HyperTrack.Cancellable?
-
+    
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        subscription = sdkInstance.subscribeToAvailability(callback: { isAvailable in
-            events(serializeIsAvailable(isAvailable))
-        })
-        events(serializeIsAvailable(sdkInstance.availability))
+        subscription = HyperTrack.subscribeToLocation { locationResult in
+            events(serializeLocationResult(locationResult))
+        }
         return nil
     }
-
+    
     func onCancel(withArguments arguments: Any?) -> FlutterError? {
         subscription?.cancel()
         subscription = nil

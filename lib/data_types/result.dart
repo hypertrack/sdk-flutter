@@ -2,7 +2,8 @@ class Result<T, E> {
   Result._();
 
   factory Result.success(T value) = Success;
-  factory Result.error(E error) = Error;
+
+  factory Result.error(E error) = Failure;
 
   /// @nodoc
   @override
@@ -35,15 +36,15 @@ class Result<T, E> {
   }
 }
 
-class Error<T, E> extends Result<T, E> {
-  Error(this.error): super._();
+class Failure<T, E> extends Result<T, E> {
+  Failure(this.failure) : super._();
 
-  final E error;
+  final E failure;
 
   /// @nodoc
   @override
   String toString() {
-    return error.toString();
+    return failure.toString();
   }
 
   /// @nodoc
@@ -72,7 +73,7 @@ class Error<T, E> extends Result<T, E> {
 }
 
 class Success<T, E> extends Result<T, E> {
-  Success(this.value): super._();
+  Success(this.value) : super._();
 
   final T value;
 
