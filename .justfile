@@ -2,7 +2,10 @@ alias d := docs
 alias r := release
 alias us := update-sdk
 alias usa := update-sdk-android
+alias usal := update-sdk-android-latest
 alias usi := update-sdk-ios
+alias usil := update-sdk-ios-latest
+alias usl := update-sdk-latest
 alias v := version
 
 docs: lint
@@ -15,6 +18,27 @@ lint:
 
 release: lint docs
     flutter pub publish --dry-run
+
+update-sdk-latest wrapper_version commit="false":
+    #!/usr/bin/env sh
+    LATEST_IOS=$(curl -s https://cocoapods.org/pods/HyperTrack | grep -m 1 -o "<span>[0-9.]*</span>" | grep -o '[0-9.]\+' | head -n 1)
+    LATEST_ANDROID=$(curl -s https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/com/hypertrack/sdk-android/maven-metadata-sdk-android.xml | grep latest | grep -o '[0-9.]\+' | head -n 1)
+    just update-sdk {{wrapper_version}} $LATEST_IOS $LATEST_ANDROID
+    if [ "{{commit}}" = "true" ] ; then
+        git add .
+        git commit -m "Update SDK to $LATEST_IOS and $LATEST_ANDROID"
+        git tag {{wrapper_version}}
+    fi
+
+update-sdk-android-latest wrapper_version:
+    #!/usr/bin/env sh
+    LATEST_ANDROID=$(curl -s https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/com/hypertrack/sdk-android/maven-metadata-sdk-android.xml | grep latest | grep -o '[0-9.]\+' | head -n 1)
+    just update-sdk-android {{wrapper_version}} $LATEST_ANDROID
+
+update-sdk-ios-latest wrapper_version:
+    #!/usr/bin/env sh
+    LATEST_IOS=$(curl -s https://cocoapods.org/pods/HyperTrack | grep -m 1 -o "<span>[0-9.]*</span>" | grep -o '[0-9.]\+' | head -n 1)
+    just update-sdk-ios {{wrapper_version}} $LATEST_IOS
 
 update-sdk wrapper_version ios_version android_version:
     just version
