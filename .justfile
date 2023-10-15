@@ -63,7 +63,6 @@ update-sdk wrapper_version ios_version android_version commit="true" branch="tru
     if [ "{{commit}}" = "true" ] ; then
         git add .
         git commit -m "Update HyperTrack SDK iOS to {{ios_version}} and Android to {{android_version}}"
-        git tag {{wrapper_version}}
     fi
 
 update-sdk-android wrapper_version android_version commit="true" branch="true":
@@ -80,7 +79,6 @@ update-sdk-android wrapper_version android_version commit="true" branch="true":
     if [ "{{commit}}" = "true" ] ; then
         git add .
         git commit -m "Update HyperTrack SDK Android to {{android_version}}"
-        git tag {{wrapper_version}}
     fi
 
 update-sdk-ios wrapper_version ios_version commit="true" branch="true":
@@ -97,7 +95,6 @@ update-sdk-ios wrapper_version ios_version commit="true" branch="true":
     if [ "{{commit}}" = "true" ] ; then
         git add .
         git commit -m "Update HyperTrack SDK iOS to {{ios_version}}"
-        git tag {{wrapper_version}}
     fi
 
 update-sdk-android-version-file android_version:
