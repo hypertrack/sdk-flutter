@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated HyperTrack SDK iOS to 5.0.4
 - Updated HyperTrack SDK Android to 7.0.6
 
+### Fixed
+
+- Error on calling `HyperTrack.errors`
+
 ## [2.0.0] - 2023-10-02
 
 ### Added
