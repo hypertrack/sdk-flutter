@@ -4,16 +4,22 @@
 
 ### How to update the HyperTrack SDK version and make a release?
 
-Automated:
+#### Automated:
 
-1. `just usl` (or `just usal` for Android only, or `just usil` for iOS only) will update the SDK to the latest version
+1. `just usl` (or `just usal` for Android only, `just usil` for iOS only) will:
+   - update the SDK to the latest version
+   - update the wrapper version
+   - update the CHANGELOG
+   - create a branch
+   - update docs
+   - commit changes
 2. Push the branch and create a PR
 3. Merge the PR
-4. `just pt` will push a tag with the version
+4. `just pt` on master will push a tag with the version
 5. Create a GitHub release with the tag
 6. `flutter pub publish`
 
-Manual:
+#### Manual:
 
 1. Update SDK version
 
