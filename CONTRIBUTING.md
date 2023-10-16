@@ -6,7 +6,7 @@
 
 #### Automated:
 
-1. `just usl` (or `just usal` for Android only, `just usil` for iOS only) will:
+1. `just usl <new wrapper version>` (or `just usal` for Android only, `just usil` for iOS only) will:
    - update the SDK to the latest version
    - update the wrapper version
    - update the CHANGELOG
