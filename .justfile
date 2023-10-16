@@ -107,6 +107,5 @@ update-wrapper-version-file wrapper_version:
     ./scripts/update_file.sh pubspec.yaml 'version: .*' 'version: {{wrapper_version}}'
     ./scripts/update_file.sh ios/hypertrack_plugin.podspec "s.version             = '.*'" "s.version             = '{{wrapper_version}}'"
 
-
 version:
     cat pubspec.yaml | grep version | grep -o '[0-9.]\+'
