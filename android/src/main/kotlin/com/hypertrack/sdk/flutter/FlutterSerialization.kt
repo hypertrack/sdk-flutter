@@ -29,6 +29,10 @@ internal fun <T> WrapperResult<T>.sendAsFlutterResult(
                     flutterResult.success(this.success)
                 }
 
+                is List<*> -> {
+                    flutterResult.success(this.success)
+                }
+
                 is NotImplemented -> {
                     flutterResult.notImplemented()
                 }
