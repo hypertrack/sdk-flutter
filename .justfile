@@ -9,10 +9,20 @@ alias usil := update-sdk-ios-latest
 alias usl := update-sdk-latest
 alias v := version
 
+# Source: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+# \ are escaped
+SEMVER_REGEX := "(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?"
+
 docs: lint
     dart doc
     cp -R doc/api/ docs
     rm -r doc
+
+latest-android:
+    @curl -s https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/com/hypertrack/sdk-android/maven-metadata-sdk-android.xml | grep latest | grep -o -E '{{SEMVER_REGEX}}' | head -n 1
+
+latest-ios:
+    @curl -s https://cocoapods.org/pods/HyperTrack | grep -m 1 -o -E "HyperTrack <span>{{SEMVER_REGEX}}" | grep -o -E '{{SEMVER_REGEX}}' | head -n 1
 
 lint:
     ktlint --format .
@@ -32,18 +42,18 @@ release: docs
 
 update-sdk-latest wrapper_version commit="true" branch="true":
     #!/usr/bin/env sh
-    LATEST_IOS=$(curl -s https://cocoapods.org/pods/HyperTrack | grep -m 1 -o "<span>[0-9.]*</span>" | grep -o '[0-9.]\+' | head -n 1)
-    LATEST_ANDROID=$(curl -s https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/com/hypertrack/sdk-android/maven-metadata-sdk-android.xml | grep latest | grep -o '[0-9.]\+' | head -n 1)
+    LATEST_IOS=$(just latest-ios)
+    LATEST_ANDROID=$(just latest-android)
     just update-sdk {{wrapper_version}} $LATEST_IOS $LATEST_ANDROID {{commit}} {{branch}}
 
 update-sdk-android-latest wrapper_version commit="true" branch="true":
     #!/usr/bin/env sh
-    LATEST_ANDROID=$(curl -s https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/com/hypertrack/sdk-android/maven-metadata-sdk-android.xml | grep latest | grep -o '[0-9.]\+' | head -n 1)
+    LATEST_ANDROID=$(just latest-android)
     just update-sdk-android {{wrapper_version}} $LATEST_ANDROID {{commit}} {{branch}}
 
 update-sdk-ios-latest wrapper_version commit="true" branch="true":
     #!/usr/bin/env sh
-    LATEST_IOS=$(curl -s https://cocoapods.org/pods/HyperTrack | grep -m 1 -o "<span>[0-9.]*</span>" | grep -o '[0-9.]\+' | head -n 1)
+    LATEST_IOS=$(just latest-ios)
     just update-sdk-ios {{wrapper_version}} $LATEST_IOS {{commit}} {{branch}}
 
 update-sdk wrapper_version ios_version android_version commit="true" branch="true":
@@ -108,4 +118,4 @@ update-wrapper-version-file wrapper_version:
     ./scripts/update_file.sh ios/hypertrack_plugin.podspec "s.version             = '.*'" "s.version             = '{{wrapper_version}}'"
 
 version:
-    cat pubspec.yaml | grep version | grep -o '[0-9.]\+'
+    @cat pubspec.yaml | grep version | grep -o -E '{{SEMVER_REGEX}}'
