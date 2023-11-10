@@ -30,7 +30,7 @@ lint:
 push-tag:
     #!/usr/bin/env sh
     if [ $(git symbolic-ref --short HEAD) = "master" ] ; then
-        VERSION = $(just version)
+        VERSION=$(just version)
         git tag $VERSION
         git push origin $VERSION
     else
