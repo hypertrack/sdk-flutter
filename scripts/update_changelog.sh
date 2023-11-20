@@ -35,10 +35,10 @@ fi
 
 date=$(date +%Y-%m-%d)
 
-sed -i '' -e "245 i\\
-" CHANGELOG.md
-sed -i '' -e "245 i\\
-[$wrapper_version]: https://github.com/hypertrack/sdk-flutter/releases/tag/$wrapper_version" CHANGELOG.md
+# sed -i '' -e "245 i\\
+# " CHANGELOG.md
+# sed -i '' -e "245 i\\
+# [$wrapper_version]: https://github.com/hypertrack/sdk-flutter/releases/tag/$wrapper_version" CHANGELOG.md
 
 sed -i '' -e "6 i\\
 " CHANGELOG.md

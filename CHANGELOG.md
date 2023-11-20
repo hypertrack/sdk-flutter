@@ -250,15 +250,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.2] - 2020-09-28
 
-[2.0.3]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.3
-
 #### Changed
 
 - Android SDK version updated to 4.6.0
 
 ## [0.1.1] - 2020-06-18
-
-[2.0.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.2
 
 #### Changed
 
