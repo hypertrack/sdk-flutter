@@ -6,7 +6,10 @@ import io.flutter.plugin.common.MethodChannel
 
 private const val ERROR_CODE_METHOD_CALL = "METHOD_CALL"
 
-internal fun Unit.sendAsFlutterResult(call: MethodCall, flutterResult: MethodChannel.Result) {
+internal fun Unit.sendAsFlutterResult(
+    call: MethodCall,
+    flutterResult: MethodChannel.Result,
+) {
     return flutterResult.success(null)
 }
 

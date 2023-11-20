@@ -28,20 +28,20 @@ typealias Serialized = Map<String, Any?>
  * It receives serialized params.
  */
 internal object HyperTrackSdkWrapper {
-
     fun addGeotag(args: Serialized): WrapperResult<Serialized> {
         return deserializeGeotagData(args)
             .flatMapSuccess { geotag ->
                 // TODO: return proper error if JSON is wrong
                 val geotagMetadata = Json.fromMap(geotag.data)!!
-                val expectedLocation = geotag
-                    .expectedLocation
-                    ?.let {
-                        HyperTrack.Location(
-                            latitude = it.latitude,
-                            longitude = it.longitude,
-                        )
-                    }
+                val expectedLocation =
+                    geotag
+                        .expectedLocation
+                        ?.let {
+                            HyperTrack.Location(
+                                latitude = it.latitude,
+                                longitude = it.longitude,
+                            )
+                        }
                 if (expectedLocation != null) {
                     HyperTrack
                         .addGeotag(geotagMetadata, expectedLocation)

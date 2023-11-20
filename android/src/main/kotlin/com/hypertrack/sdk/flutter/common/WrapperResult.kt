@@ -1,9 +1,7 @@
 package com.hypertrack.sdk.flutter.common
 
 internal sealed class WrapperResult<SuccessType> {
-    fun <MappedSuccess> flatMapSuccess(
-        onSuccess: (SuccessType) -> WrapperResult<MappedSuccess>,
-    ): WrapperResult<MappedSuccess> {
+    fun <MappedSuccess> flatMapSuccess(onSuccess: (SuccessType) -> WrapperResult<MappedSuccess>): WrapperResult<MappedSuccess> {
         return when (this) {
             is Success -> {
                 onSuccess.invoke(this.success)
@@ -49,4 +47,5 @@ internal sealed class WrapperResult<SuccessType> {
 }
 
 internal data class Success<SuccessType>(val success: SuccessType) : WrapperResult<SuccessType>()
+
 internal data class Failure<SuccessType>(val failure: Throwable) : WrapperResult<SuccessType>()
