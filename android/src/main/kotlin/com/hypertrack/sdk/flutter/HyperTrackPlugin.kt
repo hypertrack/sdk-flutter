@@ -22,7 +22,6 @@ import java.lang.NullPointerException
 import java.util.*
 
 public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
-
     // receives method calls from the plugin API
     private var methodChannel: MethodChannel? = null
 
@@ -69,19 +68,21 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         locationEventChannel = null
     }
 
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+    override fun onMethodCall(
+        call: MethodCall,
+        result: MethodChannel.Result,
+    ) {
         invokeSdkMethod(call).sendAsFlutterResult(call, result)
     }
 
-    private fun invokeSdkMethod(
-        call: MethodCall,
-    ): WrapperResult<*> {
-        val method = SdkMethod
-            .values()
-            .firstOrNull { it.name == call.method }
-            ?: run {
-                return Success(NotImplemented)
-            }
+    private fun invokeSdkMethod(call: MethodCall): WrapperResult<*> {
+        val method =
+            SdkMethod
+                .values()
+                .firstOrNull { it.name == call.method }
+                ?: run {
+                    return Success(NotImplemented)
+                }
         return when (method) {
             SdkMethod.addGeotag -> {
                 withArgs<Map<String, Any?>>(call) { args ->
@@ -162,31 +163,41 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
 
     private fun initEventChannels(messenger: BinaryMessenger) {
         errorsEventChannel = EventChannel(messenger, ERRORS_EVENT_CHANNEL_NAME)
-        errorsEventChannel?.setStreamHandler(object : StreamHandler {
-            override fun onListen(arguments: Any?, events: EventSink) {
-                WrapperResult
-                    .tryAsResult {
-                        errorsCancellable = HyperTrack.subscribeToErrors { errors ->
-                            events.success(serializeErrors(errors))
-                        }
-                    }.crashAppIfError()
-            }
+        errorsEventChannel?.setStreamHandler(
+            object : StreamHandler {
+                override fun onListen(
+                    arguments: Any?,
+                    events: EventSink,
+                ) {
+                    WrapperResult
+                        .tryAsResult {
+                            errorsCancellable =
+                                HyperTrack.subscribeToErrors { errors ->
+                                    events.success(serializeErrors(errors))
+                                }
+                        }.crashAppIfError()
+                }
 
-            override fun onCancel(arguments: Any?) {
-                errorsCancellable?.cancel()
-                errorsCancellable = null
-            }
-        })
+                override fun onCancel(arguments: Any?) {
+                    errorsCancellable?.cancel()
+                    errorsCancellable = null
+                }
+            },
+        )
 
         isTrackingEventChannel = EventChannel(messenger, IS_TRACKING_STATE_EVENT_CHANNEL_NAME)
         isTrackingEventChannel?.setStreamHandler(
             object : StreamHandler {
-                override fun onListen(arguments: Any?, events: EventSink) {
+                override fun onListen(
+                    arguments: Any?,
+                    events: EventSink,
+                ) {
                     WrapperResult
                         .tryAsResult {
-                            isTrackingCancellable = HyperTrack.subscribeToIsTracking { isTracking ->
-                                events.success(serializeIsTracking(isTracking))
-                            }
+                            isTrackingCancellable =
+                                HyperTrack.subscribeToIsTracking { isTracking ->
+                                    events.success(serializeIsTracking(isTracking))
+                                }
                         }.crashAppIfError()
                 }
 
@@ -200,7 +211,10 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         isAvailableEventChannel = EventChannel(messenger, IS_AVAILABLE_EVENT_CHANNEL_NAME)
         isAvailableEventChannel?.setStreamHandler(
             object : StreamHandler {
-                override fun onListen(arguments: Any?, events: EventSink) {
+                override fun onListen(
+                    arguments: Any?,
+                    events: EventSink,
+                ) {
                     WrapperResult
                         .tryAsResult {
                             isAvailableCancellable =
@@ -220,7 +234,10 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         locationEventChannel = EventChannel(messenger, LOCATION_EVENT_CHANNEL_NAME)
         locationEventChannel?.setStreamHandler(
             object : StreamHandler {
-                override fun onListen(arguments: Any?, events: EventSink) {
+                override fun onListen(
+                    arguments: Any?,
+                    events: EventSink,
+                ) {
                     WrapperResult
                         .tryAsResult {
                             locationCancellable =
@@ -240,13 +257,17 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         locateEventChannel = EventChannel(messenger, LOCATE_EVENT_CHANNEL_NAME)
         locateEventChannel?.setStreamHandler(
             object : StreamHandler {
-                override fun onListen(arguments: Any?, events: EventSink) {
+                override fun onListen(
+                    arguments: Any?,
+                    events: EventSink,
+                ) {
                     WrapperResult
                         .tryAsResult {
                             locateCancellable?.cancel()
-                            locateCancellable = HyperTrack.locate { locateResult ->
-                                events.success(serializeLocateResult(locateResult))
-                            }
+                            locateCancellable =
+                                HyperTrack.locate { locateResult ->
+                                    events.success(serializeLocateResult(locateResult))
+                                }
                         }.crashAppIfError()
                 }
 

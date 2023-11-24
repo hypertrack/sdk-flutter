@@ -3,12 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.3] - 2023-11-20
+
+### Changed
+
+- Updated HyperTrack SDK iOS to [5.0.7](https://github.com/hypertrack/sdk-ios/releases/tag/5.0.7)
+- Updated HyperTrack SDK Android to [7.0.9](https://github.com/hypertrack/sdk-android/releases/tag/7.0.9)
+
 ## [2.0.2] - 2023-11-10
 
 ### Changed
 
-- Updated HyperTrack SDK iOS to 5.0.6
-- Updated HyperTrack SDK Android to 7.0.8
+- Updated HyperTrack SDK iOS to [5.0.6](https://github.com/hypertrack/sdk-ios/releases/tag/5.0.6)
+- Updated HyperTrack SDK Android to [7.0.8](https://github.com/hypertrack/sdk-android/releases/tag/7.0.8)
 
 ## [2.0.1] - 2023-10-16
 
@@ -249,8 +256,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.1] - 2020-06-18
 
-[2.0.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.2
-
 #### Changed
 
 - Android SDK version updated to 4.4.1
@@ -262,6 +267,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
+[2.0.3]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.3
 [2.0.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.2
 [2.0.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.1
 [2.0.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.0

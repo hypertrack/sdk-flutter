@@ -9,7 +9,6 @@ import com.hypertrack.sdk.android.Result
  * to Map<String, T> or List<T> where T is any JSON-compatible type
  */
 internal object Serialization {
-
     fun deserializeIsAvailable(isAvailable: Map<String, Any?>): WrapperResult<Boolean> {
         return parse(isAvailable) {
             it.assertValue<String>(key = KEY_TYPE, value = TYPE_IS_AVAILABLE)
@@ -48,12 +47,14 @@ internal object Serialization {
 
     fun deserializeGeotagData(map: Map<String, Any?>): WrapperResult<GeotagData> {
         return parse(map) {
-            val data = it
-                .get<Map<String, Any?>>(KEY_GEOTAG_DATA)
-                .getOrThrow()
-            val locationData = it
-                .getOptional<Map<String, Any?>>(KEY_GEOTAG_EXPECTED_LOCATION)
-                .getOrThrow()
+            val data =
+                it
+                    .get<Map<String, Any?>>(KEY_GEOTAG_DATA)
+                    .getOrThrow()
+            val locationData =
+                it
+                    .getOptional<Map<String, Any?>>(KEY_GEOTAG_EXPECTED_LOCATION)
+                    .getOrThrow()
             val location = locationData?.let { deserializeLocation(it).getOrThrow() }
             GeotagData(data, location)
         }
@@ -69,19 +70,20 @@ internal object Serialization {
     fun serializeError(error: HyperTrack.Error): Map<String, String> {
         return mapOf(
             KEY_TYPE to TYPE_ERROR,
-            KEY_VALUE to when (error) {
-                HyperTrack.Error.BlockedFromRunning -> "blockedFromRunning"
-                HyperTrack.Error.InvalidPublishableKey -> "invalidPublishableKey"
-                HyperTrack.Error.Location.Mocked -> "location.mocked"
-                HyperTrack.Error.Location.ServicesDisabled -> "location.servicesDisabled"
-                HyperTrack.Error.Location.ServicesUnavailable -> "location.servicesUnavailable"
-                HyperTrack.Error.Location.SignalLost -> "location.signalLost"
-                HyperTrack.Error.NoExemptionFromBackgroundStartRestrictions -> "noExemptionFromBackgroundStartRestrictions"
-                HyperTrack.Error.Permissions.Location.Denied -> "permissions.location.denied"
-                HyperTrack.Error.Permissions.Location.InsufficientForBackground -> "permissions.location.insufficientForBackground"
-                HyperTrack.Error.Permissions.Location.ReducedAccuracy -> "permissions.location.reducedAccuracy"
-                HyperTrack.Error.Permissions.Notifications.Denied -> "permissions.notifications.denied"
-            },
+            KEY_VALUE to
+                when (error) {
+                    HyperTrack.Error.BlockedFromRunning -> "blockedFromRunning"
+                    HyperTrack.Error.InvalidPublishableKey -> "invalidPublishableKey"
+                    HyperTrack.Error.Location.Mocked -> "location.mocked"
+                    HyperTrack.Error.Location.ServicesDisabled -> "location.servicesDisabled"
+                    HyperTrack.Error.Location.ServicesUnavailable -> "location.servicesUnavailable"
+                    HyperTrack.Error.Location.SignalLost -> "location.signalLost"
+                    HyperTrack.Error.NoExemptionFromBackgroundStartRestrictions -> "noExemptionFromBackgroundStartRestrictions"
+                    HyperTrack.Error.Permissions.Location.Denied -> "permissions.location.denied"
+                    HyperTrack.Error.Permissions.Location.InsufficientForBackground -> "permissions.location.insufficientForBackground"
+                    HyperTrack.Error.Permissions.Location.ReducedAccuracy -> "permissions.location.reducedAccuracy"
+                    HyperTrack.Error.Permissions.Notifications.Denied -> "permissions.notifications.denied"
+                },
         )
     }
 
@@ -119,9 +121,7 @@ internal object Serialization {
         )
     }
 
-    fun serializeLocateResult(
-        locationResult: Result<HyperTrack.Location, Set<HyperTrack.Error>>,
-    ): Map<String, Any?> {
+    fun serializeLocateResult(locationResult: Result<HyperTrack.Location, Set<HyperTrack.Error>>): Map<String, Any?> {
         return when (locationResult) {
             is Result.Failure -> {
                 serializeFailure(serializeErrors(locationResult.failure))
@@ -133,9 +133,7 @@ internal object Serialization {
         }
     }
 
-    fun serializeLocationResult(
-        locationResult: Result<HyperTrack.Location, HyperTrack.LocationError>,
-    ): Map<String, Any?> {
+    fun serializeLocationResult(locationResult: Result<HyperTrack.Location, HyperTrack.LocationError>): Map<String, Any?> {
         return when (locationResult) {
             is Result.Failure -> {
                 serializeLocationErrorFailure(locationResult.failure)
@@ -155,9 +153,7 @@ internal object Serialization {
         return serializeSuccess(serializeLocation(location))
     }
 
-    fun serializeLocationWithDeviationSuccess(
-        locationWithDeviation: HyperTrack.LocationWithDeviation,
-    ): Map<String, Any?> {
+    fun serializeLocationWithDeviationSuccess(locationWithDeviation: HyperTrack.LocationWithDeviation): Map<String, Any?> {
         return serializeSuccess(
             serializeLocationWithDeviation(
                 locationWithDeviation,
@@ -165,31 +161,33 @@ internal object Serialization {
         )
     }
 
-    private fun serializeLocationWithDeviation(
-        locationWithDeviation: HyperTrack.LocationWithDeviation,
-    ): Map<String, Any?> {
+    private fun serializeLocationWithDeviation(locationWithDeviation: HyperTrack.LocationWithDeviation): Map<String, Any?> {
         return mapOf(
             KEY_TYPE to TYPE_LOCATION_WITH_DEVIATION,
-            KEY_VALUE to mapOf(
-                KEY_LOCATION to serializeLocation(locationWithDeviation.location),
-                KEY_DEVIATION to locationWithDeviation.deviation,
-            ),
+            KEY_VALUE to
+                mapOf(
+                    KEY_LOCATION to serializeLocation(locationWithDeviation.location),
+                    KEY_DEVIATION to locationWithDeviation.deviation,
+                ),
         )
     }
 
     private fun deserializeLocation(map: Map<String, Any?>): WrapperResult<Location> {
         return parse(map) {
             it.assertValue<String>(key = KEY_TYPE, value = TYPE_LOCATION)
-            val value = it
-                .get<Map<String, Any?>>(KEY_VALUE)
-                .getOrThrow()
+            val value =
+                it
+                    .get<Map<String, Any?>>(KEY_VALUE)
+                    .getOrThrow()
             parse(value) { parser ->
-                val latitude = parser
-                    .get<Double>(KEY_LATITUDE)
-                    .getOrThrow()
-                val longitude = parser
-                    .get<Double>(KEY_LONGITUDE)
-                    .getOrThrow()
+                val latitude =
+                    parser
+                        .get<Double>(KEY_LATITUDE)
+                        .getOrThrow()
+                val longitude =
+                    parser
+                        .get<Double>(KEY_LONGITUDE)
+                        .getOrThrow()
                 Location("api").also {
                     it.latitude = latitude
                     it.longitude = longitude
@@ -222,10 +220,11 @@ internal object Serialization {
     fun serializeLocation(location: HyperTrack.Location): Map<String, Any?> {
         return mapOf(
             KEY_TYPE to TYPE_LOCATION,
-            KEY_VALUE to mapOf(
-                KEY_LATITUDE to location.latitude,
-                KEY_LONGITUDE to location.longitude,
-            ),
+            KEY_VALUE to
+                mapOf(
+                    KEY_LATITUDE to location.latitude,
+                    KEY_LONGITUDE to location.longitude,
+                ),
         )
     }
 
@@ -242,8 +241,9 @@ internal object Serialization {
             is HyperTrack.LocationError.Errors -> {
                 mapOf(
                     KEY_TYPE to TYPE_LOCATION_ERROR_ERRORS,
-                    KEY_VALUE to locationError.errors
-                        .map { serializeError(it) },
+                    KEY_VALUE to
+                        locationError.errors
+                            .map { serializeError(it) },
                 )
             }
         }
@@ -277,9 +277,7 @@ internal object Serialization {
         private val _exceptions = mutableListOf<Exception>()
         val exceptions: List<Exception> = _exceptions
 
-        inline fun <reified T> get(
-            key: String,
-        ): WrapperResult<T> {
+        inline fun <reified T> get(key: String): WrapperResult<T> {
             return try {
                 Success(source[key]!! as T)
             } catch (e: Exception) {
@@ -292,9 +290,7 @@ internal object Serialization {
             }
         }
 
-        inline fun <reified T> getOptional(
-            key: String,
-        ): WrapperResult<T?> {
+        inline fun <reified T> getOptional(key: String): WrapperResult<T?> {
             return try {
                 Success(source[key] as T?)
             } catch (e: Exception) {
@@ -321,11 +317,11 @@ internal object Serialization {
         val source: Any,
         val exceptions: List<Exception>,
     ) : Throwable(
-        exceptions.joinToString("\n")
-            .let {
-                "Invalid input:\n\n${source}\n\n$it"
-            },
-    )
+            exceptions.joinToString("\n")
+                .let {
+                    "Invalid input:\n\n${source}\n\n$it"
+                },
+        )
 
     internal class ParsingException(
         key: String,
