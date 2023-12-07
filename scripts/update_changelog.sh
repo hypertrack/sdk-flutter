@@ -35,10 +35,7 @@ fi
 
 date=$(date +%Y-%m-%d)
 
-# sed -i '' -e "245 i\\
-# " CHANGELOG.md
-# sed -i '' -e "245 i\\
-# [$wrapper_version]: https://github.com/hypertrack/sdk-flutter/releases/tag/$wrapper_version" CHANGELOG.md
+$(echo "[$wrapper_version]: https://github.com/hypertrack/sdk-flutter/releases/tag/$wrapper_version" >>CHANGELOG.md)
 
 sed -i '' -e "6 i\\
 " CHANGELOG.md
@@ -53,10 +50,10 @@ sed -i '' -e "9 i\\
 
 if [ -n "$android_version" ]; then
     sed -i '' -e "10 i\\
-- Updated HyperTrack SDK Android to $android_version" CHANGELOG.md
+- Updated HyperTrack SDK Android to [$android_version](https://github.com/hypertrack/sdk-android/releases/tag/$android_version)" CHANGELOG.md
 fi
 
 if [ -n "$ios_version" ]; then
     sed -i '' -e "10 i\\
-- Updated HyperTrack SDK iOS to $ios_version" CHANGELOG.md
+- Updated HyperTrack SDK iOS to [$ios_version](https://github.com/hypertrack/sdk-ios/releases/tag/$ios_version)" CHANGELOG.md
 fi

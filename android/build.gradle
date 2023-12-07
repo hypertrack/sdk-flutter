@@ -36,14 +36,14 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 19
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
         disable 'InvalidPackage'
     }
     dependencies {
-        def hyperTrackVersion = "7.0.9"
+        def hyperTrackVersion = "7.0.10"
         implementation "com.hypertrack:sdk-android:${hyperTrackVersion}"
         implementation "com.hypertrack:location-services-google:${hyperTrackVersion}"
         implementation "com.hypertrack:push-service-firebase:${hyperTrackVersion}"
