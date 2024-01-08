@@ -65,6 +65,11 @@
 
     </section>
     
+<section class="desc markdown">
+  <p>Adds a new geotag.
+Accepts <code>data</code> - Geotag data JSON.
+Returns current location if success or <a href="../../data_types_location_error/LocationError-class.html">LocationError</a> if failure.</p>
+</section>
 
 
     
@@ -72,7 +77,7 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static Future&lt;Result&lt;Location, LocationError&gt;&gt; addGeotag(JSONObject data) {
   return _invokeSdkMethod&lt;Map&lt;Object?, Object?&gt;&gt;(
-          SdkMethod.addGeotag, serializeGeotagData(data, null))
+      SdkMethod.addGeotag, serializeGeotagData(data, null))
       .then((value) {
     return deserializeLocationResult(value);
   });

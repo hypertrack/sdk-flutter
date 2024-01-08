@@ -89,7 +89,7 @@
 
 </dt>
 <dd>
-  
+  Returns a string that is used to uniquely identify the device.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -100,7 +100,7 @@
 
 </dt>
 <dd>
-  
+  Returns a list of errors that blocks the SDK from tracking.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -111,7 +111,7 @@
 
 </dt>
 <dd>
-  
+  Subscribe to tracking errors.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -122,7 +122,7 @@
 
 </dt>
 <dd>
-  
+  Reflects availability of the device for the Nearby search.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -133,7 +133,7 @@
 
 </dt>
 <dd>
-  
+  Subscribe to availability changes.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -144,7 +144,7 @@
 
 </dt>
 <dd>
-  
+  Reflects the tracking intent for the device.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -155,7 +155,7 @@
 
 </dt>
 <dd>
-  
+  Subscribe to tracking intent changes.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -166,7 +166,7 @@
 
 </dt>
 <dd>
-  
+  Reflects the current location of the user or an outage reason.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -177,7 +177,7 @@
 
 </dt>
 <dd>
-  
+  Subscribe to location changes.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -188,7 +188,7 @@
 
 </dt>
 <dd>
-  
+  Gets the metadata that is set for the device.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -199,7 +199,7 @@
 
 </dt>
 <dd>
-  
+  Gets the name that is set for the device.
   <div class="features"><span class="feature">read-only</span></div>
 
 </dd>
@@ -218,7 +218,9 @@
 
 </dt>
 <dd>
-  
+  Adds a new geotag.
+Accepts <code>data</code> - Geotag data JSON.
+Returns current location if success or <a href="../data_types_location_error/LocationError-class.html">LocationError</a> if failure.
   
 
 </dd>
@@ -231,7 +233,11 @@
 
 </dt>
 <dd>
-  
+  Adds a new geotag with expected location.
+Accepts <code>data</code> - Geotag data JSON.
+Accepts <code>expectedLocation</code> - Expected location.
+Returns current location with deviation from expected location if success
+or <a href="../data_types_location_error/LocationError-class.html">LocationError</a> if failure.
   
 
 </dd>
@@ -244,7 +250,8 @@
 
 </dt>
 <dd>
-  
+  Requests one-time location update and returns the <a href="../data_types_location/Location-class.html">Location</a> once it is
+available, or <a href="../data_types_location_error/LocationError-class.html">LocationError</a>.
   
 
 </dd>
@@ -257,7 +264,7 @@
 
 </dt>
 <dd>
-  
+  Sets the availability of the device for the Nearby search.
   
 
 </dd>
@@ -270,7 +277,7 @@
 
 </dt>
 <dd>
-  
+  Sets the tracking intent for the device.
   
 
 </dd>
@@ -283,7 +290,7 @@
 
 </dt>
 <dd>
-  
+  Sets the metadata for the device.
   
 
 </dd>
@@ -296,7 +303,7 @@
 
 </dt>
 <dd>
-  
+  Sets the name for the device.
   
 
 </dd>
