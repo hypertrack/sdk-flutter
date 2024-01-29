@@ -18,10 +18,10 @@ docs: lint
     cp -R doc/api/ docs
     rm -r doc
 
-latest-android:
+_latest-android:
     @curl -s https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/com/hypertrack/sdk-android/maven-metadata-sdk-android.xml | grep latest | grep -o -E '{{SEMVER_REGEX}}' | head -n 1
 
-latest-ios:
+_latest-ios:
     @curl -s https://cocoapods.org/pods/HyperTrack | grep -m 1 -o -E "HyperTrack <span>{{SEMVER_REGEX}}" | grep -o -E '{{SEMVER_REGEX}}' | head -n 1
 
 lint:
@@ -42,18 +42,18 @@ release: docs
 
 update-sdk-latest wrapper_version commit="true" branch="true":
     #!/usr/bin/env sh
-    LATEST_IOS=$(just latest-ios)
-    LATEST_ANDROID=$(just latest-android)
+    LATEST_IOS=$(just _latest-ios)
+    LATEST_ANDROID=$(just _latest-android)
     just update-sdk {{wrapper_version}} $LATEST_IOS $LATEST_ANDROID {{commit}} {{branch}}
 
 update-sdk-android-latest wrapper_version commit="true" branch="true":
     #!/usr/bin/env sh
-    LATEST_ANDROID=$(just latest-android)
+    LATEST_ANDROID=$(just _latest-android)
     just update-sdk-android {{wrapper_version}} $LATEST_ANDROID {{commit}} {{branch}}
 
 update-sdk-ios-latest wrapper_version commit="true" branch="true":
     #!/usr/bin/env sh
-    LATEST_IOS=$(just latest-ios)
+    LATEST_IOS=$(just _latest-ios)
     just update-sdk-ios {{wrapper_version}} $LATEST_IOS {{commit}} {{branch}}
 
 update-sdk wrapper_version ios_version android_version commit="true" branch="true":
@@ -63,12 +63,12 @@ update-sdk wrapper_version ios_version android_version commit="true" branch="tru
     fi
     just version
     echo "New version is {{wrapper_version}}"
-    just update-wrapper-version-file {{wrapper_version}}
+    just _update-wrapper-version-file {{wrapper_version}}
     ./scripts/update_changelog.sh -w {{wrapper_version}} -i {{ios_version}} -a {{android_version}}
     echo "Updating HyperTrack SDK iOS to {{ios_version}}"
-    just update-sdk-ios-version-file {{ios_version}}
+    just _update-sdk-ios-version-file {{ios_version}}
     echo "Updating HyperTrack SDK Android to {{android_version}}"
-    just update-sdk-android-version-file {{android_version}}
+    just _update-sdk-android-version-file {{android_version}}
     just docs
     if [ "{{commit}}" = "true" ] ; then
         git add .
@@ -82,8 +82,8 @@ update-sdk-android wrapper_version android_version commit="true" branch="true":
     fi
     just version
     echo "Updating HyperTrack SDK Android to {{android_version}} on {{wrapper_version}}"
-    just update-wrapper-version-file {{wrapper_version}}
-    just update-sdk-android-version-file {{android_version}}
+    just _update-wrapper-version-file {{wrapper_version}}
+    just _update-sdk-android-version-file {{android_version}}
     ./scripts/update_changelog.sh -w {{wrapper_version}} -a {{android_version}}
     just docs
     if [ "{{commit}}" = "true" ] ; then
@@ -98,8 +98,8 @@ update-sdk-ios wrapper_version ios_version commit="true" branch="true":
     fi
     just version
     echo "Updating HyperTrack SDK iOS to {{ios_version}} on {{wrapper_version}}"
-    just update-wrapper-version-file {{wrapper_version}}
-    just update-sdk-ios-version-file {{ios_version}}
+    just _update-wrapper-version-file {{wrapper_version}}
+    just _update-sdk-ios-version-file {{ios_version}}
     ./scripts/update_changelog.sh -w {{wrapper_version}} -i {{ios_version}}
     just docs
     if [ "{{commit}}" = "true" ] ; then
@@ -107,13 +107,13 @@ update-sdk-ios wrapper_version ios_version commit="true" branch="true":
         git commit -m "Update HyperTrack SDK iOS to {{ios_version}}"
     fi
 
-update-sdk-android-version-file android_version:
+_update-sdk-android-version-file android_version:
     ./scripts/update_file.sh android/build.gradle 'def hyperTrackVersion = \".*\"' 'def hyperTrackVersion = \"{{android_version}}\"'
 
-update-sdk-ios-version-file ios_version:
+_update-sdk-ios-version-file ios_version:
     ./scripts/update_file.sh ios/hypertrack_plugin.podspec "'HyperTrack', '.*'" "'HyperTrack', '{{ios_version}}'"
 
-update-wrapper-version-file wrapper_version:
+_update-wrapper-version-file wrapper_version:
     ./scripts/update_file.sh pubspec.yaml 'version: .*' 'version: {{wrapper_version}}'
     ./scripts/update_file.sh ios/hypertrack_plugin.podspec "s.version             = '.*'" "s.version             = '{{wrapper_version}}'"
 
