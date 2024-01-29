@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2024-01-29
+
+### Changed
+
+- Updated HyperTrack SDK iOS to [5.4.0](https://github.com/hypertrack/sdk-ios/releases/tag/5.4.0)
+- Updated HyperTrack SDK Android to [7.4.0](https://github.com/hypertrack/sdk-android/releases/tag/7.4.0)
+
 ## [2.0.4] - 2023-12-01
 
 ### Changed
@@ -303,3 +310,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.0.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.2
 [2.0.3]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.3
 [2.0.4]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.4
+[2.1.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.1.0

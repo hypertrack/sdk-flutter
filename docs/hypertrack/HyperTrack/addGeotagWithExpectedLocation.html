@@ -79,9 +79,10 @@ or <a href="../../data_types_location_error/LocationError-class.html">LocationEr
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static Future&lt;Result&lt;LocationWithDeviation, LocationError&gt;&gt;
-addGeotagWithExpectedLocation(JSONObject data, Location expectedLocation) {
+    addGeotagWithExpectedLocation(
+        JSONObject data, Location expectedLocation) {
   return _invokeSdkMethod&lt;Map&lt;Object?, Object?&gt;&gt;(
-      SdkMethod.addGeotag, serializeGeotagData(data, expectedLocation))
+          SdkMethod.addGeotag, serializeGeotagData(data, expectedLocation))
       .then((value) {
     return deserializeLocationWithDeviationResult(value);
   });
@@ -151,7 +152,7 @@ addGeotagWithExpectedLocation(JSONObject data, Location expectedLocation) {
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      2.0.4
+      2.1.0
   </span>
 
   
