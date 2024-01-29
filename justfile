@@ -1,6 +1,9 @@
+alias b := build
 alias d := docs
+alias gd := get-dependencies
 alias pt := push-tag
 alias r := release
+alias s := setup
 alias us := update-sdk
 alias usa := update-sdk-android
 alias usal := update-sdk-android-latest
@@ -13,10 +16,22 @@ alias v := version
 # \ are escaped
 SEMVER_REGEX := "(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?"
 
+# MAKE SURE YOU HAVE
+# #!/usr/bin/env sh
+# set -e
+# AT THE TOP OF YOUR RECIPE
+_ask-confirm:
+  @bash -c 'read confirmation; if [[ $confirmation != "y" && $confirmation != "Y" ]]; then echo "Okay 😮‍💨 😅"; exit 1; fi'
+
+build: docs
+
 docs: lint
     dart doc
     cp -R doc/api/ docs
     rm -r doc
+
+get-dependencies:
+    flutter pub get
 
 _latest-android:
     @curl -s https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/com/hypertrack/sdk-android/maven-metadata-sdk-android.xml | grep latest | grep -o -E '{{SEMVER_REGEX}}' | head -n 1
@@ -37,8 +52,27 @@ push-tag:
         echo "You are not on master branch"
     fi
 
-release: docs
-    flutter pub publish --dry-run
+release type="dry-run": setup docs
+    #!/usr/bin/env sh
+    set -euo pipefail
+    VERSION=$(just version)
+    if [ "{{type}}" = "publish" ] ; then
+        BRANCH=$(git branch --show-current)
+        if [ $BRANCH != "master" ]; then
+            echo "You must be on main branch to publish a new version (current branch: $BRANCH))"
+            exit 1
+        fi
+        
+        echo "Are you sure you want to publish version $VERSION? (y/N)"
+        just _ask-confirm
+        flutter pub publish
+        open https://pub.dev/packages/hypertrack_plugin/$VERSION
+    else
+        echo "Dry run for version $VERSION"
+        flutter pub publish --dry-run
+    fi
+
+setup: get-dependencies
 
 update-sdk-latest wrapper_version commit="true" branch="true":
     #!/usr/bin/env sh
