@@ -2,6 +2,8 @@ alias b := build
 alias d := docs
 alias gd := get-dependencies
 alias pt := push-tag
+alias ogp := open-github-prs
+alias ogr := open-github-releases
 alias r := release
 alias s := setup
 alias us := update-sdk
@@ -42,6 +44,16 @@ _latest-ios:
 lint:
     ktlint --format .
 
+_open-github-release-data:
+    code CHANGELOG.md
+    just open-github-releases
+
+open-github-prs:
+    open "https://github.com/hypertrack/sdk-flutter/pulls"
+
+open-github-releases:
+    open "https://github.com/hypertrack/sdk-flutter/releases"
+
 push-tag:
     #!/usr/bin/env sh
     if [ $(git symbolic-ref --short HEAD) = "master" ] ; then
@@ -66,7 +78,7 @@ release type="dry-run": setup docs
         echo "Are you sure you want to publish version $VERSION? (y/N)"
         just _ask-confirm
         flutter pub publish
-        open https://pub.dev/packages/hypertrack_plugin/$VERSION
+        open https://pub.dev/packages/hypertrack_plugin/versions/$VERSION
     else
         echo "Dry run for version $VERSION"
         flutter pub publish --dry-run
@@ -108,6 +120,9 @@ update-sdk wrapper_version ios_version android_version commit="true" branch="tru
         git add .
         git commit -m "Update HyperTrack SDK iOS to {{ios_version}} and Android to {{android_version}}"
     fi
+    if [ "{{branch}}" = "true" ] && [ "{{commit}}" = "true" ] ; then
+        just open-github-prs
+    fi
 
 update-sdk-android wrapper_version android_version commit="true" branch="true":
     #!/usr/bin/env sh
@@ -124,6 +139,9 @@ update-sdk-android wrapper_version android_version commit="true" branch="true":
         git add .
         git commit -m "Update HyperTrack SDK Android to {{android_version}}"
     fi
+    if [ "{{branch}}" = "true" ] && [ "{{commit}}" = "true" ] ; then
+        just open-github-prs
+    fi
 
 update-sdk-ios wrapper_version ios_version commit="true" branch="true":
     #!/usr/bin/env sh
@@ -139,6 +157,9 @@ update-sdk-ios wrapper_version ios_version commit="true" branch="true":
     if [ "{{commit}}" = "true" ] ; then
         git add .
         git commit -m "Update HyperTrack SDK iOS to {{ios_version}}"
+    fi
+    if [ "{{branch}}" = "true" ] && [ "{{commit}}" = "true" ] ; then
+        just open-github-prs
     fi
 
 _update-sdk-android-version-file android_version:
