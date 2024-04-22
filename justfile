@@ -3,6 +3,7 @@ alias d := docs
 alias f := format
 alias gd := get-dependencies
 alias pt := push-tag
+alias od := open-docs
 alias ogp := open-github-prs
 alias ogr := open-github-releases
 alias r := release
@@ -47,6 +48,9 @@ _latest-ios:
 
 lint:
     ktlint --format .
+
+open-docs:
+    open docs/index.html
 
 _open-github-release-data:
     code CHANGELOG.md
