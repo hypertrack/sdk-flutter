@@ -32,10 +32,11 @@ internal object Serialization {
                 expectedLocationData?.let {
                     deserializeLocation(it).getOrThrow()
                 }
-            val orderHandle =
+            val orderHandleData =
                 it
-                    .getOptional<String>(KEY_GEOTAG_ORDER_HANDLE)
+                    .getOptional<Map<String, Any?>>(KEY_GEOTAG_ORDER_HANDLE)
                     .getOrThrow()
+            val orderHandle = orderHandleData?.let { deserializeOrderHandle(it).getOrThrow() }
             val orderStatusData =
                 it
                     .getOptional<Map<String, Any?>>(KEY_GEOTAG_ORDER_STATUS)
@@ -104,19 +105,19 @@ internal object Serialization {
         return mapOf(
             KEY_TYPE to TYPE_ERROR,
             KEY_VALUE to
-                when (error) {
-                    HyperTrack.Error.BlockedFromRunning -> "blockedFromRunning"
-                    HyperTrack.Error.InvalidPublishableKey -> "invalidPublishableKey"
-                    HyperTrack.Error.Location.Mocked -> "location.mocked"
-                    HyperTrack.Error.Location.ServicesDisabled -> "location.servicesDisabled"
-                    HyperTrack.Error.Location.ServicesUnavailable -> "location.servicesUnavailable"
-                    HyperTrack.Error.Location.SignalLost -> "location.signalLost"
-                    HyperTrack.Error.NoExemptionFromBackgroundStartRestrictions -> "noExemptionFromBackgroundStartRestrictions"
-                    HyperTrack.Error.Permissions.Location.Denied -> "permissions.location.denied"
-                    HyperTrack.Error.Permissions.Location.InsufficientForBackground -> "permissions.location.insufficientForBackground"
-                    HyperTrack.Error.Permissions.Location.ReducedAccuracy -> "permissions.location.reducedAccuracy"
-                    HyperTrack.Error.Permissions.Notifications.Denied -> "permissions.notifications.denied"
-                },
+                    when (error) {
+                        HyperTrack.Error.BlockedFromRunning -> "blockedFromRunning"
+                        HyperTrack.Error.InvalidPublishableKey -> "invalidPublishableKey"
+                        HyperTrack.Error.Location.Mocked -> "location.mocked"
+                        HyperTrack.Error.Location.ServicesDisabled -> "location.servicesDisabled"
+                        HyperTrack.Error.Location.ServicesUnavailable -> "location.servicesUnavailable"
+                        HyperTrack.Error.Location.SignalLost -> "location.signalLost"
+                        HyperTrack.Error.NoExemptionFromBackgroundStartRestrictions -> "noExemptionFromBackgroundStartRestrictions"
+                        HyperTrack.Error.Permissions.Location.Denied -> "permissions.location.denied"
+                        HyperTrack.Error.Permissions.Location.InsufficientForBackground -> "permissions.location.insufficientForBackground"
+                        HyperTrack.Error.Permissions.Location.ReducedAccuracy -> "permissions.location.reducedAccuracy"
+                        HyperTrack.Error.Permissions.Notifications.Denied -> "permissions.notifications.denied"
+                    },
         )
     }
 
@@ -184,10 +185,10 @@ internal object Serialization {
         return mapOf(
             KEY_TYPE to TYPE_LOCATION,
             KEY_VALUE to
-                mapOf(
-                    KEY_LATITUDE to location.latitude,
-                    KEY_LONGITUDE to location.longitude,
-                ),
+                    mapOf(
+                        KEY_LATITUDE to location.latitude,
+                        KEY_LONGITUDE to location.longitude,
+                    ),
         )
     }
 
@@ -229,6 +230,15 @@ internal object Serialization {
         }
     }
 
+    private fun deserializeOrderHandle(map: Map<String, Any?>): WrapperResult<String> {
+        return parse(map) {
+            it.assertValue<String>(key = KEY_TYPE, value = TYPE_ORDER_HANDLE)
+            it
+                .get<String>(KEY_VALUE)
+                .getOrThrow()
+        }
+    }
+
     private fun deserializeOrderStatus(map: Map<String, Any?>): WrapperResult<HyperTrack.OrderStatus> {
         return parse(map) {
             when (it.get<String>(KEY_TYPE).getOrThrow()) {
@@ -248,10 +258,10 @@ internal object Serialization {
         return mapOf(
             KEY_TYPE to TYPE_LOCATION_WITH_DEVIATION,
             KEY_VALUE to
-                mapOf(
-                    KEY_LOCATION to serializeLocation(locationWithDeviation.location),
-                    KEY_DEVIATION to locationWithDeviation.deviation,
-                ),
+                    mapOf(
+                        KEY_LOCATION to serializeLocation(locationWithDeviation.location),
+                        KEY_DEVIATION to locationWithDeviation.deviation,
+                    ),
         )
     }
 
@@ -290,8 +300,8 @@ internal object Serialization {
                 mapOf(
                     KEY_TYPE to TYPE_LOCATION_ERROR_ERRORS,
                     KEY_VALUE to
-                        locationError.errors
-                            .map { serializeError(it) },
+                            locationError.errors
+                                .map { serializeError(it) },
                 )
             }
         }
@@ -365,11 +375,11 @@ internal object Serialization {
         val source: Any,
         val exceptions: List<Exception>,
     ) : Throwable(
-            exceptions.joinToString("\n")
-                .let {
-                    "Invalid input:\n\n${source}\n\n$it"
-                },
-        )
+        exceptions.joinToString("\n")
+            .let {
+                "Invalid input:\n\n${source}\n\n$it"
+            },
+    )
 
     internal class ParsingException(
         key: String,
@@ -396,6 +406,7 @@ internal object Serialization {
     private const val TYPE_LOCATION_ERROR_NOT_RUNNING = "notRunning"
     private const val TYPE_LOCATION_ERROR_STARTING = "starting"
 
+    private const val TYPE_ORDER_HANDLE = "orderHandle"
     private const val TYPE_GEOTAG_ORDER_STATUS_CLOCK_IN = "orderStatusClockIn"
     private const val TYPE_GEOTAG_ORDER_STATUS_CLOCK_OUT = "orderStatusClockOut"
     private const val TYPE_GEOTAG_ORDER_STATUS_CUSTOM = "orderStatusCustom"
