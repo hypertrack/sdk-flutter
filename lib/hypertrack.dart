@@ -48,7 +48,7 @@ class HyperTrack {
   }
 
   /// Deprecated. Use addGeotag with orderHandle and orderStatus instead.
-  static Future<Result<Location, LocationError>> addGeotagLegacy(
+  static Future<Result<Location, LocationError>> addGeotagDeprecated(
       JSONObject data) {
     return _invokeSdkMethod<Map<Object?, Object?>>(
             SdkMethod.addGeotag, serializeGeotagData(null, null, data, null))
@@ -59,7 +59,7 @@ class HyperTrack {
 
   /// Deprecated. Use addGeotagWithExpectedLocation with orderHandle and orderStatus instead.
   static Future<Result<LocationWithDeviation, LocationError>>
-      addGeotagWithExpectedLocationLegacy(
+      addGeotagWithExpectedLocationDeprecated(
           JSONObject data, Location expectedLocation) {
     return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.addGeotag,
             serializeGeotagData(null, null, data, expectedLocation))
