@@ -109,6 +109,10 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
             return setMetadata(args!)
         case .setName:
             return setName(args!)
+        case .getDynamicPublishableKey:
+            preconditionFailure("getDynamicPublishableKey is not implemented")
+        case .setDynamicPublishableKey:
+            preconditionFailure("setDynamicPublishableKey is not implemented")
         }
     }
 
