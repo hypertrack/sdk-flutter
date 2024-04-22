@@ -1,7 +1,9 @@
 alias b := build
 alias d := docs
+alias f := format
 alias gd := get-dependencies
 alias pt := push-tag
+alias od := open-docs
 alias ogp := open-github-prs
 alias ogr := open-github-releases
 alias r := release
@@ -25,12 +27,15 @@ SEMVER_REGEX := "(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d
 _ask-confirm:
   @bash -c 'read confirmation; if [[ $confirmation != "y" && $confirmation != "Y" ]]; then echo "Okay 😮‍💨 😅"; exit 1; fi'
 
-build: docs
+build: get-dependencies docs
 
-docs: lint
+docs: format
     dart doc
     cp -R doc/api/ docs
     rm -r doc
+
+format: 
+    ktlint --format android/src/main/
 
 get-dependencies:
     flutter pub get
@@ -41,8 +46,8 @@ _latest-android:
 _latest-ios:
     @curl -s https://cocoapods.org/pods/HyperTrack | grep -m 1 -o -E "HyperTrack <span>{{SEMVER_REGEX}}" | grep -o -E '{{SEMVER_REGEX}}' | head -n 1
 
-lint:
-    ktlint --format .
+open-docs:
+    open docs/index.html
 
 _open-github-release-data:
     code CHANGELOG.md
@@ -60,6 +65,7 @@ push-tag:
         VERSION=$(just version)
         git tag $VERSION
         git push origin $VERSION
+        just _open-github-release-data
     else
         echo "You are not on master branch"
     fi
@@ -102,7 +108,7 @@ update-sdk-ios-latest wrapper_version commit="true" branch="true":
     LATEST_IOS=$(just _latest-ios)
     just update-sdk-ios {{wrapper_version}} $LATEST_IOS {{commit}} {{branch}}
 
-update-sdk wrapper_version ios_version android_version commit="true" branch="true":
+update-sdk wrapper_version ios_version android_version commit="true" branch="true": build
     #!/usr/bin/env sh
     if [ "{{branch}}" = "true" ] ; then
         git checkout -b update-sdk-ios-{{ios_version}}-android-{{android_version}}
@@ -124,7 +130,7 @@ update-sdk wrapper_version ios_version android_version commit="true" branch="tru
         just open-github-prs
     fi
 
-update-sdk-android wrapper_version android_version commit="true" branch="true":
+update-sdk-android wrapper_version android_version commit="true" branch="true": build
     #!/usr/bin/env sh
     if [ "{{branch}}" = "true" ] ; then
         git checkout -b update-sdk-android-{{android_version}}
@@ -143,7 +149,7 @@ update-sdk-android wrapper_version android_version commit="true" branch="true":
         just open-github-prs
     fi
 
-update-sdk-ios wrapper_version ios_version commit="true" branch="true":
+update-sdk-ios wrapper_version ios_version commit="true" branch="true": build
     #!/usr/bin/env sh
     if [ "{{branch}}" = "true" ] ; then
         git checkout -b update-sdk-ios-{{ios_version}}

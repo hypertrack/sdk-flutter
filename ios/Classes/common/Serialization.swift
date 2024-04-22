@@ -14,22 +14,74 @@ private let typeMetadata = "metadata"
 private let typeName = "name"
 private let typeSuccess = "success"
 
+func deserializeDynamicPublishableKey(
+    _ args: [String: Any]
+) -> Result<String, FailureResult> {
+    if args[keyType] as? String != "dynamicPublishableKey" {
+        return .failure(.fatalError(getParseError(args, key: keyType)))
+    }
+    guard let value = args[keyValue] as? String else {
+        return .failure(.fatalError(getParseError(args, key: keyValue)))
+    }
+    return .success(value)
+}
+
 func deserializeGeotagData(
     _ args: [String: Any]
 ) -> Result<GeotagData, FailureResult> {
     guard let data = args[keyGeotagData] as? [String: Any] else {
         return .failure(.fatalError(getParseError(args, key: keyGeotagData)))
     }
+    let orderHandleData = args["orderHandle"] as? [String: Any]
+    let orderHandleResult: Result<String, FailureResult>? = if let orderHandleData = orderHandleData {
+        deserializeOrderHandle(orderHandleData)
+    } else {
+        nil
+    }
+    if case let .failure(failure) = orderHandleResult {
+        return .failure(failure)
+    }
+    let orderHandle: String? = if case let .success(orderHandle) = orderHandleResult {
+        orderHandle
+    } else {
+        nil
+    }
+
+    let orderStatusData = args["orderStatus"] as? [String: Any]
+    let orderStatusResult: Result<HyperTrack.OrderStatus, FailureResult>? = if let orderStatusData = orderStatusData {
+        deserializeOrderStatus(orderStatusData)
+    } else {
+        nil
+    }
+    if case let .failure(failure) = orderStatusResult {
+        return .failure(failure)
+    }
+    let orderStatus: HyperTrack.OrderStatus? = if case let .success(orderStatus) = orderStatusResult {
+        orderStatus
+    } else {
+        nil
+    }
+
     if let expectedLocationData = args[keyExpectedLocation] as? [String: Any] {
         let expectedLocation = deserializeLocation(expectedLocationData)
         switch expectedLocation {
         case let .failure(failure):
             return .failure(failure)
         case let .success(expectedLocation):
-            return .success(.init(data: data, expectedLocation: expectedLocation))
+            return .success(.init(
+                data: data,
+                expectedLocation: expectedLocation,
+                orderHandle: orderHandle,
+                orderStatus: orderStatus
+            ))
         }
     } else {
-        return .success(.init(data: data, expectedLocation: nil))
+        return .success(.init(
+            data: data,
+            expectedLocation: nil,
+            orderHandle: orderHandle,
+            orderStatus: orderStatus
+        ))
     }
 }
 
@@ -89,10 +141,46 @@ func deserializeName(_ data: [String: Any]) -> Result<String, FailureResult> {
     return .success(value)
 }
 
+func deserializeOrderHandle(_ data: [String: Any]) -> Result<String, FailureResult> {
+    if data[keyType] as? String != "orderHandle" {
+        return .failure(.fatalError(getParseError(data, key: keyType)))
+    }
+    guard let value = data[keyValue] as? String else {
+        return .failure(.fatalError(getParseError(data, key: keyValue)))
+    }
+    return .success(value)
+}
+
+func deserializeOrderStatus(_ data: [String: Any]) -> Result<HyperTrack.OrderStatus, FailureResult> {
+    guard let type = data[keyType] as? String else {
+        return .failure(.fatalError(getParseError(data, key: keyType)))
+    }
+    switch type {
+    case "orderStatusClockIn":
+        return .success(.clockIn)
+    case "orderStatusClockOut":
+        return .success(.clockOut)
+    case "orderStatusCustom":
+        guard let value = data[keyValue] as? String else {
+            return .failure(.fatalError(getParseError(data, key: keyValue)))
+        }
+        return .success(.custom(value))
+    default:
+        return .failure(.fatalError(getParseError(data, key: keyType)))
+    }
+}
+
 func serializeDeviceID(_ deviceID: String) -> [String: Any] {
     return [
         keyType: "deviceID",
         keyValue: deviceID,
+    ]
+}
+
+func serializeDynamicPublishableKey(_ dynamicPublishableKey: String) -> [String: Any] {
+    return [
+        keyType: "dynamicPublishableKey",
+        keyValue: dynamicPublishableKey,
     ]
 }
 

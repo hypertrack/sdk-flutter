@@ -6,6 +6,7 @@ import 'package:hypertrack_plugin/data_types/location_error.dart';
 import 'package:hypertrack_plugin/data_types/location_with_deviation.dart';
 
 import '../data_types/location.dart';
+import '../data_types/order_status.dart';
 import '../data_types/result.dart';
 
 const _keyType = "type";
@@ -22,6 +23,12 @@ const _typeMetadata = "metadata";
 const _typeName = "name";
 const _typeLocation = "location";
 const _typeLocationWithDeviation = "locationWithDeviation";
+const _typeOrderHandle = "orderHandle";
+const _typeOrderStatus = "orderStatus";
+
+const _typeOrderStatusClockIn = "orderStatusClockIn";
+const _typeOrderStatusClockOut = "orderStatusClockOut";
+const _typeOrderStatusCustom = "orderStatusCustom";
 
 const _typeLocationErrorErrors = "errors";
 const _typeLocationErrorNotRunning = "notRunning";
@@ -31,9 +38,11 @@ const _keyLatitude = "latitude";
 const _keyLongitude = "longitude";
 
 const _keyDeviation = "deviation";
-const _keyGeotagData = "data";
+const _keyData = "data";
 const _keyGeotagExpectedLocation = "expectedLocation";
 const _keyLocation = "location";
+const _keyOrderHandle = "orderHandle";
+const _keyOrderStatus = "orderStatus";
 
 String deserializeDeviceId(Map<Object?, Object?> deviceId) {
   assert(deviceId[_keyType] == _typeDeviceId);
@@ -191,15 +200,58 @@ Map<Object?, Object?> deserializeSuccess(Map<Object?, Object?> success) {
 }
 
 Map<Object?, Object?> serializeGeotagData(
-    JSONObject data, Location? rawExpectedLocation) {
+    String? rawOrderHandle,
+    OrderStatus? rawOrderStatus,
+    JSONObject data,
+    Location? rawExpectedLocation) {
+  Map<Object?, Object?>? orderHandle;
+  if (rawOrderHandle == null) {
+    orderHandle = null;
+  } else {
+    orderHandle = {
+      _keyType: _typeOrderHandle,
+      _keyValue: rawOrderHandle,
+    };
+  }
+
+  Map<Object?, Object?>? orderStatus;
+  if (rawOrderStatus == null) {
+    orderStatus = null;
+  } else {
+    switch (rawOrderStatus.runtimeType) {
+      case ClockIn:
+        orderStatus = {
+          _keyType: _typeOrderStatusClockIn,
+        };
+        break;
+      case ClockOut:
+        orderStatus = {
+          _keyType: _typeOrderStatusClockOut,
+        };
+        break;
+      case Custom:
+        orderStatus = {
+          _keyType: _typeOrderStatusCustom,
+          _keyValue: (rawOrderStatus as Custom).value,
+        };
+        break;
+      default:
+        throw Exception(
+            "Unknown order status type: ${rawOrderStatus.runtimeType}");
+    }
+  }
+
   Map<Object?, Object?>? expectedLocation;
   if (rawExpectedLocation == null) {
     expectedLocation = null;
   } else {
     expectedLocation = serializeLocation(rawExpectedLocation);
   }
+
   return {
-    _keyGeotagData: data.serialize(),
+    _keyOrderHandle: orderHandle,
+    _keyOrderStatus: orderStatus,
+    _keyData: data.serialize(),
     _keyGeotagExpectedLocation: expectedLocation,
   };
 }

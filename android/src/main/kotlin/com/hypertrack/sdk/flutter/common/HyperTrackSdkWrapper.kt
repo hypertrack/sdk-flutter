@@ -1,16 +1,16 @@
 package com.hypertrack.sdk.flutter.common
 
-import com.hypertrack.sdk.*
 import com.hypertrack.sdk.android.HyperTrack
-import com.hypertrack.sdk.android.HyperTrack.metadata
 import com.hypertrack.sdk.android.Json
 import com.hypertrack.sdk.android.Result
+import com.hypertrack.sdk.flutter.common.Serialization.deserializeDynamicPublishableKey
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeGeotagData
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeIsAvailable
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeIsTracking
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeMetadata
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeName
 import com.hypertrack.sdk.flutter.common.Serialization.serializeDeviceId
+import com.hypertrack.sdk.flutter.common.Serialization.serializeDynamicPublishableKey
 import com.hypertrack.sdk.flutter.common.Serialization.serializeErrors
 import com.hypertrack.sdk.flutter.common.Serialization.serializeIsAvailable
 import com.hypertrack.sdk.flutter.common.Serialization.serializeIsTracking
@@ -42,9 +42,22 @@ internal object HyperTrackSdkWrapper {
                                 longitude = it.longitude,
                             )
                         }
+                val orderHandle = geotag.orderHandle
+                val orderStatus = geotag.orderStatus
                 if (expectedLocation != null) {
-                    HyperTrack
-                        .addGeotag(geotagMetadata, expectedLocation)
+                    if (orderHandle != null || orderStatus != null) {
+                        if (orderHandle == null || orderStatus == null) {
+                            throw Error("orderHandle and orderStatus must be provided")
+                        }
+                        HyperTrack.addGeotag(
+                            orderHandle = orderHandle,
+                            orderStatus = orderStatus,
+                            expectedLocation = expectedLocation,
+                            metadata = geotagMetadata,
+                        )
+                    } else {
+                        HyperTrack.addGeotag(geotagMetadata, expectedLocation)
+                    }
                         .let {
                             when (it) {
                                 is Result.Failure -> {
@@ -57,8 +70,18 @@ internal object HyperTrackSdkWrapper {
                             }
                         }
                 } else {
-                    HyperTrack
-                        .addGeotag(geotagMetadata)
+                    if (orderHandle != null || orderStatus != null) {
+                        if (orderHandle == null || orderStatus == null) {
+                            throw Error("orderHandle and orderStatus must be provided")
+                        }
+                        HyperTrack.addGeotag(
+                            orderHandle = orderHandle,
+                            orderStatus = orderStatus,
+                            metadata = geotagMetadata,
+                        )
+                    } else {
+                        HyperTrack.addGeotag(geotagMetadata)
+                    }
                         .let { serializeLocationResult(it) }
                 }.let {
                     Success(it)
@@ -68,6 +91,10 @@ internal object HyperTrackSdkWrapper {
 
     fun getDeviceId(): WrapperResult<Serialized> {
         return Success(serializeDeviceId(HyperTrack.deviceID))
+    }
+
+    fun getDynamicPublishableKey(): WrapperResult<Serialized> {
+        return Success(serializeDynamicPublishableKey(HyperTrack.dynamicPublishableKey))
     }
 
     fun getErrors(): WrapperResult<List<Serialized>> {
@@ -108,6 +135,13 @@ internal object HyperTrackSdkWrapper {
         return Success(
             serializeName(HyperTrack.name),
         )
+    }
+
+    fun setDynamicPublishableKey(args: Serialized): WrapperResult<Unit> {
+        return deserializeDynamicPublishableKey(args)
+            .mapSuccess { publishableKey ->
+                HyperTrack.dynamicPublishableKey = publishableKey
+            }
     }
 
     fun setIsAvailable(args: Serialized): WrapperResult<Unit> {
