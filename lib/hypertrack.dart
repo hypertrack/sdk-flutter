@@ -8,30 +8,61 @@ import 'package:hypertrack_plugin/src/serialization.dart';
 
 import 'data_types/hypertrack_error.dart';
 import 'data_types/location.dart';
+import 'data_types/order_status.dart';
 
 /// This plugin allows you to use HyperTrack SDK for Flutter apps
 class HyperTrack {
   /// Adds a new geotag.
-  /// Accepts [data] - Geotag data JSON.
+  /// Accepts:
+  /// - orderHandle - Order handle.
+  /// - orderStatus - Order status.
+  /// - [data] - Geotag data JSON.
   /// Returns current location if success or [LocationError] if failure.
-  static Future<Result<Location, LocationError>> addGeotag(JSONObject data) {
-    return _invokeSdkMethod<Map<Object?, Object?>>(
-            SdkMethod.addGeotag, serializeGeotagData(data, null))
+  static Future<Result<Location, LocationError>> addGeotag(
+      String orderHandle, OrderStatus orderStatus, JSONObject data) {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.addGeotag,
+            serializeGeotagData(orderHandle, orderStatus, data, null))
         .then((value) {
       return deserializeLocationResult(value);
     });
   }
 
   /// Adds a new geotag with expected location.
-  /// Accepts [data] - Geotag data JSON.
-  /// Accepts [expectedLocation] - Expected location.
+  /// Accepts:
+  /// - orderHandle - Order handle.
+  /// - orderStatus - Order status.
+  /// - [data] - Geotag data JSON.
+  /// - [expectedLocation] - Expected location.
   /// Returns current location with deviation from expected location if success
   /// or [LocationError] if failure.
   static Future<Result<LocationWithDeviation, LocationError>>
-      addGeotagWithExpectedLocation(
+      addGeotagWithExpectedLocation(String orderHandle, OrderStatus orderStatus,
           JSONObject data, Location expectedLocation) {
     return _invokeSdkMethod<Map<Object?, Object?>>(
-            SdkMethod.addGeotag, serializeGeotagData(data, expectedLocation))
+            SdkMethod.addGeotag,
+            serializeGeotagData(
+                orderHandle, orderStatus, data, expectedLocation))
+        .then((value) {
+      return deserializeLocationWithDeviationResult(value);
+    });
+  }
+
+  /// Deprecated. Use addGeotag with orderHandle and orderStatus instead.
+  static Future<Result<Location, LocationError>> addGeotagLegacy(
+      JSONObject data) {
+    return _invokeSdkMethod<Map<Object?, Object?>>(
+            SdkMethod.addGeotag, serializeGeotagData(null, null, data, null))
+        .then((value) {
+      return deserializeLocationResult(value);
+    });
+  }
+
+  /// Deprecated. Use addGeotagWithExpectedLocation with orderHandle and orderStatus instead.
+  static Future<Result<LocationWithDeviation, LocationError>>
+      addGeotagWithExpectedLocationLegacy(
+          JSONObject data, Location expectedLocation) {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.addGeotag,
+            serializeGeotagData(null, null, data, expectedLocation))
         .then((value) {
       return deserializeLocationWithDeviationResult(value);
     });

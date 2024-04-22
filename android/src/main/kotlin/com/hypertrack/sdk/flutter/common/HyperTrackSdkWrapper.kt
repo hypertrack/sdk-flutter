@@ -3,12 +3,14 @@ package com.hypertrack.sdk.flutter.common
 import com.hypertrack.sdk.android.HyperTrack
 import com.hypertrack.sdk.android.Json
 import com.hypertrack.sdk.android.Result
+import com.hypertrack.sdk.flutter.common.Serialization.deserializeDynamicPublishableKey
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeGeotagData
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeIsAvailable
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeIsTracking
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeMetadata
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeName
 import com.hypertrack.sdk.flutter.common.Serialization.serializeDeviceId
+import com.hypertrack.sdk.flutter.common.Serialization.serializeDynamicPublishableKey
 import com.hypertrack.sdk.flutter.common.Serialization.serializeErrors
 import com.hypertrack.sdk.flutter.common.Serialization.serializeIsAvailable
 import com.hypertrack.sdk.flutter.common.Serialization.serializeIsTracking

@@ -96,6 +96,10 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                 HyperTrackSdkWrapper.getDeviceId()
             }
 
+            SdkMethod.getDynamicPublishableKey -> {
+                throw NotImplementedError("getDynamicPublishableKey is not implemented")
+            }
+
             SdkMethod.getErrors -> {
                 HyperTrackSdkWrapper.getErrors()
             }
@@ -123,6 +127,10 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
             SdkMethod.locate -> {
                 // locate is implemented as a EventChannel
                 Success(NotImplemented)
+            }
+
+            SdkMethod.setDynamicPublishableKey -> {
+                throw NotImplementedError("setDynamicPublishableKey is not implemented")
             }
 
             SdkMethod.setIsAvailable -> {
