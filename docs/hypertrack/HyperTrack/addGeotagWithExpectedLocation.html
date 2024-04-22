@@ -58,7 +58,9 @@
       
 
 <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../data_types_result/Result-class.html">Result</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../data_types_location_with_deviation/LocationWithDeviation-class.html">LocationWithDeviation</a></span>, <span class="type-parameter"><a href="../../data_types_location_error/LocationError-class.html">LocationError</a></span>&gt;</span></span>&gt;</span></span>
-<span class="name ">addGeotagWithExpectedLocation</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="addGeotagWithExpectedLocation-param-data"><span class="type-annotation"><a href="../../data_types_json/JSONObject-class.html">JSONObject</a></span> <span class="parameter-name">data</span>, </span></li>
+<span class="name ">addGeotagWithExpectedLocation</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="addGeotagWithExpectedLocation-param-orderHandle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">orderHandle</span>, </span></li>
+<li><span class="parameter" id="addGeotagWithExpectedLocation-param-orderStatus"><span class="type-annotation"><a href="../../data_types_order_status/OrderStatus-class.html">OrderStatus</a></span> <span class="parameter-name">orderStatus</span>, </span></li>
+<li><span class="parameter" id="addGeotagWithExpectedLocation-param-data"><span class="type-annotation"><a href="../../data_types_json/JSONObject-class.html">JSONObject</a></span> <span class="parameter-name">data</span>, </span></li>
 <li><span class="parameter" id="addGeotagWithExpectedLocation-param-expectedLocation"><span class="type-annotation"><a href="../../data_types_location/Location-class.html">Location</a></span> <span class="parameter-name">expectedLocation</span></span></li>
 </ol>)
 
@@ -68,10 +70,15 @@
     
 <section class="desc markdown">
   <p>Adds a new geotag with expected location.
-Accepts <code>data</code> - Geotag data JSON.
-Accepts <code>expectedLocation</code> - Expected location.
+Accepts:</p>
+<ul>
+<li>orderHandle - Order handle.</li>
+<li>orderStatus - Order status.</li>
+<li><code>data</code> - Geotag data JSON.</li>
+<li><code>expectedLocation</code> - Expected location.
 Returns current location with deviation from expected location if success
-or <a href="../../data_types_location_error/LocationError-class.html">LocationError</a> if failure.</p>
+or <a href="../../data_types_location_error/LocationError-class.html">LocationError</a> if failure.</li>
+</ul>
 </section>
 
 
@@ -79,10 +86,12 @@ or <a href="../../data_types_location_error/LocationError-class.html">LocationEr
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static Future&lt;Result&lt;LocationWithDeviation, LocationError&gt;&gt;
-    addGeotagWithExpectedLocation(
+    addGeotagWithExpectedLocation(String orderHandle, OrderStatus orderStatus,
         JSONObject data, Location expectedLocation) {
   return _invokeSdkMethod&lt;Map&lt;Object?, Object?&gt;&gt;(
-          SdkMethod.addGeotag, serializeGeotagData(data, expectedLocation))
+          SdkMethod.addGeotag,
+          serializeGeotagData(
+              orderHandle, orderStatus, data, expectedLocation))
       .then((value) {
     return deserializeLocationWithDeviationResult(value);
   });
@@ -133,7 +142,9 @@ or <a href="../../data_types_location_error/LocationError-class.html">LocationEr
 
         <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#static-methods">Static methods</a></li>
           <li><a href="../../hypertrack/HyperTrack/addGeotag.html">addGeotag</a></li>
+          <li><a href="../../hypertrack/HyperTrack/addGeotagLegacy.html">addGeotagLegacy</a></li>
           <li><a href="../../hypertrack/HyperTrack/addGeotagWithExpectedLocation.html">addGeotagWithExpectedLocation</a></li>
+          <li><a href="../../hypertrack/HyperTrack/addGeotagWithExpectedLocationLegacy.html">addGeotagWithExpectedLocationLegacy</a></li>
           <li><a href="../../hypertrack/HyperTrack/locate.html">locate</a></li>
           <li><a href="../../hypertrack/HyperTrack/setIsAvailable.html">setIsAvailable</a></li>
           <li><a href="../../hypertrack/HyperTrack/setIsTracking.html">setIsTracking</a></li>
@@ -152,7 +163,7 @@ or <a href="../../data_types_location_error/LocationError-class.html">LocationEr
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      2.2.0
+      3.0.0
   </span>
 
   
