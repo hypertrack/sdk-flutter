@@ -1,5 +1,6 @@
 alias b := build
 alias d := docs
+alias f := format
 alias gd := get-dependencies
 alias pt := push-tag
 alias ogp := open-github-prs
@@ -31,6 +32,9 @@ docs: lint
     dart doc
     cp -R doc/api/ docs
     rm -r doc
+
+format: 
+    ktlint --format android/src/main/
 
 get-dependencies:
     flutter pub get
