@@ -12,7 +12,7 @@ import 'data_types/order_status.dart';
 
 /// This plugin allows you to use HyperTrack SDK for Flutter apps
 class HyperTrack {
-  /// Adds a new geotag.
+  /// Adds a new geotag. Check [Shift tracking](https://hypertrack.com/docs/shift-tracking) and [Clock In/Out tagging](https://hypertrack.com/docs/clock-inout-tracking) docs to learn how to use Order handle and Order status params.
   /// Accepts:
   /// - orderHandle - Order handle.
   /// - orderStatus - Order status.
@@ -27,7 +27,7 @@ class HyperTrack {
     });
   }
 
-  /// Adds a new geotag with expected location.
+  /// Adds a new geotag with expected location. Check [Shift tracking](https://hypertrack.com/docs/shift-tracking) doc to learn how to use Order handle and Order status params.
   /// Accepts:
   /// - orderHandle - Order handle.
   /// - orderStatus - Order status.
