@@ -1,6 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+wrapper_version=""
+ios_version=""
+android_version=""
+
 while [ "$#" -gt 0 ]; do
     case "$1" in
     -w)
@@ -38,23 +42,23 @@ date=$(date +%Y-%m-%d)
 
 $(echo "[$wrapper_version]: https://github.com/hypertrack/sdk-flutter/releases/tag/$wrapper_version" >>CHANGELOG.md)
 
-sed -i '' -e "6 i\\
-" CHANGELOG.md
-sed -i '' -e "6 i\\
-## [$wrapper_version] - $date" CHANGELOG.md
-sed -i '' -e "7 i\\
+sed -i '' -e "8 i\\
 " CHANGELOG.md
 sed -i '' -e "8 i\\
-### Changed" CHANGELOG.md
+## [$wrapper_version] - $date" CHANGELOG.md
 sed -i '' -e "9 i\\
+" CHANGELOG.md
+sed -i '' -e "10 i\\
+### Changed" CHANGELOG.md
+sed -i '' -e "11 i\\
 " CHANGELOG.md
 
 if [ -n "$android_version" ]; then
-    sed -i '' -e "10 i\\
+    sed -i '' -e "12 i\\
 - Updated HyperTrack SDK Android to [$android_version](https://github.com/hypertrack/sdk-android/releases/tag/$android_version)" CHANGELOG.md
 fi
 
 if [ -n "$ios_version" ]; then
-    sed -i '' -e "10 i\\
+    sed -i '' -e "12 i\\
 - Updated HyperTrack SDK iOS to [$ios_version](https://github.com/hypertrack/sdk-ios/releases/tag/$ios_version)" CHANGELOG.md
 fi
