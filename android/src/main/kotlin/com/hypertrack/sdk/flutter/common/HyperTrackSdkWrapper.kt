@@ -9,6 +9,7 @@ import com.hypertrack.sdk.flutter.common.Serialization.deserializeIsAvailable
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeIsTracking
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeMetadata
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeName
+import com.hypertrack.sdk.flutter.common.Serialization.deserializeWorkerHandle
 import com.hypertrack.sdk.flutter.common.Serialization.serializeDeviceId
 import com.hypertrack.sdk.flutter.common.Serialization.serializeDynamicPublishableKey
 import com.hypertrack.sdk.flutter.common.Serialization.serializeErrors
@@ -20,6 +21,7 @@ import com.hypertrack.sdk.flutter.common.Serialization.serializeLocationSuccess
 import com.hypertrack.sdk.flutter.common.Serialization.serializeLocationWithDeviationSuccess
 import com.hypertrack.sdk.flutter.common.Serialization.serializeMetadata
 import com.hypertrack.sdk.flutter.common.Serialization.serializeName
+import com.hypertrack.sdk.flutter.common.Serialization.serializeWorkerHandle
 
 typealias Serialized = Map<String, Any?>
 
@@ -137,6 +139,12 @@ internal object HyperTrackSdkWrapper {
         )
     }
 
+    fun getWorkerHandle(): WrapperResult<Serialized> {
+        return Success(
+            serializeWorkerHandle(HyperTrack.workerHandle),
+        )
+    }
+
     fun setDynamicPublishableKey(args: Serialized): WrapperResult<Unit> {
         return deserializeDynamicPublishableKey(args)
             .mapSuccess { publishableKey ->
@@ -172,6 +180,13 @@ internal object HyperTrackSdkWrapper {
         return deserializeName(args)
             .mapSuccess { name ->
                 HyperTrack.name = name
+            }
+    }
+
+    fun setWorkerHandle(args: Serialized): WrapperResult<Unit> {
+        return deserializeWorkerHandle(args)
+            .mapSuccess { workerHandle ->
+                HyperTrack.workerHandle = workerHandle
             }
     }
 }
