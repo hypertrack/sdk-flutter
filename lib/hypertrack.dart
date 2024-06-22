@@ -123,6 +123,18 @@ class HyperTrack {
     });
   }
 
+  /// A primary identifier that uniquely identifies the worker outside of HyperTrack.
+  /// Example: email, phone number, database id
+  /// It is usually obtained and set when the worker logs into the app.
+  /// Set it to an empty string "" when the worker logs out of the app to un-bind the device from the worker and
+  /// avoid unintentional tracking.
+  static Future<String> get workerHandle async {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getWorkerHandle)
+        .then((value) {
+      return deserializeWorkerHandle(value);
+    });
+  }
+
   /// Requests one-time location update and returns the [Location] once it is
   /// available, or [LocationError].
   static Stream<Result<Location, Set<HyperTrackError>>> locate() {
@@ -151,6 +163,16 @@ class HyperTrack {
   /// Sets the name for the device.
   static void setName(String name) {
     _invokeSdkVoidMethod(SdkMethod.setName, serializeName(name));
+  }
+
+  /// A primary identifier that uniquely identifies the worker outside of HyperTrack.
+  /// Example: email, phone number, database id
+  /// It is usually obtained and set when the worker logs into the app.
+  /// Set it to an empty string "" when the worker logs out of the app to un-bind the device from the worker and
+  /// avoid unintentional tracking.
+  static void setWorkerHandle(String workerHandle) {
+    _invokeSdkVoidMethod(
+        SdkMethod.setWorkerHandle, serializeWorkerHandle(workerHandle));
   }
 
   /// Subscribe to tracking errors.
