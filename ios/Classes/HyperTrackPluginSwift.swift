@@ -98,6 +98,8 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
             return getMetadata()
         case .getName:
             return getName()
+        case .getWorkerHandle:
+            return getWorkerHandle()
         case .locate:
             // locate is implemented as a Stream
             return .failure(.fatalError("locate() is not implemented as a SDKMethod"))
@@ -109,6 +111,8 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
             return setMetadata(args!)
         case .setName:
             return setName(args!)
+        case .setWorkerHandle:
+            return setWorkerHandle(args!)
         case .getDynamicPublishableKey:
             preconditionFailure("getDynamicPublishableKey is not implemented")
         case .setDynamicPublishableKey:

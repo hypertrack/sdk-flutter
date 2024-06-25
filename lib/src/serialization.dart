@@ -24,7 +24,7 @@ const _typeName = "name";
 const _typeLocation = "location";
 const _typeLocationWithDeviation = "locationWithDeviation";
 const _typeOrderHandle = "orderHandle";
-const _typeOrderStatus = "orderStatus";
+const _typeWorkerHandle = "workerHandle";
 
 const _typeOrderStatusClockIn = "orderStatusClockIn";
 const _typeOrderStatusClockOut = "orderStatusClockOut";
@@ -106,16 +106,6 @@ bool deserializeIsTracking(Map<Object?, Object?> isTracking) {
   return isTracking[_keyValue] as bool;
 }
 
-JSONObject deserializeMetadata(Map<Object?, Object?> metadata) {
-  assert(metadata[_keyType] == _typeMetadata);
-  return fromMap(metadata[_keyValue] as Map<Object?, Object?>);
-}
-
-String deserializeName(Map<Object?, Object?> name) {
-  assert(name[_keyType] == _typeName);
-  return name[_keyValue] as String;
-}
-
 Result<Location, Set<HyperTrackError>> deserializeLocateResult(
     Map<Object?, Object?> locationResult) {
   switch (locationResult[_keyType]) {
@@ -194,9 +184,24 @@ LocationWithDeviation deserializeLocationWithDeviation(
       value[_keyDeviation] as double);
 }
 
+JSONObject deserializeMetadata(Map<Object?, Object?> metadata) {
+  assert(metadata[_keyType] == _typeMetadata);
+  return fromMap(metadata[_keyValue] as Map<Object?, Object?>);
+}
+
+String deserializeName(Map<Object?, Object?> name) {
+  assert(name[_keyType] == _typeName);
+  return name[_keyValue] as String;
+}
+
 Map<Object?, Object?> deserializeSuccess(Map<Object?, Object?> success) {
   assert(success[_keyType] == _typeResultSuccess);
   return success[_keyValue] as Map<Object?, Object?>;
+}
+
+String deserializeWorkerHandle(Map<Object?, Object?> workerHandle) {
+  assert(workerHandle[_keyType] == _typeWorkerHandle);
+  return workerHandle[_keyValue] as String;
 }
 
 Map<Object?, Object?> serializeGeotagData(
@@ -291,5 +296,12 @@ Map<Object?, Object?> serializeName(String name) {
   return {
     _keyType: _typeName,
     _keyValue: name,
+  };
+}
+
+Map<Object?, Object?> serializeWorkerHandle(String workerHandle) {
+  return {
+    _keyType: _typeWorkerHandle,
+    _keyValue: workerHandle,
   };
 }

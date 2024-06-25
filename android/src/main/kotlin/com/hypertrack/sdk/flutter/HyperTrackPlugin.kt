@@ -124,6 +124,10 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                 HyperTrackSdkWrapper.getName()
             }
 
+            SdkMethod.getWorkerHandle -> {
+                HyperTrackSdkWrapper.getWorkerHandle()
+            }
+
             SdkMethod.locate -> {
                 // locate is implemented as a EventChannel
                 Success(NotImplemented)
@@ -154,6 +158,12 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
             SdkMethod.setName -> {
                 withArgs<Unit>(call) { args ->
                     HyperTrackSdkWrapper.setName(args)
+                }
+            }
+
+            SdkMethod.setWorkerHandle -> {
+                withArgs<Unit>(call) { args ->
+                    HyperTrackSdkWrapper.setWorkerHandle(args)
                 }
             }
         }
