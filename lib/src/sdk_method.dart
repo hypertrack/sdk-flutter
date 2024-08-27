@@ -12,6 +12,7 @@ enum SdkMethod {
   getLocation,
   getMetadata,
   getName,
+  getOrders,
   getWorkerHandle,
   locate,
   setIsAvailable,
