@@ -8,6 +8,7 @@ import com.hypertrack.sdk.flutter.common.Serialization.serializeIsAvailable
 import com.hypertrack.sdk.flutter.common.Serialization.serializeIsTracking
 import com.hypertrack.sdk.flutter.common.Serialization.serializeLocateResult
 import com.hypertrack.sdk.flutter.common.Serialization.serializeLocationResult
+import com.hypertrack.sdk.flutter.common.Serialization.serializeOrders
 import com.hypertrack.sdk.flutter.common.Success
 import com.hypertrack.sdk.flutter.common.WrapperResult
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -31,12 +32,14 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
     private var isAvailableEventChannel: EventChannel? = null
     private var locateEventChannel: EventChannel? = null
     private var locationEventChannel: EventChannel? = null
+    private var ordersEventChannel: EventChannel? = null
 
     private var errorsCancellable: HyperTrack.Cancellable? = null
     private var isTrackingCancellable: HyperTrack.Cancellable? = null
     private var isAvailableCancellable: HyperTrack.Cancellable? = null
     private var locateCancellable: HyperTrack.Cancellable? = null
     private var locationCancellable: HyperTrack.Cancellable? = null
+    private var ordersCancellable: HyperTrack.Cancellable? = null
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         val messenger = flutterPluginBinding.binaryMessenger
@@ -54,18 +57,21 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
         isAvailableCancellable?.cancel()
         locateCancellable?.cancel()
         locationCancellable?.cancel()
+        ordersCancellable?.cancel()
 
         errorsEventChannel?.setStreamHandler(null)
         isTrackingEventChannel?.setStreamHandler(null)
         isAvailableEventChannel?.setStreamHandler(null)
         locateEventChannel?.setStreamHandler(null)
         locationEventChannel?.setStreamHandler(null)
+        ordersEventChannel?.setStreamHandler(null)
 
         errorsEventChannel = null
         isTrackingEventChannel = null
         isAvailableEventChannel = null
         locateEventChannel = null
         locationEventChannel = null
+        ordersEventChannel = null
     }
 
     override fun onMethodCall(
@@ -122,6 +128,10 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
 
             SdkMethod.getName -> {
                 HyperTrackSdkWrapper.getName()
+            }
+
+            SdkMethod.getOrders -> {
+                HyperTrackSdkWrapper.getOrders()
             }
 
             SdkMethod.getWorkerHandle -> {
@@ -292,6 +302,29 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
                 override fun onCancel(arguments: Any?) {
                     locateCancellable?.cancel()
                     locateCancellable = null
+                }
+            },
+        )
+
+        ordersEventChannel = EventChannel(messenger, "$PREFIX/orders")
+        ordersEventChannel?.setStreamHandler(
+            object : StreamHandler {
+                override fun onListen(
+                    arguments: Any?,
+                    events: EventSink,
+                ) {
+                    WrapperResult
+                        .tryAsResult {
+                            ordersCancellable =
+                                HyperTrack.subscribeToOrders { orders ->
+                                    events.success(serializeOrders(orders.values))
+                                }
+                        }.crashAppIfError()
+                }
+
+                override fun onCancel(arguments: Any?) {
+                    ordersCancellable?.cancel()
+                    ordersCancellable = null
                 }
             },
         )

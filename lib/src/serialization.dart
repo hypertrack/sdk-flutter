@@ -209,8 +209,11 @@ Order deserializeOrder(Map<Object?, Object?> order) {
       order[_keyIsInsideGeofence] as Map<Object?, Object?>;
   switch (isInsideGeofence[_keyType]) {
     case _typeResultSuccess:
+      Map<Object?, Object?> isInsideGeofenceSuccess =
+          isInsideGeofence[_keyValue] as Map<Object?, Object?>;
+      bool value = isInsideGeofenceSuccess[_keyValue] as bool;
       return Order(
-        Success(isInsideGeofence[_keyValue] as bool),
+        Success(value),
         orderHandle,
       );
     case _typeResultFailure:
