@@ -7,19 +7,22 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
     private let isTrackingEventChannel: FlutterEventChannel
     private let locationEventChannel: FlutterEventChannel
     private let locateEventChannel: FlutterEventChannel
+    private let ordersEventChannel: FlutterEventChannel
 
     public init(
         errorsEventChannel: FlutterEventChannel,
         isAvailableEventChannel: FlutterEventChannel,
         isTrackingEventChannel: FlutterEventChannel,
         locationEventChannel: FlutterEventChannel,
-        locateEventChannel: FlutterEventChannel
+        locateEventChannel: FlutterEventChannel,
+        ordersEventChannel: FlutterEventChannel
     ) {
         self.errorsEventChannel = errorsEventChannel
         self.isAvailableEventChannel = isAvailableEventChannel
         self.isTrackingEventChannel = isTrackingEventChannel
         self.locationEventChannel = locationEventChannel
         self.locateEventChannel = locateEventChannel
+        self.ordersEventChannel = ordersEventChannel
         super.init()
     }
 
@@ -51,12 +54,16 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
         let locateEventChannel = FlutterEventChannel(name: "\(pluginPrefix)/locate", binaryMessenger: messenger)
         locateEventChannel.setStreamHandler(LocateStreamHandler())
 
+        let ordersEventChannel = FlutterEventChannel(name: "\(pluginPrefix)/orders", binaryMessenger: messenger)
+        ordersEventChannel.setStreamHandler(OrdersStreamHandler())
+
         let instance = HyperTrackPluginSwift(
             errorsEventChannel: errorsEventChannel,
             isAvailableEventChannel: isAvailableEventChannel,
             isTrackingEventChannel: isTrackingEventChannel,
             locationEventChannel: locationEventChannel,
-            locateEventChannel: locateEventChannel
+            locateEventChannel: locateEventChannel,
+            ordersEventChannel: ordersEventChannel
         )
         registrar.addMethodCallDelegate(instance, channel: methodChannel)
         registrar.addApplicationDelegate(instance)
@@ -98,6 +105,8 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
             return getMetadata()
         case .getName:
             return getName()
+        case .getOrders:
+            return getOrders()
         case .getWorkerHandle:
             return getWorkerHandle()
         case .locate:
