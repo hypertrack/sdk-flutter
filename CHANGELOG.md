@@ -7,36 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.4.0] - 2024-08-27
 
+### Added
+
+- Support for on-device geofencing via new `HyperTrack.orders["my_order"].isInsideGeofence` property
+    - To learn more about how to best use this new feature see our guide
+      here: [Verify shift presence before starting work](https://developer.hypertrack.com/docs/clock-in-out-tagging#verify-shift-presence-before-starting-work)
+
 ### Changed
 
 - Updated HyperTrack SDK iOS to [5.7.0](https://github.com/hypertrack/sdk-ios/releases/tag/5.7.0)
-- Updated HyperTrack SDK Android to [7.7.0](https://github.com/hypertrack/sdk-android/releases/tag/7.7.0)
+- Updated HyperTrack SDK Android
+  to [7.7.0](https://github.com/hypertrack/sdk-android/releases/tag/7.7.0)
 
 ## [2.3.0] - 2024-06-22
 
 ### Added
 
 - New `setWorkerHandle` and `getWorkerHandle` can be used to identify workers
-  - We observed our customers identify worker devices via `HyperTrack.metadata`, so we decided to make it a first class citizen in our API.
-  - If you previously used `metadata` to identify workers, we suggest using `workerHandle` for this purpose instead.
+    - We observed our customers identify worker devices via `HyperTrack.metadata`, so we decided to
+      make it a first class citizen in our API.
+    - If you previously used `metadata` to identify workers, we suggest using `workerHandle` for
+      this purpose instead.
 
 ### Changed
 
 - Updated HyperTrack SDK iOS to [5.6.0](https://github.com/hypertrack/sdk-ios/releases/tag/5.6.0)
-- Updated HyperTrack SDK Android to [7.6.0](https://github.com/hypertrack/sdk-android/releases/tag/7.6.0)
+- Updated HyperTrack SDK Android
+  to [7.6.0](https://github.com/hypertrack/sdk-android/releases/tag/7.6.0)
 
 ## [2.2.3] - 2024-05-24
 
 ### Changed
 
-- Updated HyperTrack SDK Android to [7.5.5](https://github.com/hypertrack/sdk-android/releases/tag/7.5.5)
+- Updated HyperTrack SDK Android
+  to [7.5.5](https://github.com/hypertrack/sdk-android/releases/tag/7.5.5)
 
 ## [2.2.2] - 2024-05-14
 
 ### Changed
 
 - Updated HyperTrack SDK iOS to [5.5.4](https://github.com/hypertrack/sdk-ios/releases/tag/5.5.4)
-- Updated HyperTrack SDK Android to [7.5.4](https://github.com/hypertrack/sdk-android/releases/tag/7.5.4)
+- Updated HyperTrack SDK Android
+  to [7.5.4](https://github.com/hypertrack/sdk-android/releases/tag/7.5.4)
 
 ## [2.2.1] - 2024-05-03
 
@@ -48,36 +60,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- New `addGeotag` and `addGeotagWithExpectedLocation` methods signature that have `orderHandle` and `orderStatus` parameters. You can use this API when users need to clock in/out of work in your app to honor their work time (see [Clock in/out Tagging](https://hypertrack.com/docs/clock-inout-tracking#add-clock-inout-events-to-a-shift-timeline) guide for more info)
+- New `addGeotag` and `addGeotagWithExpectedLocation` methods signature that have `orderHandle`
+  and `orderStatus` parameters. You can use this API when users need to clock in/out of work in your
+  app to honor their work time (
+  see [Clock in/out Tagging](https://hypertrack.com/docs/clock-inout-tracking#add-clock-inout-events-to-a-shift-timeline)
+  guide for more info)
 - Updated HyperTrack SDK iOS to [5.5.2](https://github.com/hypertrack/sdk-ios/releases/tag/5.5.2)
-- Updated HyperTrack SDK Android to [7.5.3](https://github.com/hypertrack/sdk-android/releases/tag/7.5.3)
+- Updated HyperTrack SDK Android
+  to [7.5.3](https://github.com/hypertrack/sdk-android/releases/tag/7.5.3)
 
 ## [2.1.2] - 2024-02-27
 
 ### Changed
 
-- Updated HyperTrack SDK Android to [7.4.3](https://github.com/hypertrack/sdk-android/releases/tag/7.4.3)
+- Updated HyperTrack SDK Android
+  to [7.4.3](https://github.com/hypertrack/sdk-android/releases/tag/7.4.3)
 
 ## [2.1.1] - 2024-02-14
 
 ### Changed
 
 - Updated HyperTrack SDK iOS to [5.4.1](https://github.com/hypertrack/sdk-ios/releases/tag/5.4.1)
-- Updated HyperTrack SDK Android to [7.4.2](https://github.com/hypertrack/sdk-android/releases/tag/7.4.2)
+- Updated HyperTrack SDK Android
+  to [7.4.2](https://github.com/hypertrack/sdk-android/releases/tag/7.4.2)
 
 ## [2.1.0] - 2024-01-29
 
 ### Changed
 
 - Updated HyperTrack SDK iOS to [5.4.0](https://github.com/hypertrack/sdk-ios/releases/tag/5.4.0)
-- Updated HyperTrack SDK Android to [7.4.0](https://github.com/hypertrack/sdk-android/releases/tag/7.4.0)
+- Updated HyperTrack SDK Android
+  to [7.4.0](https://github.com/hypertrack/sdk-android/releases/tag/7.4.0)
 
 ## [2.0.4] - 2023-12-01
 
 ### Changed
 
 - Updated HyperTrack SDK iOS to [5.0.8](https://github.com/hypertrack/sdk-ios/releases/tag/5.0.8)
-- Updated HyperTrack SDK Android to [7.0.10](https://github.com/hypertrack/sdk-android/releases/tag/7.0.10)
+- Updated HyperTrack SDK Android
+  to [7.0.10](https://github.com/hypertrack/sdk-android/releases/tag/7.0.10)
 - `minSdkVersion` from 23 to 19 for Android
 
 ## [2.0.3] - 2023-11-20
@@ -85,21 +106,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated HyperTrack SDK iOS to [5.0.7](https://github.com/hypertrack/sdk-ios/releases/tag/5.0.7)
-- Updated HyperTrack SDK Android to [7.0.9](https://github.com/hypertrack/sdk-android/releases/tag/7.0.9)
+- Updated HyperTrack SDK Android
+  to [7.0.9](https://github.com/hypertrack/sdk-android/releases/tag/7.0.9)
 
 ## [2.0.2] - 2023-11-10
 
 ### Changed
 
 - Updated HyperTrack SDK iOS to [5.0.6](https://github.com/hypertrack/sdk-ios/releases/tag/5.0.6)
-- Updated HyperTrack SDK Android to [7.0.8](https://github.com/hypertrack/sdk-android/releases/tag/7.0.8)
+- Updated HyperTrack SDK Android
+  to [7.0.8](https://github.com/hypertrack/sdk-android/releases/tag/7.0.8)
 
 ## [2.0.1] - 2023-10-16
 
 ### Changed
 
 - Updated HyperTrack SDK iOS to [5.0.4](https://github.com/hypertrack/sdk-ios/releases/tag/5.0.4)
-- Updated HyperTrack SDK Android to [7.0.6](https://github.com/hypertrack/sdk-android/releases/tag/7.0.6)
+- Updated HyperTrack SDK Android
+  to [7.0.6](https://github.com/hypertrack/sdk-android/releases/tag/7.0.6)
 
 ### Fixed
 
@@ -115,8 +139,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `name` getter
 - `metadata` getter
 - HyperTrackError types:
-  - `noExemptionFromBackgroundStartRestrictions`
-  - `permissionsNotificationsDenied`
+    - `noExemptionFromBackgroundStartRestrictions`
+    - `permissionsNotificationsDenied`
 
 ### Changed
 
@@ -126,17 +150,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated HyperTrack iOS SDK to [5.0.2](https://github.com/hypertrack/sdk-ios/releases/tag/5.0.2)
 - The whole HyperTrack API is now static
 - Changed the way to provide publishableKey (
-  - You need to add `HyperTrackPublishableKey` `meta-data` item to your `AndroidManifest.xml` and
-    the same entry to `Info.plist`)
+    - You need to add `HyperTrackPublishableKey` `meta-data` item to your `AndroidManifest.xml` and
+      the same entry to `Info.plist`)
 - Renamed HyperTrackError types:
-  - `gpsSignalLost` to `locationSignalLost`
-  - `locationPermissionsDenied` to `permissionsLocationDenied`
-  - `locationPermissionsInsufficientForBackground`
-    to `permissionsLocationInsufficientForBackground`
-  - `locationPermissionsNotDetermined` to `permissionsLocationNotDetermined`
-  - `locationPermissionsProvisional` to `locationPermissionsProvisional`
-  - `locationPermissionsReducedAccuracy` to `permissionsLocationReducedAccuracy`
-  - `locationPermissionsRestricted` to `permissionsLocationRestricted`
+    - `gpsSignalLost` to `locationSignalLost`
+    - `locationPermissionsDenied` to `permissionsLocationDenied`
+    - `locationPermissionsInsufficientForBackground`
+      to `permissionsLocationInsufficientForBackground`
+    - `locationPermissionsNotDetermined` to `permissionsLocationNotDetermined`
+    - `locationPermissionsProvisional` to `locationPermissionsProvisional`
+    - `locationPermissionsReducedAccuracy` to `permissionsLocationReducedAccuracy`
+    - `locationPermissionsRestricted` to `permissionsLocationRestricted`
 - Renamed `setAvailability()` to `setIsAvailable(boolean)`
 - Changed `startTracking()` and `stopTracking()` to `setIsTracking(boolean)`
 - Renamed `onTrackingChanged` to `isTrackingSubscription`
@@ -149,11 +173,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `initialize()` method (the API is now static)
 - Motion Activity permissions are not required for tracking anymore
 - HyperTrackError types:
-  - `motionActivityPermissionsDenied`
-  - `motionActivityServicesDisabled`
-  - `motionActivityServicesUnavailable`
-  - `motionActivityPermissionsRestricted`
-  - `networkConnectionUnavailable`
+    - `motionActivityPermissionsDenied`
+    - `motionActivityServicesDisabled`
+    - `motionActivityServicesUnavailable`
+    - `motionActivityPermissionsRestricted`
+    - `networkConnectionUnavailable`
 - `sync()` method
 
 ## [1.1.3] - 2023-06-16
@@ -206,9 +230,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `initialize()` configuration params for
-  - Debug logging
-  - Background location permissions request for Android
-  - Mock locations
+    - Debug logging
+    - Background location permissions request for Android
+    - Mock locations
 - `onAvailabilityChanged` stream
 - `onError` stream
 - Location result for `addGeotag`
@@ -345,39 +369,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release.
 
 [0.1.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.1.0
+
 [0.1.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.1.1
+
 [0.1.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.1.2
+
 [0.1.3]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.1.3
+
 [0.1.4]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.1.4
+
 [0.1.5]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.1.5
+
 [0.1.6]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.1.6
+
 [0.1.7]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.1.7
+
 [0.1.8]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.1.8
+
 [0.1.9]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.1.9
+
 [0.2.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.2.0
+
 [0.2.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.2.1
+
 [0.3.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.3.0
+
 [0.3.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.3.1
+
 [0.4.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.4.0
+
 [0.4.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.4.1
+
 [0.4.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.4.2
+
 [0.4.3]: https://github.com/hypertrack/sdk-flutter/releases/tag/0.4.3
+
 [1.0.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/1.0.0
+
 [1.1.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/1.1.0
+
 [1.1.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/1.1.1
+
 [1.1.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/1.1.2
+
 [1.1.3]: https://github.com/hypertrack/sdk-flutter/releases/tag/1.1.3
+
 [2.0.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.0
+
 [2.0.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.1
+
 [2.0.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.2
+
 [2.0.3]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.3
+
 [2.0.4]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.0.4
+
 [2.1.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.1.0
+
 [2.1.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.1.1
+
 [2.1.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.1.2
+
 [2.2.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.2.0
+
 [2.2.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.2.1
+
 [2.2.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.2.2
+
 [2.2.3]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.2.3
+
 [2.3.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.3.0
+
 [2.4.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.4.0
