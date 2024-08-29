@@ -22,7 +22,9 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import java.lang.NullPointerException
 import java.util.*
 
-public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
+public class HyperTrackPlugin :
+    FlutterPlugin,
+    MethodCallHandler {
     // receives method calls from the plugin API
     private var methodChannel: MethodChannel? = null
 
@@ -182,12 +184,11 @@ public class HyperTrackPlugin : FlutterPlugin, MethodCallHandler {
     private fun <N> withArgs(
         call: MethodCall,
         block: (Map<String, Any?>) -> WrapperResult<N>,
-    ): WrapperResult<N> {
-        return call
+    ): WrapperResult<N> =
+        call
             .arguments<Map<String, Any?>>()
             ?.let { block.invoke(it) }
             ?: Failure(NullPointerException(call.method))
-    }
 
     private fun initEventChannels(messenger: BinaryMessenger) {
         errorsEventChannel = EventChannel(messenger, ERRORS_EVENT_CHANNEL_NAME)

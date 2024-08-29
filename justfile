@@ -35,9 +35,8 @@ copy-native-code-from-react-native:
     cp -rf ../sdk-react-native/sdk/ios/common ios/Classes/
 
 docs: format
-    dart doc
-    cp -R doc/api/ docs
-    rm -r doc
+    @echo "Docs generation usually takes ~1 minute"
+    dart doc --output=docs > /dev/null
 
 format: 
     ktlint --format android/src/main/
@@ -75,7 +74,7 @@ push-tag:
         echo "You are not on master branch"
     fi
 
-release type="dry-run": setup docs
+release type="dry-run": setup
     #!/usr/bin/env sh
     set -euo pipefail
     VERSION=$(just version)
@@ -91,8 +90,11 @@ release type="dry-run": setup docs
         flutter pub publish
         open https://pub.dev/packages/hypertrack_plugin/versions/$VERSION
     else
+        # removing docs to avoid doc/ folder warning
+        rm -rf docs
         echo "Dry run for version $VERSION"
         flutter pub publish --dry-run
+        just docs
     fi
 
 setup: get-dependencies

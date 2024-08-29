@@ -11,7 +11,7 @@
   
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
   
   <link rel="stylesheet" href="../static-assets/github.css?v1">
   <link rel="stylesheet" href="../static-assets/styles.css?v1">
@@ -29,42 +29,48 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">hypertrack_plugin</a></li>
-    <li><a href="../data_types_hypertrack_error/data_types_hypertrack_error-library.html">hypertrack_error</a></li>
+    <li><a href="../data_types_hypertrack_error/data_types_hypertrack_error-library.html">data_types&#47;hypertrack_error.dart</a></li>
     <li class="self-crumb">HyperTrackError enum</li>
   </ol>
   <div class="self-name">HyperTrackError</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <div class="toggle" id="theme-button">
+  <div class="toggle" id="theme-button" title="Toggle brightness">
     <label for="theme">
       <input type="checkbox" id="theme" value="light-theme">
-      <span class="material-symbols-outlined">
-        brightness_4
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
       </span>
     </label>
   </div>
 </header>
 <main>
 
-  <div id="dartdoc-main-content" class="main-content">
-      <div>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="data_types_hypertrack_error&#47;data_types_hypertrack_error-library-sidebar.html"
+    data-below-sidebar="data_types_hypertrack_error&#47;HyperTrackError-enum-sidebar.html">
+    <div>
 
-        <h1>
-          <span class="kind-enum">HyperTrackError</span>
-          enum 
-    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+      <h1>
+        <span class="kind-enum">HyperTrackError</span>
+        enum 
  
 
-        </h1>
-      </div>
+      </h1>
+    </div>
 
     
 
 
-    <section>
-      <dl class="dl-horizontal">
-        
+      <section>
+        <dl class="dl-horizontal">
+          
   <dt>Inheritance</dt>
   <dd>
     <ul class="gt-separated dark eNum-relationships">
@@ -74,13 +80,13 @@
     </ul>
   </dd>
 
-        
-        
-        
+          
+          
+          
 
 
-      </dl>
-    </section>
+        </dl>
+      </section>
 
     
   <section class="summary offset-anchor" id="constructors">
@@ -97,11 +103,11 @@
     </dl>
   </section>
 
-    <section class="summary offset-anchor" id="values">
-      <h2>Values</h2>
+      <section class="summary offset-anchor" id="values">
+        <h2>Values</h2>
 
-      <dl class="properties">
-          <dt id="blockedFromRunning" class="constant">
+        <dl class="properties">
+            <dt id="blockedFromRunning" class="constant">
     <span class="name ">blockedFromRunning</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
@@ -113,7 +119,7 @@
 
 </dd>
 
-          <dt id="invalidPublishableKey" class="constant">
+            <dt id="invalidPublishableKey" class="constant">
     <span class="name ">invalidPublishableKey</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
@@ -125,7 +131,7 @@
 
 </dd>
 
-          <dt id="locationMocked" class="constant">
+            <dt id="locationMocked" class="constant">
     <span class="name ">locationMocked</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
@@ -137,7 +143,7 @@
 
 </dd>
 
-          <dt id="locationServicesDisabled" class="constant">
+            <dt id="locationServicesDisabled" class="constant">
     <span class="name ">locationServicesDisabled</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
@@ -149,19 +155,19 @@
 
 </dd>
 
-          <dt id="locationServicesUnavailable" class="constant">
+            <dt id="locationServicesUnavailable" class="constant">
     <span class="name ">locationServicesUnavailable</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
 
 </dt>
 <dd>
-  <p><code>Android only</code> The device doesn't have location services.</p>
+  <p>(Android only) The device doesn't have location services.</p>
   
 
 </dd>
 
-          <dt id="locationSignalLost" class="constant">
+            <dt id="locationSignalLost" class="constant">
     <span class="name ">locationSignalLost</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
@@ -173,19 +179,19 @@
 
 </dd>
 
-          <dt id="noExemptionFromBackgroundStartRestrictions" class="constant">
+            <dt id="noExemptionFromBackgroundStartRestrictions" class="constant">
     <span class="name ">noExemptionFromBackgroundStartRestrictions</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
 
 </dt>
 <dd>
-  <p><code>Android only</code> The SDK wasn't able to start tracking because of the limitations imposed by the OS.</p>
+  <p>(Android only) The SDK wasn't able to start tracking because of the limitations imposed by the OS.</p>
   
 
 </dd>
 
-          <dt id="permissionsLocationDenied" class="constant">
+            <dt id="permissionsLocationDenied" class="constant">
     <span class="name ">permissionsLocationDenied</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
@@ -197,7 +203,7 @@
 
 </dd>
 
-          <dt id="permissionsLocationInsufficientForBackground" class="constant">
+            <dt id="permissionsLocationInsufficientForBackground" class="constant">
     <span class="name ">permissionsLocationInsufficientForBackground</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
@@ -209,31 +215,31 @@
 
 </dd>
 
-          <dt id="permissionsLocationNotDetermined" class="constant">
+            <dt id="permissionsLocationNotDetermined" class="constant">
     <span class="name ">permissionsLocationNotDetermined</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
 
 </dt>
 <dd>
-  <p><code>iOS only</code> The user has not chosen whether the app can use location services.</p>
+  <p>(iOS only) The user has not chosen whether the app can use location services.</p>
   
 
 </dd>
 
-          <dt id="permissionsLocationProvisional" class="constant">
+            <dt id="permissionsLocationProvisional" class="constant">
     <span class="name ">permissionsLocationProvisional</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
 
 </dt>
 <dd>
-  <p><code>iOS only</code> The app is in Provisional Always authorization state, which stops sending locations when app is in background.</p>
+  <p>(iOS only) The app is in Provisional Always authorization state, which stops sending locations when app is in background.</p>
   
 
 </dd>
 
-          <dt id="permissionsLocationReducedAccuracy" class="constant">
+            <dt id="permissionsLocationReducedAccuracy" class="constant">
     <span class="name ">permissionsLocationReducedAccuracy</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
@@ -245,66 +251,65 @@
 
 </dd>
 
-          <dt id="permissionsLocationRestricted" class="constant">
+            <dt id="permissionsLocationRestricted" class="constant">
     <span class="name ">permissionsLocationRestricted</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
 
 </dt>
 <dd>
-  <p><code>iOS only</code> The app is not authorized to use location services.</p>
+  <p>(iOS only) The app is not authorized to use location services.</p>
   
 
 </dd>
 
-          <dt id="permissionsNotificationsDenied" class="constant">
+            <dt id="permissionsNotificationsDenied" class="constant">
     <span class="name ">permissionsNotificationsDenied</span>
   <span class="signature">&#8594; const <a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></span>
   
 
 </dt>
 <dd>
-  <p><code>Android only</code> The user denied notification permissions needed to display a persistent notification</p>
+  <p>(Android only) The user denied notification permissions needed to display a persistent notification</p>
   
 
 </dd>
 
-      </dl>
-    </section>
+        </dl>
+      </section>
 
-    <section
-        class="
-          summary
-          offset-anchorinherited"
-        id="instance-properties">
-      <h2>Properties</h2>
-
-      <dl class="properties">
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="instance-properties">
+    <h2>Properties</h2>
+    <dl class="properties">
         <dt id="hashCode" class="property inherited">
   <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
 
 </dt>
 <dd class="inherited">
   The hash code for this object.
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="index" class="property inherited">
   <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Enum/index.html">index</a></span>
-  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> 
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
 
 </dt>
 <dd class="inherited">
   A numeric identifier for the enumerated value.
-  <div class="features"><span class="feature">read-only</span><span class="feature">inherited</span></div>
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
 
 </dd>
 
-      </dl>
-    </section>
-
+    </dl>
+  </section>
     
     
   <section
@@ -345,85 +350,33 @@
   A constant List of the values in this enum, in order of their declaration.
   
 
-    <div>
-      <span class="signature"><code>[blockedFromRunning, invalidPublishableKey, locationMocked, locationServicesDisabled, locationServicesUnavailable, locationSignalLost, noExemptionFromBackgroundStartRestrictions, permissionsLocationDe…</code></span>
-    </div>
 </dd>
 
     </dl>
   </section>
-  </div><!-- /.main-content -->
+</div><!-- /.main-content -->
 
-  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
-    <header id="header-search-sidebar" class="hidden-l">
+<div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+  <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
   <form class="search-sidebar" role="search">
     <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
 </header>
 
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-  <li><a href="../index.html">hypertrack_plugin</a></li>
-  <li><a href="../data_types_hypertrack_error/data_types_hypertrack_error-library.html">hypertrack_error</a></li>
-  <li class="self-crumb">HyperTrackError enum</li>
+    <li><a href="../index.html">hypertrack_plugin</a></li>
+    <li><a href="../data_types_hypertrack_error/data_types_hypertrack_error-library.html">hypertrack_error</a></li>
+    <li class="self-crumb">HyperTrackError enum</li>
 </ol>
 
 
-    <h5>hypertrack_error library</h5>
-    <ol>
+  <h5>hypertrack_error library</h5>
+  <div id="dartdoc-sidebar-left-content"></div>
+</div>
 
-
-
-
-
-
-      <li class="section-title"><a href="../data_types_hypertrack_error/data_types_hypertrack_error-library.html#enums">Enums</a></li>
-        <li><a href="../data_types_hypertrack_error/HyperTrackError.html">HyperTrackError</a></li>
-
-
-</ol>
-
-  </div>
-
-  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
-    <ol>
-
-        <li class="section-title"><a href="../data_types_hypertrack_error/HyperTrackError.html#constructors">Constructors</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError/HyperTrackError.html">HyperTrackError</a></li>
-
-        <li class="section-title"><a href="../data_types_hypertrack_error/HyperTrackError.html#values">Values</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#blockedFromRunning">blockedFromRunning</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#invalidPublishableKey">invalidPublishableKey</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#locationMocked">locationMocked</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#locationServicesDisabled">locationServicesDisabled</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#locationServicesUnavailable">locationServicesUnavailable</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#locationSignalLost">locationSignalLost</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#noExemptionFromBackgroundStartRestrictions">noExemptionFromBackgroundStartRestrictions</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#permissionsLocationDenied">permissionsLocationDenied</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#permissionsLocationInsufficientForBackground">permissionsLocationInsufficientForBackground</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#permissionsLocationNotDetermined">permissionsLocationNotDetermined</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#permissionsLocationProvisional">permissionsLocationProvisional</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#permissionsLocationReducedAccuracy">permissionsLocationReducedAccuracy</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#permissionsLocationRestricted">permissionsLocationRestricted</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError.html#permissionsNotificationsDenied">permissionsNotificationsDenied</a></li>
-
-        <li class="section-title inherited">
-          <a href="../data_types_hypertrack_error/HyperTrackError.html#instance-properties">Properties</a>
-        </li>
-          <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
-          <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Enum/index.html">index</a></li>
-
-
-        <li class="section-title inherited"><a href="../data_types_hypertrack_error/HyperTrackError.html#operators">Operators</a></li>
-          <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
-
-
-
-
-        <li class="section-title"><a href="../data_types_hypertrack_error/HyperTrackError.html#constants">Constants</a></li>
-          <li><a href="../data_types_hypertrack_error/HyperTrackError/values-constant.html">values</a></li>
-</ol>
-
-  </div><!-- /.sidebar-offcanvas -->
+<div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!-- /.sidebar-offcanvas -->
 
 </main>
 

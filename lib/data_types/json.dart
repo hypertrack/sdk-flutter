@@ -319,6 +319,7 @@ JSONObject fromMap(Map<Object?, Object?> map) {
   }));
 }
 
+// ignore: strict_raw_type
 JSONArray _fromList(List<Object?> list) {
   return JSONArray(list.map((e) {
     if (e is Map<Object?, Object?>) {

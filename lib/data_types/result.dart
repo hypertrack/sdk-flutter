@@ -49,6 +49,7 @@ class Failure<T, E> extends Result<T, E> {
 
   /// @nodoc
   @override
+  // ignore: unnecessary_no_such_method
   dynamic noSuchMethod(Invocation invocation) {
     return super.noSuchMethod(invocation);
   }
@@ -85,6 +86,7 @@ class Success<T, E> extends Result<T, E> {
 
   /// @nodoc
   @override
+  // ignore: unnecessary_no_such_method
   dynamic noSuchMethod(Invocation invocation) {
     return super.noSuchMethod(invocation);
   }
