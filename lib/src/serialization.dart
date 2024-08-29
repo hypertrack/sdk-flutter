@@ -6,6 +6,7 @@ import 'package:hypertrack_plugin/data_types/location_error.dart';
 import 'package:hypertrack_plugin/data_types/location_with_deviation.dart';
 
 import '../data_types/location.dart';
+import '../data_types/order.dart';
 import '../data_types/order_status.dart';
 import '../data_types/result.dart';
 
@@ -23,7 +24,9 @@ const _typeMetadata = "metadata";
 const _typeName = "name";
 const _typeLocation = "location";
 const _typeLocationWithDeviation = "locationWithDeviation";
+const _typeOrder = "order";
 const _typeOrderHandle = "orderHandle";
+const _typeOrders = "orders";
 const _typeWorkerHandle = "workerHandle";
 
 const _typeOrderStatusClockIn = "orderStatusClockIn";
@@ -39,6 +42,7 @@ const _keyLongitude = "longitude";
 
 const _keyDeviation = "deviation";
 const _keyData = "data";
+const _keyIsInsideGeofence = "isInsideGeofence";
 const _keyGeotagExpectedLocation = "expectedLocation";
 const _keyLocation = "location";
 const _keyOrderHandle = "orderHandle";
@@ -197,6 +201,40 @@ String deserializeName(Map<Object?, Object?> name) {
 Map<Object?, Object?> deserializeSuccess(Map<Object?, Object?> success) {
   assert(success[_keyType] == _typeResultSuccess);
   return success[_keyValue] as Map<Object?, Object?>;
+}
+
+Order deserializeOrder(Map<Object?, Object?> order) {
+  String orderHandle = order[_keyOrderHandle] as String;
+  Map<Object?, Object?> isInsideGeofence =
+      order[_keyIsInsideGeofence] as Map<Object?, Object?>;
+  switch (isInsideGeofence[_keyType]) {
+    case _typeResultSuccess:
+      Map<Object?, Object?> isInsideGeofenceSuccess =
+          isInsideGeofence[_keyValue] as Map<Object?, Object?>;
+      bool value = isInsideGeofenceSuccess[_keyValue] as bool;
+      return Order(
+        Success(value),
+        orderHandle,
+      );
+    case _typeResultFailure:
+      return Order(
+        Failure(deserializeLocationError(deserializeFailure(isInsideGeofence))),
+        orderHandle,
+      );
+    default:
+      throw Exception("Unknown result type: ${isInsideGeofence[_keyType]}");
+  }
+}
+
+Map<String, Order> deserializeOrders(Map<Object?, Object?> orders) {
+  assert(orders[_keyType] == _typeOrders);
+  List<Object?> ordersList = orders[_keyValue] as List<Object?>;
+  Map<String, Order> result = {};
+  for (Object? rawOrder in ordersList) {
+    Map<Object?, Object?> order = rawOrder as Map<Object?, Object?>;
+    result[order[_keyOrderHandle] as String] = deserializeOrder(order);
+  }
+  return result;
 }
 
 String deserializeWorkerHandle(Map<Object?, Object?> workerHandle) {

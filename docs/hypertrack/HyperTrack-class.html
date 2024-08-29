@@ -204,6 +204,45 @@
 
 </dd>
 
+        <dt id="orders" class="property">
+  <span class="name"><a href="../hypertrack/HyperTrack/orders.html">orders</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="../data_types_order/Order-class.html">Order</a></span>&gt;</span></span>&gt;</span></span> 
+
+</dt>
+<dd>
+  Gets the active orders for the worker. The orders are sorted with the
+ordering in which the worker should complete them.
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="ordersSubscription" class="property">
+  <span class="name"><a href="../hypertrack/HyperTrack/ordersSubscription.html">ordersSubscription</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-async/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="../data_types_order/Order-class.html">Order</a></span>&gt;</span></span>&gt;</span></span> 
+
+</dt>
+<dd>
+  Subscribe to changes in the orders assigned to the worker
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
+        <dt id="workerHandle" class="property">
+  <span class="name"><a href="../hypertrack/HyperTrack/workerHandle.html">workerHandle</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>&gt;</span></span> 
+
+</dt>
+<dd>
+  A primary identifier that uniquely identifies the worker outside of
+HyperTrack.
+Example: email, phone number, database id
+It is usually obtained and set when the worker logs into the app.
+Set it to an empty string "" when the worker logs out of the app to
+un-bind the device from the worker and avoid unintentional tracking.
+  <div class="features"><span class="feature">read-only</span></div>
+
+</dd>
+
     </dl>
   </section>
     
@@ -330,6 +369,23 @@ available, or <a href="../data_types_location_error/LocationError-class.html">Lo
 
 </dd>
 
+        <dt id="setWorkerHandle" class="callable">
+  <span class="name"><a href="../hypertrack/HyperTrack/setWorkerHandle.html">setWorkerHandle</a></span><span class="signature">(<wbr><span class="parameter" id="setWorkerHandle-param-workerHandle"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">workerHandle</span></span>)
+    <span class="returntype parameter">&#8594; void</span>
+  </span>
+  
+
+</dt>
+<dd>
+  A primary identifier that uniquely identifies the worker outside of HyperTrack.
+Example: email, phone number, database id
+It is usually obtained and set when the worker logs into the app.
+Set it to an empty string "" when the worker logs out of the app to un-bind the device from the worker and
+avoid unintentional tracking.
+  
+
+</dd>
+
     </dl>
   </section>
     
@@ -390,6 +446,9 @@ available, or <a href="../data_types_location_error/LocationError-class.html">Lo
           <li><a href="../hypertrack/HyperTrack/locationSubscription.html">locationSubscription</a></li>
           <li><a href="../hypertrack/HyperTrack/metadata.html">metadata</a></li>
           <li><a href="../hypertrack/HyperTrack/name.html">name</a></li>
+          <li><a href="../hypertrack/HyperTrack/orders.html">orders</a></li>
+          <li><a href="../hypertrack/HyperTrack/ordersSubscription.html">ordersSubscription</a></li>
+          <li><a href="../hypertrack/HyperTrack/workerHandle.html">workerHandle</a></li>
 
         <li class="section-title"><a href="../hypertrack/HyperTrack-class.html#static-methods">Static methods</a></li>
           <li><a href="../hypertrack/HyperTrack/addGeotag.html">addGeotag</a></li>
@@ -401,6 +460,7 @@ available, or <a href="../data_types_location_error/LocationError-class.html">Lo
           <li><a href="../hypertrack/HyperTrack/setIsTracking.html">setIsTracking</a></li>
           <li><a href="../hypertrack/HyperTrack/setMetadata.html">setMetadata</a></li>
           <li><a href="../hypertrack/HyperTrack/setName.html">setName</a></li>
+          <li><a href="../hypertrack/HyperTrack/setWorkerHandle.html">setWorkerHandle</a></li>
 
 </ol>
 
@@ -411,7 +471,7 @@ available, or <a href="../data_types_location_error/LocationError-class.html">Lo
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      2.3.0
+      2.4.0
   </span>
 
   

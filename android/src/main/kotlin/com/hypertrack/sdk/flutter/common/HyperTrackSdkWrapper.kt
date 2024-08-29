@@ -21,6 +21,7 @@ import com.hypertrack.sdk.flutter.common.Serialization.serializeLocationSuccess
 import com.hypertrack.sdk.flutter.common.Serialization.serializeLocationWithDeviationSuccess
 import com.hypertrack.sdk.flutter.common.Serialization.serializeMetadata
 import com.hypertrack.sdk.flutter.common.Serialization.serializeName
+import com.hypertrack.sdk.flutter.common.Serialization.serializeOrders
 import com.hypertrack.sdk.flutter.common.Serialization.serializeWorkerHandle
 
 typealias Serialized = Map<String, Any?>
@@ -136,6 +137,12 @@ internal object HyperTrackSdkWrapper {
     fun getName(): WrapperResult<Serialized> {
         return Success(
             serializeName(HyperTrack.name),
+        )
+    }
+
+    fun getOrders(): WrapperResult<Serialized> {
+        return Success(
+            serializeOrders(HyperTrack.orders.values),
         )
     }
 

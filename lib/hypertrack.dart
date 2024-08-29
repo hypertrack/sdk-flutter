@@ -8,6 +8,7 @@ import 'package:hypertrack_plugin/src/serialization.dart';
 
 import 'data_types/hypertrack_error.dart';
 import 'data_types/location.dart';
+import 'data_types/order.dart';
 import 'data_types/order_status.dart';
 
 /// This plugin allows you to use HyperTrack SDK for Flutter apps
@@ -123,11 +124,21 @@ class HyperTrack {
     });
   }
 
-  /// A primary identifier that uniquely identifies the worker outside of HyperTrack.
+  /// Gets the active orders for the worker. The orders are sorted with the
+  /// ordering in which the worker should complete them.
+  static Future<Map<String, Order>> get orders async {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getOrders)
+        .then((value) {
+      return deserializeOrders(value);
+    });
+  }
+
+  /// A primary identifier that uniquely identifies the worker outside of
+  /// HyperTrack.
   /// Example: email, phone number, database id
   /// It is usually obtained and set when the worker logs into the app.
-  /// Set it to an empty string "" when the worker logs out of the app to un-bind the device from the worker and
-  /// avoid unintentional tracking.
+  /// Set it to an empty string "" when the worker logs out of the app to
+  /// un-bind the device from the worker and avoid unintentional tracking.
   static Future<String> get workerHandle async {
     return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getWorkerHandle)
         .then((value) {
@@ -203,6 +214,13 @@ class HyperTrack {
     });
   }
 
+  /// Subscribe to changes in the orders assigned to the worker
+  static Stream<Map<String, Order>> get ordersSubscription {
+    return _ordersChannel.receiveBroadcastStream().map((event) {
+      return deserializeOrders(event);
+    });
+  }
+
   /// @nodoc
   @override
   String toString() {
@@ -247,6 +265,7 @@ const EventChannel _isTrackingChannel =
     EventChannel('$_channelPrefix/isTracking');
 const EventChannel _locationChannel = EventChannel('$_channelPrefix/location');
 const EventChannel _locateChannel = EventChannel('$_channelPrefix/locate');
+const EventChannel _ordersChannel = EventChannel('$_channelPrefix/orders');
 
 Future<T> _invokeSdkMethod<T>(SdkMethod method,
     [Map<Object?, Object?>? arguments]) {

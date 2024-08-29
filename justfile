@@ -1,4 +1,5 @@
 alias b := build
+alias cncfrn := copy-native-code-from-react-native
 alias d := docs
 alias f := format
 alias gd := get-dependencies
@@ -28,6 +29,10 @@ _ask-confirm:
   @bash -c 'read confirmation; if [[ $confirmation != "y" && $confirmation != "Y" ]]; then echo "Okay 😮‍💨 😅"; exit 1; fi'
 
 build: get-dependencies docs
+
+copy-native-code-from-react-native:
+    cp -rf ../sdk-react-native/sdk/android/src/main/java/com/reactnativehypertracksdk/common android/src/main/kotlin/com/hypertrack/sdk/flutter/
+    cp -rf ../sdk-react-native/sdk/ios/common ios/Classes/
 
 docs: format
     dart doc
