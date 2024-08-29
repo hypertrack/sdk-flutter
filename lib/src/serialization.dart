@@ -91,7 +91,7 @@ HyperTrackError deserializeError(Map<Object?, Object?> error) {
 
 Set<HyperTrackError> deserializeErrors(List<Map<Object?, Object?>> errors) {
   return errors
-      .map((e) => deserializeError(e as Map<Object?, Object?>))
+      .map((e) => deserializeError(e))
       .toSet();
 }
 
@@ -204,6 +204,7 @@ Map<Object?, Object?> deserializeSuccess(Map<Object?, Object?> success) {
 }
 
 Order deserializeOrder(Map<Object?, Object?> order) {
+  assert(order[_keyType] == _typeOrder);
   String orderHandle = order[_keyOrderHandle] as String;
   Map<Object?, Object?> isInsideGeofence =
       order[_keyIsInsideGeofence] as Map<Object?, Object?>;

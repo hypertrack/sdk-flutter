@@ -24,6 +24,7 @@ class LocationError {
 
   /// @nodoc
   @override
+  // ignore: unnecessary_no_such_method
   dynamic noSuchMethod(Invocation invocation) {
     return super.noSuchMethod(invocation);
   }
@@ -58,6 +59,7 @@ class NotRunning extends LocationError {
 
   /// @nodoc
   @override
+  // ignore: unnecessary_no_such_method
   dynamic noSuchMethod(Invocation invocation) {
     return super.noSuchMethod(invocation);
   }
@@ -92,6 +94,7 @@ class Starting extends LocationError {
 
   /// @nodoc
   @override
+  // ignore: unnecessary_no_such_method
   dynamic noSuchMethod(Invocation invocation) {
     return super.noSuchMethod(invocation);
   }
@@ -128,6 +131,7 @@ class Errors extends LocationError {
 
   /// @nodoc
   @override
+  // ignore: unnecessary_no_such_method
   dynamic noSuchMethod(Invocation invocation) {
     return super.noSuchMethod(invocation);
   }
