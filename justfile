@@ -90,6 +90,7 @@ release type="dry-run": setup
         flutter pub publish
         open https://pub.dev/packages/hypertrack_plugin/versions/$VERSION
     else
+        # removing docs to avoid doc/ folder warning
         rm -rf docs
         echo "Dry run for version $VERSION"
         flutter pub publish --dry-run
