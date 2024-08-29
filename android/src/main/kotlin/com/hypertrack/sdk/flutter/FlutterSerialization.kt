@@ -9,9 +9,7 @@ private const val ERROR_CODE_METHOD_CALL = "METHOD_CALL"
 internal fun Unit.sendAsFlutterResult(
     call: MethodCall,
     flutterResult: MethodChannel.Result,
-) {
-    return flutterResult.success(null)
-}
+) = flutterResult.success(null)
 
 internal fun <T> WrapperResult<T>.sendAsFlutterResult(
     call: MethodCall,
