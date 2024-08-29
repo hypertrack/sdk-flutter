@@ -11,7 +11,7 @@
   
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
   
   <link rel="stylesheet" href="../../static-assets/github.css?v1">
   <link rel="stylesheet" href="../../static-assets/styles.css?v1">
@@ -29,7 +29,7 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">hypertrack_plugin</a></li>
-    <li><a href="../../hypertrack/hypertrack-library.html">hypertrack</a></li>
+    <li><a href="../../hypertrack/hypertrack-library.html">hypertrack.dart</a></li>
     <li><a href="../../hypertrack/HyperTrack-class.html">HyperTrack</a></li>
     <li class="self-crumb">metadata property</li>
   </ol>
@@ -37,41 +37,47 @@
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
-  <div class="toggle" id="theme-button">
+  <div class="toggle" id="theme-button" title="Toggle brightness">
     <label for="theme">
       <input type="checkbox" id="theme" value="light-theme">
-      <span class="material-symbols-outlined">
-        brightness_4
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
       </span>
     </label>
   </div>
 </header>
 <main>
 
-  <div id="dartdoc-main-content" class="main-content">
-      <div>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="hypertrack&#47;HyperTrack-class-sidebar.html"
+    data-below-sidebar="">
+    <div>
 <h1><span class="kind-property">metadata</span> property 
-    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
 </h1></div>
 
 
         
-<section id="getter">
+  <section id="getter">
 
-<section class="multi-line-signature">
-  
-  <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../data_types_json/JSONObject-class.html">JSONObject</a></span>&gt;</span></span>
-  <span class="name ">metadata</span>
-  
+    <section class="multi-line-signature">
+      
+      <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../data_types_json/JSONObject-class.html">JSONObject</a></span>&gt;</span></span>
+      <span class="name ">metadata</span>
+      
 
-</section>
+    </section>
 
-
+    
 <section class="desc markdown">
   <p>Gets the metadata that is set for the device.</p>
 </section>
 
-
+    
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static Future&lt;JSONObject&gt; get metadata async {
@@ -82,71 +88,33 @@
 }</code></pre>
 </section>
 
-</section>
+  </section>
 
 
-  </div> <!-- /.main-content -->
+</div> <!-- /.main-content -->
 
-  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
-    <header id="header-search-sidebar" class="hidden-l">
+<div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+  <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
   <form class="search-sidebar" role="search">
     <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
 </header>
 
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-  <li><a href="../../index.html">hypertrack_plugin</a></li>
-  <li><a href="../../hypertrack/hypertrack-library.html">hypertrack</a></li>
-  <li><a href="../../hypertrack/HyperTrack-class.html">HyperTrack</a></li>
-  <li class="self-crumb">metadata property</li>
+    <li><a href="../../index.html">hypertrack_plugin</a></li>
+    <li><a href="../../hypertrack/hypertrack-library.html">hypertrack</a></li>
+    <li><a href="../../hypertrack/HyperTrack-class.html">HyperTrack</a></li>
+    <li class="self-crumb">metadata property</li>
 </ol>
 
 
-    <h5>HyperTrack class</h5>
-    <ol>
+  <h5>HyperTrack class</h5>
+  <div id="dartdoc-sidebar-left-content"></div>
+</div><!--/.sidebar-offcanvas-->
 
-        <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#constructors">Constructors</a></li>
-          <li><a href="../../hypertrack/HyperTrack/HyperTrack.html">HyperTrack</a></li>
-
-
-
-
-
-
-        <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#static-properties">Static properties</a></li>
-          <li><a href="../../hypertrack/HyperTrack/deviceId.html">deviceId</a></li>
-          <li><a href="../../hypertrack/HyperTrack/errors.html">errors</a></li>
-          <li><a href="../../hypertrack/HyperTrack/errorsSubscription.html">errorsSubscription</a></li>
-          <li><a href="../../hypertrack/HyperTrack/isAvailable.html">isAvailable</a></li>
-          <li><a href="../../hypertrack/HyperTrack/isAvailableSubscription.html">isAvailableSubscription</a></li>
-          <li><a href="../../hypertrack/HyperTrack/isTracking.html">isTracking</a></li>
-          <li><a href="../../hypertrack/HyperTrack/isTrackingSubscription.html">isTrackingSubscription</a></li>
-          <li><a href="../../hypertrack/HyperTrack/location.html">location</a></li>
-          <li><a href="../../hypertrack/HyperTrack/locationSubscription.html">locationSubscription</a></li>
-          <li><a href="../../hypertrack/HyperTrack/metadata.html">metadata</a></li>
-          <li><a href="../../hypertrack/HyperTrack/name.html">name</a></li>
-          <li><a href="../../hypertrack/HyperTrack/orders.html">orders</a></li>
-          <li><a href="../../hypertrack/HyperTrack/ordersSubscription.html">ordersSubscription</a></li>
-          <li><a href="../../hypertrack/HyperTrack/workerHandle.html">workerHandle</a></li>
-
-        <li class="section-title"><a href="../../hypertrack/HyperTrack-class.html#static-methods">Static methods</a></li>
-          <li><a href="../../hypertrack/HyperTrack/addGeotag.html">addGeotag</a></li>
-          <li><a href="../../hypertrack/HyperTrack/addGeotagDeprecated.html">addGeotagDeprecated</a></li>
-          <li><a href="../../hypertrack/HyperTrack/addGeotagWithExpectedLocation.html">addGeotagWithExpectedLocation</a></li>
-          <li><a href="../../hypertrack/HyperTrack/addGeotagWithExpectedLocationDeprecated.html">addGeotagWithExpectedLocationDeprecated</a></li>
-          <li><a href="../../hypertrack/HyperTrack/locate.html">locate</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setIsAvailable.html">setIsAvailable</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setIsTracking.html">setIsTracking</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setMetadata.html">setMetadata</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setName.html">setName</a></li>
-          <li><a href="../../hypertrack/HyperTrack/setWorkerHandle.html">setWorkerHandle</a></li>
-
-</ol>
-
-  </div><!--/.sidebar-offcanvas-->
-
-  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
-  </div><!--/.sidebar-offcanvas-->
+<div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
 
 </main>
 

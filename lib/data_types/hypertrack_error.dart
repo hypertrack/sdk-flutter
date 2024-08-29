@@ -13,13 +13,13 @@ enum HyperTrackError {
   /// The user disabled location services systemwide.
   locationServicesDisabled,
 
-  /// [Android only] The device doesn't have location services.
+  /// (Android only) The device doesn't have location services.
   locationServicesUnavailable,
 
   /// GPS satellites are not in view.
   locationSignalLost,
 
-  /// [Android only] The SDK wasn't able to start tracking because of the limitations imposed by the OS.
+  /// (Android only) The SDK wasn't able to start tracking because of the limitations imposed by the OS.
   noExemptionFromBackgroundStartRestrictions,
 
   /// The user denied location permissions.
@@ -28,19 +28,19 @@ enum HyperTrackError {
   /// Can’t start tracking in background with When In Use location permissions.
   permissionsLocationInsufficientForBackground,
 
-  /// [iOS only] The user has not chosen whether the app can use location services.
+  /// (iOS only) The user has not chosen whether the app can use location services.
   permissionsLocationNotDetermined,
 
-  /// [iOS only] The app is in Provisional Always authorization state, which stops sending locations when app is in background.
+  /// (iOS only) The app is in Provisional Always authorization state, which stops sending locations when app is in background.
   permissionsLocationProvisional,
 
   /// The user didn't grant precise location permissions or downgraded permissions to imprecise.
   permissionsLocationReducedAccuracy,
 
-  /// [iOS only] The app is not authorized to use location services.
+  /// (iOS only) The app is not authorized to use location services.
   permissionsLocationRestricted,
 
-  /// [Android only] The user denied notification permissions needed to display a persistent notification
+  /// (Android only) The user denied notification permissions needed to display a persistent notification
   permissionsNotificationsDenied;
 
   /// @nodoc
