@@ -13,6 +13,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - To learn more about how to best use this new feature see our guide
       here: [Verify shift presence before starting work](https://developer.hypertrack.com/docs/clock-in-out-tagging#verify-shift-presence-before-starting-work)
 
+```dart
+    // check worker presence synchronously
+    var activeOrders = await HyperTrack.orders;
+    Order? currentOrder = activeOrders["current_order"];
+    if (currentOrder != null) {
+      handlePresence(currentOrder.isInsideGeofence);
+    } else {
+      print("'current_order' not found");
+    }
+
+    // or subscribe to the changes in orders to get the status updates
+    HyperTrack.ordersSubscription.listen((orders) {
+      Order? currentOrder = orders["current_order"];
+      if (currentOrder != null) {
+        handlePresence(currentOrder.isInsideGeofence);
+      } else {
+        print("'current_order' not found");
+      }
+    });
+
+    // handle worker presence inside the order destination geofence
+    void handlePresence(Result<bool, LocationError> isInsideGeofence) {
+      switch (isInsideGeofence.runtimeType) {
+        case Success:
+          if ((isInsideGeofence as Success).value) {
+            // allow worker to clock in for the shift
+          } else {
+            // "to clock in you must be at order destination"
+          }
+          break;
+        case Failure:
+          // resolve errors to check for presence
+          break;
+      }
+    }
+```
+
 ### Changed
 
 - Updated HyperTrack SDK iOS to [5.7.0](https://github.com/hypertrack/sdk-ios/releases/tag/5.7.0)
