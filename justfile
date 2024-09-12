@@ -88,7 +88,7 @@ release type="dry-run": setup docs
         echo "Are you sure you want to publish version $VERSION? (y/N)"
         just _ask-confirm
         flutter pub publish
-        @echo "Generating the docs back (removed to avoid doc/ folder warning)"
+        echo "Generating the docs back (removed to avoid doc/ folder warning)"
         open https://pub.dev/packages/hypertrack_plugin/versions/$VERSION
     else
         echo "Dry run for version $VERSION"
