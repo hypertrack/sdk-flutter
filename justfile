@@ -39,6 +39,7 @@ docs: format
     dart doc --output=docs > /dev/null
 
 format: 
+    brew upgrade ktlint
     ktlint --format android/src/main/
 
 get-dependencies:
