@@ -5,6 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.1] - 2024-12-05
+
+### Changed
+
+- Updated HyperTrack SDK iOS to [5.9.1](https://github.com/hypertrack/sdk-ios/releases/tag/5.9.1)
+- Updated HyperTrack SDK Android to [7.9.1](https://github.com/hypertrack/sdk-android/releases/tag/7.9.1)
+
 ## [2.6.0] - 2024-11-22
 
 ### Changed
@@ -478,3 +485,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.5.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.5.1
 [2.5.2]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.5.2
 [2.6.0]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.6.0
+[2.6.1]: https://github.com/hypertrack/sdk-flutter/releases/tag/2.6.1
