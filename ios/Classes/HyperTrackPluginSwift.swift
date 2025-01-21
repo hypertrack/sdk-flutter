@@ -91,6 +91,8 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
         switch sdkMethod {
         case .addGeotag:
             return addGeotag(args!)
+        case .getAllowMockLocation:
+            return getAllowMockLocation()
         case .getDeviceID:
             return getDeviceID()
         case .getErrors:
@@ -112,6 +114,8 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
         case .locate:
             // locate is implemented as a Stream
             return .failure(.fatalError("locate() is not implemented as a SDKMethod"))
+        case .setAllowMockLocation:
+            return setAllowMockLocation(args!)
         case .setIsAvailable:
             return setIsAvailable(args!)
         case .setIsTracking:
