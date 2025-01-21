@@ -11,7 +11,7 @@
   
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
   
   <link rel="stylesheet" href="../../static-assets/github.css?v1">
   <link rel="stylesheet" href="../../static-assets/styles.css?v1">
@@ -21,15 +21,15 @@
 </head>
 
 
-<body data-base-href="../../" data-using-base-href="false">
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
 
 <div id="overlay-under-drawer"></div>
 
 <header id="title">
-  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">hypertrack_plugin</a></li>
-    <li><a href="../../data_types_location_with_deviation/data_types_location_with_deviation-library.html">location_with_deviation</a></li>
+    <li><a href="../../data_types_location_with_deviation/data_types_location_with_deviation-library.html">data_types&#47;location_with_deviation.dart</a></li>
     <li><a href="../../data_types_location_with_deviation/LocationWithDeviation-class.html">LocationWithDeviation</a></li>
     <li class="self-crumb">LocationWithDeviation constructor</li>
   </ol>
@@ -37,19 +37,32 @@
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
+  <div class="toggle" id="theme-button" title="Toggle brightness">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span id="dark-theme-button" class="material-symbols-outlined">
+        dark_mode
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        light_mode
+      </span>
+    </label>
+  </div>
 </header>
-
 <main>
 
-
-  <div id="dartdoc-main-content" class="main-content">
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="data_types_location_with_deviation&#47;LocationWithDeviation-class-sidebar.html"
+      data-below-sidebar="">
       <div>
 <h1><span class="kind-constructor">LocationWithDeviation</span> constructor 
-    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
 </h1></div>
 
     <section class="multi-line-signature">
-      <span class="name ">LocationWithDeviation</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="-param-location"><span class="type-annotation"><a href="../../data_types_location/Location-class.html">Location</a></span> <span class="parameter-name">location</span>, </span></li>
+      
+      <span class="name ">LocationWithDeviation</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="-param-location"><span class="type-annotation"><a href="../../data_types_location/Location-class.html">Location</a></span> <span class="parameter-name">location</span>, </span></li>
 <li><span class="parameter" id="-param-deviation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">deviation</span></span></li>
 </ol>)
     </section>
@@ -67,40 +80,23 @@
   </div> <!-- /.main-content -->
 
   <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
-    <header id="header-search-sidebar" class="hidden-l">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
   <form class="search-sidebar" role="search">
     <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
 </header>
 
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-  <li><a href="../../index.html">hypertrack_plugin</a></li>
-  <li><a href="../../data_types_location_with_deviation/data_types_location_with_deviation-library.html">location_with_deviation</a></li>
-  <li><a href="../../data_types_location_with_deviation/LocationWithDeviation-class.html">LocationWithDeviation</a></li>
-  <li class="self-crumb">LocationWithDeviation constructor</li>
+    <li><a href="../../index.html">hypertrack_plugin</a></li>
+    <li><a href="../../data_types_location_with_deviation/data_types_location_with_deviation-library.html">location_with_deviation</a></li>
+    <li><a href="../../data_types_location_with_deviation/LocationWithDeviation-class.html">LocationWithDeviation</a></li>
+    <li class="self-crumb">LocationWithDeviation constructor</li>
 </ol>
 
 
     <h5>LocationWithDeviation class</h5>
-    <ol>
-
-        <li class="section-title"><a href="../../data_types_location_with_deviation/LocationWithDeviation-class.html#constructors">Constructors</a></li>
-          <li><a href="../../data_types_location_with_deviation/LocationWithDeviation/LocationWithDeviation.html">LocationWithDeviation</a></li>
-
-
-    <li class="section-title">
-      <a href="../../data_types_location_with_deviation/LocationWithDeviation-class.html#instance-properties">Properties</a>
-    </li>
-    <li><a href="../../data_types_location_with_deviation/LocationWithDeviation/deviation.html">deviation</a></li>
-    <li><a href="../../data_types_location_with_deviation/LocationWithDeviation/location.html">location</a></li>
-
-
-
-
-
-
-</ol>
-
+    <div id="dartdoc-sidebar-left-content"></div>
   </div><!--/.sidebar-offcanvas-left-->
 
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
@@ -111,7 +107,7 @@
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      2.6.1
+      2.7.0
   </span>
 
   
