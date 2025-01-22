@@ -150,7 +150,7 @@ public class HyperTrackPlugin :
             }
 
             SdkMethod.setAllowMockLocation -> {
-                withArgs<Map<String, Any?>>(call) { args ->
+                withArgs<Unit>(call) { args ->
                     HyperTrackSdkWrapper.setAllowMockLocation(args)
                 }
             }

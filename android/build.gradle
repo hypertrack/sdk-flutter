@@ -31,6 +31,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 31
+    namespace "com.hypertrack.sdk.flutter"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
