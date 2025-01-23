@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the fields property from the JSONObject class, for the Dart programming language.">
-  <title>fields property - JSONObject class - json library - Dart API</title>
+  <meta name="description" content="API docs for the setAllowMockLocation method from the HyperTrack class, for the Dart programming language.">
+  <title>setAllowMockLocation method - HyperTrack class - hypertrack library - Dart API</title>
 
 
   
@@ -25,11 +25,11 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">hypertrack_plugin</a></li>
-    <li><a href="../../data_types_json/data_types_json-library.html">data_types&#47;json.dart</a></li>
-    <li><a href="../../data_types_json/JSONObject-class.html">JSONObject</a></li>
-    <li class="self-crumb">fields property</li>
+    <li><a href="../../hypertrack/hypertrack-library.html">hypertrack.dart</a></li>
+    <li><a href="../../hypertrack/HyperTrack-class.html">HyperTrack</a></li>
+    <li class="self-crumb">setAllowMockLocation static method</li>
   </ol>
-  <div class="self-name">fields</div>
+  <div class="self-name">setAllowMockLocation</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -49,33 +49,48 @@
 <div
     id="dartdoc-main-content"
     class="main-content"
-    data-above-sidebar="data_types_json&#47;JSONObject-class-sidebar.html"
+    data-above-sidebar="hypertrack&#47;HyperTrack-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-property">fields</span> property 
+<h1><span class="kind-method">setAllowMockLocation</span> static method 
 </h1></div>
 
+    <section class="multi-line-signature">
+      
+<span class="returntype">void</span>
+<span class="name ">setAllowMockLocation</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="setAllowMockLocation-param-allow"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">allow</span></span></li>
+</ol>)
+
+      
+
+    </section>
     
-      <section class="multi-line-signature">
-        
-        <a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="../../data_types_json/JSON-class.html">JSON</a>?</span>&gt;</span>
-        <span class="name ">fields</span>
-        <div class="features"><span class="feature">getter/setter pair</span></div>
-
-      </section>
-      
-
-      
-<section class="summary source-code" id="source">
-  <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Map&lt;String, JSON&lt;dynamic&gt;?&gt; fields;</code></pre>
+<section class="desc markdown">
+  <p>Allows mocking location data.</p>
+<p>Check the <a href="https://hypertrack.com/docs/mock-location">Test with mock locations</a>
+guide for more information.</p>
+<p>To avoid issues related to race conditions in your code use this API <strong>only if</strong>
+modifying the compiled <code>HyperTrackAllowMockLocation</code> AndroidManifest.xml/Info.plist
+value is insufficient for your needs.
+Example: if for some reason you aren't able to recompile with <code>HyperTrackAllowMockLocation</code>
+set to <code>YES</code>/<code>true</code> for your prod app QA mock location tests and need to set
+up the value in runtime.</p>
 </section>
 
 
     
-</div> <!-- /.main-content -->
-<div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
-  <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">static void setAllowMockLocation(bool allow) {
+  _invokeSdkVoidMethod(
+      SdkMethod.setAllowMockLocation, serializeAllowMockLocation(allow));
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
 <header id="header-search-sidebar" class="hidden-l">
   <form class="search-sidebar" role="search">
     <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
@@ -83,15 +98,15 @@
 </header>
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">hypertrack_plugin</a></li>
-    <li><a href="../../data_types_json/data_types_json-library.html">json</a></li>
-    <li><a href="../../data_types_json/JSONObject-class.html">JSONObject</a></li>
-    <li class="self-crumb">fields property</li>
+    <li><a href="../../hypertrack/hypertrack-library.html">hypertrack</a></li>
+    <li><a href="../../hypertrack/HyperTrack-class.html">HyperTrack</a></li>
+    <li class="self-crumb">setAllowMockLocation static method</li>
 </ol>
 
-  <h5>JSONObject class</h5>
-  <div id="dartdoc-sidebar-left-content"></div>
-</div><!--/.sidebar-offcanvas-->
-<div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <h5>HyperTrack class</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
 </div><!--/.sidebar-offcanvas-->
 </main>
 <footer>

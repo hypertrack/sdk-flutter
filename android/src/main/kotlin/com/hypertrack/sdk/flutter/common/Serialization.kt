@@ -173,7 +173,8 @@ internal object Serialization {
             }
         }
 
-    fun serializeLocationErrorFailure(locationError: HyperTrack.LocationError): Serialized = serializeFailure(serializeLocationError(locationError))
+    fun serializeLocationErrorFailure(locationError: HyperTrack.LocationError): Serialized =
+        serializeFailure(serializeLocationError(locationError))
 
     fun serializeLocationSuccess(location: HyperTrack.Location): Serialized = serializeSuccess(serializeLocation(location))
 
