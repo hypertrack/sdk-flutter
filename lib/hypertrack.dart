@@ -69,6 +69,14 @@ class HyperTrack {
     });
   }
 
+  /// If disallowed, the HyperTrack platform will display and outage if mocked location is detected
+  static Future<bool> get allowMockLocation async {
+    return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getAllowMockLocation)
+        .then((value) {
+      return deserializeAllowMockLocation(value);
+    });
+  }
+
   /// Returns a string that is used to uniquely identify the device.
   static Future<String> get deviceId async {
     return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getDeviceID)
@@ -152,6 +160,22 @@ class HyperTrack {
     return _locateChannel.receiveBroadcastStream().map((event) {
       return deserializeLocateResult(event);
     });
+  }
+
+  /// Allows mocking location data.
+  ///
+  /// Check the [Test with mock locations](https://hypertrack.com/docs/mock-location)
+  /// guide for more information.
+  ///
+  /// To avoid issues related to race conditions in your code use this API **only if**
+  /// modifying the compiled `HyperTrackAllowMockLocation` AndroidManifest.xml/Info.plist
+  /// value is insufficient for your needs.
+  /// Example: if for some reason you aren't able to recompile with `HyperTrackAllowMockLocation`
+  /// set to `YES`/`true` for your prod app QA mock location tests and need to set
+  /// up the value in runtime.
+  static void setAllowMockLocation(bool allow) {
+    _invokeSdkVoidMethod(
+        SdkMethod.setAllowMockLocation, serializeAllowMockLocation(allow));
   }
 
   /// Sets the availability of the device for the Nearby search.

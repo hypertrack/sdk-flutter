@@ -31,6 +31,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 31
+    namespace "com.hypertrack.sdk.flutter"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -43,7 +44,7 @@ android {
         disable 'InvalidPackage'
     }
     dependencies {
-        def hyperTrackVersion = "7.9.1"
+        def hyperTrackVersion = "7.10.0"
         implementation "com.hypertrack:sdk-android:${hyperTrackVersion}"
         implementation "com.hypertrack:activity-service-google:${hyperTrackVersion}"
         implementation "com.hypertrack:location-services-google:${hyperTrackVersion}"

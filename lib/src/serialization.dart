@@ -16,6 +16,7 @@ const _keyValue = "value";
 const _typeResultFailure = "failure";
 const _typeResultSuccess = "success";
 
+const _typeAllowMockLocation = "allowMockLocation";
 const _typeDeviceId = "deviceID";
 const _typeError = "error";
 const _typeIsAvailable = "isAvailable";
@@ -47,6 +48,11 @@ const _keyGeotagExpectedLocation = "expectedLocation";
 const _keyLocation = "location";
 const _keyOrderHandle = "orderHandle";
 const _keyOrderStatus = "orderStatus";
+
+bool deserializeAllowMockLocation(Map<Object?, Object?> allowMockLocation) {
+  assert(allowMockLocation[_keyType] == _typeAllowMockLocation);
+  return allowMockLocation[_keyValue] as bool;
+}
 
 String deserializeDeviceId(Map<Object?, Object?> deviceId) {
   assert(deviceId[_keyType] == _typeDeviceId);
@@ -241,6 +247,13 @@ Map<String, Order> deserializeOrders(Map<Object?, Object?> orders) {
 String deserializeWorkerHandle(Map<Object?, Object?> workerHandle) {
   assert(workerHandle[_keyType] == _typeWorkerHandle);
   return workerHandle[_keyValue] as String;
+}
+
+Map<Object?, Object?> serializeAllowMockLocation(bool allowMockLocation) {
+  return {
+    _keyType: _typeAllowMockLocation,
+    _keyValue: allowMockLocation,
+  };
 }
 
 Map<Object?, Object?> serializeGeotagData(

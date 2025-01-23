@@ -100,6 +100,10 @@ public class HyperTrackPlugin :
                 }
             }
 
+            SdkMethod.getAllowMockLocation -> {
+                HyperTrackSdkWrapper.getAllowMockLocation()
+            }
+
             SdkMethod.getDeviceID -> {
                 HyperTrackSdkWrapper.getDeviceId()
             }
@@ -143,6 +147,12 @@ public class HyperTrackPlugin :
             SdkMethod.locate -> {
                 // locate is implemented as a EventChannel
                 Success(NotImplemented)
+            }
+
+            SdkMethod.setAllowMockLocation -> {
+                withArgs<Unit>(call) { args ->
+                    HyperTrackSdkWrapper.setAllowMockLocation(args)
+                }
             }
 
             SdkMethod.setDynamicPublishableKey -> {

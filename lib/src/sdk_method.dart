@@ -5,6 +5,7 @@
  */
 enum SdkMethod {
   addGeotag,
+  getAllowMockLocation,
   getDeviceID,
   getErrors,
   getIsAvailable,
@@ -15,6 +16,7 @@ enum SdkMethod {
   getOrders,
   getWorkerHandle,
   locate,
+  setAllowMockLocation,
   setIsAvailable,
   setIsTracking,
   setMetadata,
