@@ -44,7 +44,7 @@ android {
         disable 'InvalidPackage'
     }
     dependencies {
-        def hyperTrackVersion = "7.10.0"
+        def hyperTrackVersion = "7.11.0"
         implementation "com.hypertrack:sdk-android:${hyperTrackVersion}"
         implementation "com.hypertrack:activity-service-google:${hyperTrackVersion}"
         implementation "com.hypertrack:location-services-google:${hyperTrackVersion}"

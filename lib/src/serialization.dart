@@ -20,12 +20,12 @@ const _typeAllowMockLocation = "allowMockLocation";
 const _typeDeviceId = "deviceID";
 const _typeError = "error";
 const _typeIsAvailable = "isAvailable";
+const _typeIsInsideGeofence = "isInsideGeofence";
 const _typeIsTracking = "isTracking";
 const _typeMetadata = "metadata";
 const _typeName = "name";
 const _typeLocation = "location";
 const _typeLocationWithDeviation = "locationWithDeviation";
-const _typeOrder = "order";
 const _typeOrderHandle = "orderHandle";
 const _typeOrders = "orders";
 const _typeWorkerHandle = "workerHandle";
@@ -109,6 +109,26 @@ Map<Object?, Object?> deserializeFailure(Map<Object?, Object?> failure) {
 bool deserializeIsAvailable(Map<Object?, Object?> isAvailable) {
   assert(isAvailable[_keyType] == _typeIsAvailable);
   return isAvailable[_keyValue] as bool;
+}
+
+bool deserializeIsInsideGeofence(Map<Object?, Object?> isInsideGeofence) {
+  assert(isInsideGeofence[_keyType] == _typeIsInsideGeofence);
+  return isInsideGeofence[_keyValue] as bool;
+}
+
+Result<bool, LocationError> deserializeIsInsideGeofenceResult(
+    Map<Object?, Object?> isInsideGeofenceResult) {
+  switch (isInsideGeofenceResult[_keyType]) {
+    case _typeResultFailure:
+      return Failure(deserializeLocationError(
+          deserializeFailure(isInsideGeofenceResult)));
+    case _typeResultSuccess:
+      return Success(deserializeIsInsideGeofence(
+          deserializeSuccess(isInsideGeofenceResult)));
+    default:
+      throw Exception(
+          "Unknown result type: ${isInsideGeofenceResult[_keyType]}");
+  }
 }
 
 bool deserializeIsTracking(Map<Object?, Object?> isTracking) {
@@ -209,37 +229,33 @@ Map<Object?, Object?> deserializeSuccess(Map<Object?, Object?> success) {
   return success[_keyValue] as Map<Object?, Object?>;
 }
 
-Order deserializeOrder(Map<Object?, Object?> order) {
-  assert(order[_keyType] == _typeOrder);
+Order deserializeOrder(
+    Map<Object?, Object?> order,
+    Future<Map<Object?, Object?>> Function(String orderHandle) getIsInsideGeofence
+) {
   String orderHandle = order[_keyOrderHandle] as String;
-  Map<Object?, Object?> isInsideGeofence =
-      order[_keyIsInsideGeofence] as Map<Object?, Object?>;
-  switch (isInsideGeofence[_keyType]) {
-    case _typeResultSuccess:
-      Map<Object?, Object?> isInsideGeofenceSuccess =
-          isInsideGeofence[_keyValue] as Map<Object?, Object?>;
-      bool value = isInsideGeofenceSuccess[_keyValue] as bool;
-      return Order(
-        Success(value),
-        orderHandle,
-      );
-    case _typeResultFailure:
-      return Order(
-        Failure(deserializeLocationError(deserializeFailure(isInsideGeofence))),
-        orderHandle,
-      );
-    default:
-      throw Exception("Unknown result type: ${isInsideGeofence[_keyType]}");
-  }
+  return Order(
+    () async {
+      final data = await getIsInsideGeofence(orderHandle);
+      return deserializeIsInsideGeofenceResult(data);
+    },
+    orderHandle,
+  );
 }
 
-Map<String, Order> deserializeOrders(Map<Object?, Object?> orders) {
+Map<String, Order> deserializeOrders(
+    Map<Object?, Object?> orders,
+    Future<Map<Object?, Object?>> Function(String orderHandle) getIsInsideGeofence
+    ) {
   assert(orders[_keyType] == _typeOrders);
   List<Object?> ordersList = orders[_keyValue] as List<Object?>;
   Map<String, Order> result = {};
   for (Object? rawOrder in ordersList) {
     Map<Object?, Object?> order = rawOrder as Map<Object?, Object?>;
-    result[order[_keyOrderHandle] as String] = deserializeOrder(order);
+    result[order[_keyOrderHandle] as String] = deserializeOrder(
+        order,
+        getIsInsideGeofence
+    );
   }
   return result;
 }
@@ -265,10 +281,7 @@ Map<Object?, Object?> serializeGeotagData(
   if (rawOrderHandle == null) {
     orderHandle = null;
   } else {
-    orderHandle = {
-      _keyType: _typeOrderHandle,
-      _keyValue: rawOrderHandle,
-    };
+    orderHandle = serializeOrderHandle(rawOrderHandle);
   }
 
   Map<Object?, Object?>? orderStatus;
@@ -348,6 +361,13 @@ Map<Object?, Object?> serializeName(String name) {
   return {
     _keyType: _typeName,
     _keyValue: name,
+  };
+}
+
+Map<Object?, Object?> serializeOrderHandle(String orderHandle) {
+  return {
+    _keyType: _typeOrderHandle,
+    _keyValue: orderHandle,
   };
 }
 

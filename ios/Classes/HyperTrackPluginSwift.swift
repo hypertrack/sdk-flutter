@@ -107,6 +107,8 @@ public class HyperTrackPluginSwift: NSObject, FlutterPlugin {
             return getMetadata()
         case .getName:
             return getName()
+        case .getOrderIsInsideGeofence:
+            return getOrderIsInsideGeofence(args!)
         case .getOrders:
             return getOrders()
         case .getWorkerHandle:
