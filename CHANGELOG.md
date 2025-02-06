@@ -9,11 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated HyperTrack SDK iOS to [5.11.0](https://github.com/hypertrack/sdk-ios/releases/tag/5.11.0)
-- Updated HyperTrack SDK Android to [7.11.0](https://github.com/hypertrack/sdk-android/releases/tag/7.11.0)
-
-### Changed
-
 - `Order.isInsideGeofence` is now an async fuction that returns the value at the moment when it called (instead of the constant value at the time of `getOrders` being called)
 - Updated HyperTrack SDK iOS to [5.11.0](https://github.com/hypertrack/sdk-ios/releases/tag/5.11.0)
 - Updated HyperTrack SDK Android to [7.11.0](https://github.com/hypertrack/sdk-android/releases/tag/7.11.0)
