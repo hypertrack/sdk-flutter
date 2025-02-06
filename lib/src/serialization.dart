@@ -43,7 +43,6 @@ const _keyLongitude = "longitude";
 
 const _keyDeviation = "deviation";
 const _keyData = "data";
-const _keyIsInsideGeofence = "isInsideGeofence";
 const _keyGeotagExpectedLocation = "expectedLocation";
 const _keyLocation = "location";
 const _keyOrderHandle = "orderHandle";
