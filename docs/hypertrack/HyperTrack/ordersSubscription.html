@@ -78,7 +78,14 @@
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">static Stream&lt;Map&lt;String, Order&gt;&gt; get ordersSubscription {
   return _ordersChannel.receiveBroadcastStream().map((event) {
-    return deserializeOrders(event);
+    return deserializeOrders(
+        event,
+        (String orderHandle) {
+          return _invokeSdkMethod&lt;Map&lt;Object?, Object?&gt;&gt;(
+              SdkMethod.getOrderIsInsideGeofence,
+              serializeOrderHandle(orderHandle));
+        }
+    );
   });
 }</code></pre>
 </section>
@@ -110,7 +117,7 @@
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      2.7.0
+      3.0.0
   </span>
   
 </footer>

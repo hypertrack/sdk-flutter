@@ -56,23 +56,31 @@
 </h1></div>
 
     
-      <section class="multi-line-signature">
-        
-        <a href="../../data_types_result/Result-class.html">Result</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>, <span class="type-parameter"><a href="../../data_types_location_error/LocationError-class.html">LocationError</a></span>&gt;</span>
-        <span class="name ">isInsideGeofence</span>
-        <div class="features"><span class="feature">final</span></div>
-
-      </section>
-      
-
-      
-<section class="summary source-code" id="source">
-  <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">final Result&lt;bool, LocationError&gt; isInsideGeofence;</code></pre>
-</section>
-
 
     
+        
+  <section id="getter">
+    <section class="multi-line-signature">
+      
+      <span class="returntype"><a href="https://api.flutter.dev/flutter/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../data_types_result/Result-class.html">Result</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>, <span class="type-parameter"><a href="../../data_types_location_error/LocationError-class.html">LocationError</a></span>&gt;</span></span>&gt;</span></span>
+      get
+      <span class="name ">isInsideGeofence</span>
+      
+
+    </section>
+    
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;Result&lt;bool, LocationError&gt;&gt; get isInsideGeofence async {
+  return await _isInsideGeofence();
+}</code></pre>
+</section>
+
+  </section>
+
+
 </div> <!-- /.main-content -->
 <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
   <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
@@ -97,7 +105,7 @@
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      2.7.0
+      3.0.0
   </span>
   
 </footer>

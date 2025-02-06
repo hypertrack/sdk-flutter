@@ -80,7 +80,14 @@ ordering in which the worker should complete them.</p>
   <pre class="language-dart"><code class="language-dart">static Future&lt;Map&lt;String, Order&gt;&gt; get orders async {
   return _invokeSdkMethod&lt;Map&lt;Object?, Object?&gt;&gt;(SdkMethod.getOrders)
       .then((value) {
-    return deserializeOrders(value);
+    return deserializeOrders(
+        value,
+        (String orderHandle) {
+          return _invokeSdkMethod&lt;Map&lt;Object?, Object?&gt;&gt;(
+              SdkMethod.getOrderIsInsideGeofence,
+              serializeOrderHandle(orderHandle));
+        }
+    );
   });
 }</code></pre>
 </section>
@@ -112,7 +119,7 @@ ordering in which the worker should complete them.</p>
 <footer>
   <span class="no-break">
     hypertrack_plugin
-      2.7.0
+      3.0.0
   </span>
   
 </footer>
