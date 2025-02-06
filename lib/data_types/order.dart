@@ -2,8 +2,12 @@ import 'package:hypertrack_plugin/data_types/location_error.dart';
 import 'package:hypertrack_plugin/data_types/result.dart';
 
 class Order {
-  const Order(this.isInsideGeofence, this.orderHandle);
+  Order(this._isInsideGeofence, this.orderHandle);
 
   final String orderHandle;
-  final Result<bool, LocationError> isInsideGeofence;
+  final Future<Result<bool, LocationError>> Function() _isInsideGeofence;
+
+  Future<Result<bool, LocationError>> get isInsideGeofence async {
+    return await _isInsideGeofence();
+  }
 }

@@ -137,7 +137,14 @@ class HyperTrack {
   static Future<Map<String, Order>> get orders async {
     return _invokeSdkMethod<Map<Object?, Object?>>(SdkMethod.getOrders)
         .then((value) {
-      return deserializeOrders(value);
+      return deserializeOrders(
+          value,
+          (String orderHandle) {
+            return _invokeSdkMethod<Map<Object?, Object?>>(
+                SdkMethod.getOrderIsInsideGeofence,
+                serializeOrderHandle(orderHandle));
+          }
+      );
     });
   }
 
@@ -241,7 +248,14 @@ class HyperTrack {
   /// Subscribe to changes in the orders assigned to the worker
   static Stream<Map<String, Order>> get ordersSubscription {
     return _ordersChannel.receiveBroadcastStream().map((event) {
-      return deserializeOrders(event);
+      return deserializeOrders(
+          event,
+          (String orderHandle) {
+            return _invokeSdkMethod<Map<Object?, Object?>>(
+                SdkMethod.getOrderIsInsideGeofence,
+                serializeOrderHandle(orderHandle));
+          }
+      );
     });
   }
 

@@ -1,5 +1,5 @@
 alias b := build
-alias cncfrn := copy-native-code-from-react-native
+alias cfrn := copy-native-code-from-react-native
 alias d := docs
 alias f := format
 alias gd := get-dependencies

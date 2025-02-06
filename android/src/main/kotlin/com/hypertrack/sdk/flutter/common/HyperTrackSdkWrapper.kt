@@ -10,12 +10,14 @@ import com.hypertrack.sdk.flutter.common.Serialization.deserializeIsAvailable
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeIsTracking
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeMetadata
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeName
+import com.hypertrack.sdk.flutter.common.Serialization.deserializeOrderHandle
 import com.hypertrack.sdk.flutter.common.Serialization.deserializeWorkerHandle
 import com.hypertrack.sdk.flutter.common.Serialization.serializeAllowMockLocation
 import com.hypertrack.sdk.flutter.common.Serialization.serializeDeviceId
 import com.hypertrack.sdk.flutter.common.Serialization.serializeDynamicPublishableKey
 import com.hypertrack.sdk.flutter.common.Serialization.serializeErrors
 import com.hypertrack.sdk.flutter.common.Serialization.serializeIsAvailable
+import com.hypertrack.sdk.flutter.common.Serialization.serializeIsInsideGeofence
 import com.hypertrack.sdk.flutter.common.Serialization.serializeIsTracking
 import com.hypertrack.sdk.flutter.common.Serialization.serializeLocationErrorFailure
 import com.hypertrack.sdk.flutter.common.Serialization.serializeLocationResult
@@ -133,6 +135,20 @@ internal object HyperTrackSdkWrapper {
         Success(
             serializeOrders(HyperTrack.orders.values),
         )
+
+    fun getOrderIsInsideGeofence(args: Serialized): WrapperResult<Serialized> =
+        deserializeOrderHandle(args)
+            .mapSuccess { orderHandle ->
+                HyperTrack
+                    .orders
+                    .values
+                    .firstOrNull { it.orderHandle == orderHandle }
+                    .let { order ->
+                        order?.isInsideGeofence ?: Result.Success(false)
+                    }.let {
+                        serializeIsInsideGeofence(it)
+                    }
+            }
 
     fun getWorkerHandle(): WrapperResult<Serialized> =
         Success(

@@ -136,6 +136,12 @@ public class HyperTrackPlugin :
                 HyperTrackSdkWrapper.getName()
             }
 
+            SdkMethod.getOrderIsInsideGeofence -> {
+                withArgs<Map<String, Any?>>(call) { args ->
+                    HyperTrackSdkWrapper.getOrderIsInsideGeofence(args)
+                }
+            }
+
             SdkMethod.getOrders -> {
                 HyperTrackSdkWrapper.getOrders()
             }
