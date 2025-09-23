@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name                = 'hypertrack_plugin'
-  s.version             = '3.0.2'
+  s.version             = '3.0.3'
   s.summary             = 'HyperTrack SDK Flutter plugin is a wrapper around native HyperTrack SDK that allows to integrate it into Flutter apps'
   s.description         = <<-DESC
 HyperTrack SDK Flutter plugin is a wrapper around native HyperTrack SDK that allows to integrate it into Flutter apps
@@ -17,7 +17,7 @@ HyperTrack SDK Flutter plugin is a wrapper around native HyperTrack SDK that all
   s.source_files        = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency          'Flutter'
-  s.dependency          'HyperTrack', '5.11.2'
+  s.dependency          'HyperTrack', '5.12.0'
   s.platform            = :ios, '11.0'
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
