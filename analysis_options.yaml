@@ -1,9 +1,0 @@
-analyzer:
-  language:
-    strict-inference: true
-    strict-raw-types: true
-
-linter:
-  rules:
-    - unnecessary_new
-    - unnecessary_const
