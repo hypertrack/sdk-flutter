@@ -8,6 +8,6 @@ Add live location tracking to your Flutter app on Android and iOS with the [Hype
 flutter pub add hypertrack_plugin
 ```
 
-Follow the [Flutter integration guide](https://hypertrack.com/docs/install-sdk-flutter) to configure both platforms. See the [API reference](https://pub.dev/documentation/hypertrack_plugin/latest/) and the [Flutter quickstart](https://github.com/hypertrack/quickstart-flutter) for examples.
+Follow the [Flutter integration guide](https://hypertrack.com/docs/install-sdk-flutter) to configure both platforms. See the [API reference](https://hypertrack.github.io/mobile/sdk-flutter/latest/) ([also on pub.dev](https://pub.dev/documentation/hypertrack_plugin/latest/)) and the [Flutter quickstart](https://github.com/hypertrack/quickstart-flutter) for examples.
 
 For changes by version, see the [changelog](CHANGELOG.md) and [GitHub Releases](https://github.com/hypertrack/sdk-flutter/releases).
